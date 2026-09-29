@@ -1,0 +1,21 @@
+<h1 id="about-pricingstream-object">About Pricing.Stream object</h1>
+<p><strong>Pricing.Stream objects</strong> are used for requesting, processing and managing a set of streaming level 1 (MarketPrice domain) quotes and trades.</p>
+<p>The object automatically manages a set of streaming caches available for access at any time and an in-memory image of the requested instruments, keeping track of streaming updates exposing an interface to reach into the cache to retrieve up-to-date values.</p>
+<h3 id="properties">Properties</h3>
+<p><code>public Stream.State OpenState</code></p>
+<p>Current state of the Pricing.Stream (see <a href="#/sections/content-layer/pricing/streams/state">Pricing.Stream.State</a>).</p>
+<h3 id="pricing-stream-interface-methods">Pricing Stream Interface methods</h3>
+<ul>
+<li><a href="#/sections/content-layer/streams/methods/open">Pricing stream Open method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/streaming">Pricing stream Streaming method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/close">Pricing stream Close method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/count">Pricing stream Count method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/item-exists">Pricing stream ItemExists method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/add-items">Pricing stream AddItems method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/remove-items">Pricing stream RemoveItems method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/on-update">Pricing stream OnUpdate method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/on-refresh">Pricing stream OnRefresh method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/on-complete">Pricing stream OnComplete method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/on-status">Pricing stream OnStatus method</a></li>
+<li><a href="#/sections/content-layer/streams/methods/on-error">Pricing stream OnError method</a></li>
+</ul>

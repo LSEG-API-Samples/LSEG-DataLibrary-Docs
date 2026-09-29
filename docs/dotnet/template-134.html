@@ -1,0 +1,175 @@
+<h1 id="desktopdirectsession">DesktopDirectSession</h1>
+<p>The <code>DesktopDirectSession</code> communicates with the platform via <strong>WAG (Workspace API Gateway)</strong>. It is intended for applications that need direct access to the streaming and RESTful services exposed to the desktop without hosting the Workspace application. The session provides a means to retrieve content from the LSEG Data Platform via WAG.</p>
+<p>For a connection that hosts the full desktop application, see <a href="#/sections/session-layer/desktop-session">DesktopSession</a>; to connect directly to the platform, see <a href="#/sections/session-layer/platform-session">PlatformSession</a>.</p>
+<p>The types on this page live in the <code>LSEG.Data.Core</code> namespace.</p>
+<h3 id="entry-points">Entry points</h3>
+<p>The <code>DesktopDirectSession</code> class exposes a <code>Definition(...)</code> factory that returns an <code>IDesktopDirectSessionDefinition</code> fluent builder; the builder&#39;s <code>GetSession()</code> method finalises the request and returns an <code>ISession</code>.</p>
+<p><strong>DesktopDirectSession.Definition(string sessionName = default)</strong><br>
+<strong>DesktopDirectSession.Definition(Stream stream, string resourceName = default)</strong><br>
+<strong>DesktopDirectSession.Definition(JObject config)</strong><br>
+<strong>DesktopDirectSession.Definition(string sessionName, Stream stream, string resourceName = default)</strong><br>
+<strong>DesktopDirectSession.Definition(string sessionName, JObject config)</strong><br>
+Define a DesktopDirect Session request. When <code>sessionName</code> is omitted, the <code>sessions.desktop-direct.default</code> entry from the configuration is used.</p>
+<h3 id="idesktopdirectsessiondefinition-members">IDesktopDirectSessionDefinition members</h3>
+<p><code>IDesktopDirectSessionDefinition</code> is the fluent builder returned by <code>Definition(...)</code>. Each setter returns the builder for chaining; <code>GetSession()</code> (inherited from <code>ISessionDefinition</code>) produces the <code>ISession</code>.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>IDesktopDirectSessionDefinition AppName(string appName)</code></td>
+<td>method</td>
+<td>Application name defined by the user and used for request-tracking purposes. Required.</td>
+</tr>
+<tr>
+<td><code>IDesktopDirectSessionDefinition DacsApplicationID(string applicationId)</code></td>
+<td>method</td>
+<td>The ID of the application connecting in. Optional. Default: 256.</td>
+</tr>
+<tr>
+<td><code>IDesktopDirectSessionDefinition DacsPosition(string position)</code></td>
+<td>method</td>
+<td>The IP-address position of the application logging in. Optional. Default: local IP address.</td>
+</tr>
+<tr>
+<td><code>IDesktopDirectSessionDefinition DacsUserName(string username)</code></td>
+<td>method</td>
+<td>The DACS user name. Optional. Default: based on the machine login ID.</td>
+</tr>
+<tr>
+<td><code>IDesktopDirectSessionDefinition Host(string host)</code></td>
+<td>method</td>
+<td>IP address or hostname and port of the Advanced Distribution Server (ADS) streaming real-time content. When defined, all streaming communication goes through this interface by default. Format: <code>&lt;IP&gt;|&lt;hostname&gt;:&lt;port&gt;</code>, e.g. <code>elektron:15000</code>.</td>
+</tr>
+<tr>
+<td><strong><code>IDesktopDirectSessionDefinition TakeRealTimeControl(bool takeRealTimeControl)</code></strong></td>
+<td>method</td>
+<td><strong>Defines whether a newly opened session will &quot;steal&quot; the real-time access to streaming data when the user already has an opened session. Optional. Default: <code>true</code>. Set to <code>false</code> to open a session that does not take over real-time access and user wants only to query the APIs without streaming capabilities.</strong></td>
+</tr>
+<tr>
+<td><strong><code>IDesktopDirectSessionDefinition WithAuthenticationProvider(IAuthenticationProvider provider)</code></strong></td>
+<td>method</td>
+<td><strong>Sets the authentication provider. Required — a DesktopDirect session cannot open without one. Currently only DesktopDirect supports authentication using Entra as IDP and Heimdall as an internal auth service; use the <code>EntraProvider</code> implementation described below.</strong></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><code>WithAuthenticationProvider</code> and <code>TakeRealTimeControl</code> are the two settings that most directly affect how a DesktopDirect session behaves: the former is mandatory for the session to authenticate at all, and the latter decides whether opening this session takes real-time streaming access away from any other session already using the same identity.</p>
+</blockquote>
+<h3 id="authentication--entraprovider">Authentication — EntraProvider</h3>
+<p>The only concrete <code>IAuthenticationProvider</code> implementation shipped by the library is <code>EntraProvider</code> (<code>LSEG.Data.Authentication.IdentityProviders.EntraProvider</code>). It authenticates using Entra as the identity provider and Heimdall as the internal auth service.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>EntraProvider(Func&lt;Task&lt;string&gt;&gt; idpTokenProvider)</code></td>
+<td>constructor</td>
+<td>Builds the provider from a callback that asynchronously returns an Entra ID token (for example, one backed by MSAL). Required; throws <code>ArgumentNullException</code> if <code>idpTokenProvider</code> is <code>null</code>.</td>
+</tr>
+<tr>
+<td><code>EntraProvider(ITokenProvider tokenProvider)</code></td>
+<td>constructor</td>
+<td>Builds the provider from an <code>ITokenProvider</code> implementation instead of a raw callback. Required; throws <code>ArgumentNullException</code> if <code>tokenProvider</code> is <code>null</code>.</td>
+</tr>
+</tbody></table>
+<p><code>ITokenProvider</code> (<code>LSEG.Data.Authentication.IdentityProviders.ITokenProvider</code>) is the contract users can implement to supply their own token-minting mechanism. It exposes a single member: <code>Task&lt;string&gt; GetAccessTokenAsync()</code>, which asynchronously returns the access token.</p>
+<h3 id="idesktopdirectsessiondefinitionparams-members">IDesktopDirectSessionDefinitionParams members</h3>
+<p><code>IDesktopDirectSessionDefinitionParams</code> exposes the read-only view of the parameters defined for the session (retrieved via <code>IDesktopDirectSession.Definition</code>).</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>string AppName</code></td>
+<td>property</td>
+<td>Application name defined by the user in the case of human-friendly request tracking.</td>
+</tr>
+<tr>
+<td><code>IAuthenticationProvider AuthenticationProvider</code></td>
+<td>property</td>
+<td>Authentication provider which drives the mechanism with which the user authenticates.</td>
+</tr>
+<tr>
+<td><code>string DacsAppId</code></td>
+<td>property</td>
+<td>The ID of the application connecting in.</td>
+</tr>
+<tr>
+<td><code>string DacsPosition</code></td>
+<td>property</td>
+<td>The IP-address position of the application logging in.</td>
+</tr>
+<tr>
+<td><code>string DacsUser</code></td>
+<td>property</td>
+<td>The DACS user name.</td>
+</tr>
+<tr>
+<td><code>string Host</code></td>
+<td>property</td>
+<td>IP address or hostname and port of the Advanced Distribution Server (ADS) streaming real-time content. When defined, all streaming communication goes through this interface by default.</td>
+</tr>
+<tr>
+<td><code>bool? RealTimeAccessControl</code></td>
+<td>property</td>
+<td>Drives whether a newly opened session will &quot;steal&quot; the real-time access to streaming data.</td>
+</tr>
+</tbody></table>
+<h3 id="idesktopdirectsession-members">IDesktopDirectSession members</h3>
+<p><code>IDesktopDirectSession</code> is the DesktopDirect-specific session interface. It extends the common <code>ISession</code> interface (see <a href="#/sections/session-layer/session">Sessions</a> for <code>Open</code>, <code>OpenAsync</code>, <code>Close</code>, <code>OnState</code>, <code>OnEvent</code>, and the state/event members) with the following:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>IDesktopDirectSession OnStreamingEndpoint(Action&lt;string, IList&lt;IStreamingEndpoint&gt;, ISession&gt; cb)</code></td>
+<td>method</td>
+<td>Optional callback invoked to report all the DesktopDirect streaming endpoints.</td>
+</tr>
+<tr>
+<td><code>IDesktopDirectSessionDefinitionParams Definition</code></td>
+<td>property</td>
+<td>Retrieve the parameters defined for the DesktopDirect Session.</td>
+</tr>
+</tbody></table>
+<h3 id="example">Example</h3>
+<p><strong>Create a DesktopDirect session authenticated with <code>EntraProvider</code>, controlling real-time access with <code>TakeRealTimeControl</code>:</strong></p>
+<pre><code class="language-csharp">using LSEG.Data.Authentication.IdentityProviders;
+using LSEG.Data.Core;
+
+// Wrap your Entra/MSAL token acquisition in an async callback.
+static async Task&lt;string&gt; GetAccessToken() =&gt; await new MsalClient().GetIDPToken(&quot;&lt;your-entra-client-id&gt;&quot;);
+
+// takeRealTimeControl: true -&gt; this session will get real-time data,
+// &quot;stealing&quot; it from any other session already using the same identity.
+using (ISession session = DesktopDirectSession.Definition()
+                                              .WithAuthenticationProvider(new EntraProvider(GetAccessToken))
+                                              .TakeRealTimeControl(true)
+                                              .GetSession())
+{
+    session.OnState((state, msg, s) =&gt; Console.WriteLine($&quot;State: {state} - {msg}&quot;))
+           .OnEvent((eventCode, msg, s) =&gt; Console.WriteLine($&quot;Event: {eventCode} - {msg}&quot;));
+
+    if (session.Open() == Session.State.Opened)
+    {
+        // Use the session with Content or Delivery layer objects
+    }
+}
+</code></pre>
+<!-- Example validation: not executed - requires network access to a Workspace API Gateway / ADS endpoint and an Entra app registration. Modeled on Examples/Refinitiv.Data/3.0-Core/3.0.12-Core-DesktopDirectSession/3.0.12-Core-DesktopDirectSession.cs; `MsalClient` is a sample helper from that example, not part of the public SDK surface. -->

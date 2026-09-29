@@ -1,0 +1,144 @@
+<h1 id="deliveryqueuequeue-object">Delivery.Queue.Queue object</h1>
+<p>A class providing queueing capabilities for Research, News headlines and stories. </p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Delivery.Queue.Definition()</code><br>
+<code>Delivery.Queue.Definition(string endpointUrl)</code><br>
+Define the queue properties to manage and retrieve messages from queues defined within the cloud.<br>
+Queueing capabilities currently support Research, News headlines and stories.</p>
+<p><code>Delivery.Queue.Params()</code><br>
+Defines a request to specify query parameters when retrieving a message queue from the cloud. <br>
+Refer to the &quot;message-services&quot; endpoints within the RDP Playground for the available parameters.<br>
+This method returns a <strong>ParamsDefinition</strong>.</p>
+<h3 id="methods-of-queue-definition">Methods of Queue definition</h3>
+<p><strong>Endpoint(string endpoint)</strong><br>
+<strong>Endpoint(Uri endpoint)</strong><br>
+A reference to a message queue resource within the cloud. <br>
+The endpoint URL refers to message queue services such as Research, News Headlines, News Stories, etc.</p>
+<p><strong>CreateQueueManager()</strong><br>
+Based on the specified message queue resource, as defined by the Endpoint specification, 
+define a queue manager that supports the ability to manage queues within the cloud.</p>
+<p><strong>CreateAWSSubscriber(IQueueNode queue)</strong><br>
+For the specified queue, create a queue subscriber to pull data from that queue.</p>
+<p><strong>Properties</strong> <em>(property, <code>IQueueDefinitionParams</code>)</em><br>
+Retrieve the parameters defined within the request.</p>
+<h3 id="iqueuemanager-members">IQueueManager members</h3>
+<p><code>CreateQueueManager()</code> returns an <code>IQueueManager</code>, responsible for creating, retrieving and deleting queues in the cloud.</p>
+<p><strong>CreateQueue(JObject criteria = default, Queue.CloudType cloudType = Queue.CloudType.AWS, CancellationToken cancellationToken = default)</strong><br>
+<strong>CreateQueueAsync(...)</strong><br>
+Create a new queue in the cloud, optionally including additional criteria. Returns the created <code>IQueueNode</code>, or <code>null</code> if an error occurs.</p>
+<p><strong>GetQueue(string subscriptionID, CancellationToken cancellationToken = default)</strong><br>
+<strong>GetQueue(Queue.IParamsDefinition definition, CancellationToken cancellationToken = default)</strong><br>
+<strong>GetQueueAsync(...)</strong><br>
+Retrieve an existing queue based on the subscription ID, optionally with additional criteria. Returns the <code>IQueueNode</code>, or <code>null</code> if an error occurs.</p>
+<p><strong>GetAllQueues(CancellationToken cancellationToken = default)</strong><br>
+<strong>GetAllQueuesAsync(...)</strong><br>
+Retrieve all active queues. Returns the list of active queues, or <code>null</code> if an error occurs.</p>
+<p><strong>DeleteQueue(IQueueNode queue, CancellationToken cancellationToken = default)</strong><br>
+<strong>DeleteQueue(string subscriptionID, CancellationToken cancellationToken = default)</strong><br>
+<strong>DeleteQueueAsync(...)</strong><br>
+Delete an active queue based on the queue node or its subscription ID. Returns <code>true</code> if successfully deleted, <code>false</code> if the queue doesn&#39;t exist.</p>
+<p><strong>DeleteAllQueues(CancellationToken cancellationToken = default)</strong><br>
+<strong>DeleteAllQueuesAsync(...)</strong><br>
+Delete all active queues. Returns <code>true</code> if successfully deleted, <code>false</code> if there were no active queues.</p>
+<p><strong>OnError(Action&lt;JObject, IQueueManager&gt; cb)</strong><br>
+Callback invoked when an error occurs for any action performed on the queue manager.</p>
+<p><strong>Session(ISession session)</strong><br>
+Define a session associated with all actions on the queue manager. Required.</p>
+<p><strong>Properties</strong> <em>(property, <code>IQueueManagerParams</code>)</em><br>
+Property details for the manager, including the associated <code>Session</code> and <code>Definition</code>.</p>
+<h3 id="iqueuesubscriber-members">IQueueSubscriber members</h3>
+<p><code>CreateAWSSubscriber(...)</code> returns an <code>IQueueSubscriber</code> (extends <code>ISubscriber</code>), responsible for pulling messages off a queue.</p>
+<p><strong>StartPolling(Action&lt;IQueueResponse, IQueueSubscriber&gt; cb)</strong><br>
+<strong>StartPollingAsync(Action&lt;IQueueResponse, IQueueSubscriber&gt; cb)</strong><br>
+<strong>StartPollingAsync(Func&lt;IQueueResponse, IQueueSubscriber, Task&gt; cb)</strong><br>
+Start polling the queue for messages and dispatch to the supplied callback. Starts a long-running background task that only completes when <code>StopPolling()</code>/<code>StopPollingAsync()</code> is called. Returns whether polling was successfully started.</p>
+<p><strong>GetNextMessage(int timeoutInSeconds = 20, CancellationToken cancellationToken = default)</strong><br>
+<strong>GetNextMessage(int timeoutInSeconds, Action&lt;IQueueResponse, IQueueSubscriber&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>GetNextMessageAsync(...)</strong><br>
+Retrieve the next message from the queue, waiting up to <code>timeoutInSeconds</code> (default: 20). Returns the response, or <code>null</code> if cancelled.</p>
+<p><strong>StopPolling()</strong><br>
+<strong>StopPollingAsync()</strong><br>
+Stop polling the queue for messages. Any messages already in the processing loop will be delivered.</p>
+<h3 id="iqueuemessage-and-iqueueresponse-members">IQueueMessage and IQueueResponse members</h3>
+<p><strong>Raw</strong> <em>(property, <code>IQueueMessage</code>, <code>JToken</code>)</em><br>
+The native raw JSON data returned from the message queue.</p>
+<p><strong>Data</strong> <em>(property, <code>IQueueResponse</code>, <code>IQueueMessage</code>)</em><br>
+The data defined within the queue message retrieval, if available.</p>
+<p><strong>Error</strong> <em>(property, <code>IQueueResponse</code>, <code>JObject</code>)</em><br>
+Error details if there are any issues processing a queue message response.</p>
+<p><strong>IsMessageAvailable</strong> <em>(property, <code>IQueueResponse</code>, <code>bool</code>)</em><br>
+Determines if a message is available in the queue. Requests to retrieve a message may time out because no messages are available.</p>
+<p><strong>IsSuccess</strong> <em>(property, <code>IQueueResponse</code>, <code>bool</code>)</em><br>
+Indicator of whether the request was successful.</p>
+<p><strong>RequestMessage</strong> <em>(property, <code>IQueueResponse</code>, <code>JObject</code>)</em><br>
+Details of the request message including URL, Header and Body details, if available.</p>
+<h3 id="methods-and-properties-of-params-definition">Methods and properties of Params definition</h3>
+<p><strong>QueryParameters(string key, string value)</strong><br>
+Apply the specified key/value pair as a Query parameter to the Queue request. <br>
+For example, a key/value pair such as: &#39;userID&#39;/&#39;user123&#39; will be formed as &quot;userID=user123&quot; within the URL request.</p>
+<p><strong>Query</strong><br>
+The defined query parameters.</p>
+<p>The possible values for the <strong>Queue.CloudType</strong>:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AWS</td>
+<td>Amazon Web Services</td>
+</tr>
+</tbody></table>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IQueueDefinition</code> object. <br>
+In some cases described above, a <code>ParamsDefinition</code> object.</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to use a Queue Definition:</p>
+<pre><code class="language-csharp">const string newsStoriesEndpoint = &quot;https://api.refinitiv.com/message-services/v1/news-stories/subscriptions&quot;;
+
+ISession session = Sessions.GetSession();
+
+if (session.Open() == Session.State.Opened)
+{
+    var definition = Queue.Definition(newsStoriesEndpoint);
+
+    // Create a QueueManager to actively manage our queues
+    var manager = definition.CreateQueueManager()
+                            .OnError((err, qm) =&gt; Console.WriteLine(err));
+
+    // First, check to see if we have any news headline queues active in the cloud...
+    List&lt;IQueueNode&gt; queues = manager.GetAllQueues();
+
+    // Determine if we retrieved anything...create on if not.  
+    IQueueNode queue = (queues.Count &gt; 0 ? queues[0] : manager.CreateQueue());
+
+    // Ensure our queue is created
+    if (queue != null)
+    {
+        // Start pulling off news headline messages from the queue - we need to define a subscriber
+        var subscriber = definition.CreateAWSSubscriber(queue);
+
+        try
+        {
+            // Open the subscriber to begin polling for messages. Use Async() as this method is a long running task.
+            var task = subscriber.StartPollingAsync((story, s) =&gt; DisplayStory(story));
+
+            // Let the program run for a few seconds before proceeding via key press 
+            Console.ReadKey();
+
+            // Close the subscription - stops polling for messages
+            subscriber.StopPolling();
+            task.GetAwaiter().GetResult();
+            Console.Write(&quot;\nStopped polling for messages from the queue. &lt;Enter&gt; to exit...&quot;);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+
+        Console.ReadLine();
+    }
+}
+</code></pre>

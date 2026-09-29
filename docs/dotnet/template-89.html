@@ -1,0 +1,11 @@
+<h1 id="onadd">OnAdd</h1>
+<p>Optional callback invoked when a new element has been added to the chain increasing its size.<br>
+These events are called when the initial chain is building but can also occur for some chain records after the initial chain has been built.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IChainStream OnAdd(Action&lt;int, string, IChainStream&gt; addCb)</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to display the messages received when a new constituent is added to the stream.</p>
+<pre><code class="language-csharp">var chainStream = Chain.Definition(&quot;.AV.O&quot;)
+                       .GetStream()
+                       .OnAdd((index, newv, stream) =&gt; {});
+</code></pre>

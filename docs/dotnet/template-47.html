@@ -1,0 +1,65 @@
+<h1 id="about-financial-contracts-capfloor">About Financial Contracts CapFloor</h1>
+<p>A <strong>CapFloor</strong> is an instrument type that can be requested using the <strong>FinancialContracts</strong> definition. </p>
+<h3 id="syntax">Syntax</h3>
+<p><code>FinancialContracts.Definition(JObject capFloorRequest)</code></p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th align="left"><strong>Data type</strong></th>
+<th><strong>Optional</strong></th>
+<th align="left"><strong>Default value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>capFloorRequest</td>
+<td>A JObject describing the requested instrument and its details.</td>
+<td align="left">JObject</td>
+<td>No</td>
+<td align="left">null</td>
+</tr>
+</tbody></table>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IFinancialContractsDefinition</code> object.</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create a <strong>FinancialContractsDefinition</strong> instance by providing a request object for <strong>CapFloor</strong>:</p>
+<pre><code class="language-csharp">using Newtonsoft.Json.Linq;
+using LSEG.Data.Content.IPA;
+using LSEG.Data.Core;
+
+    var capFloor = new JObject()
+    {
+        [&quot;fields&quot;] = new JArray(&quot;InstrumentDescription&quot;, &quot;StartDate&quot;, &quot;EndDate&quot;, &quot;InterestPaymentFrequency&quot;, 
+                                &quot;IndexRic&quot;, &quot;NotionalCcy&quot;, &quot;NotionalAmount&quot;, &quot;PremiumBp&quot;),
+        [&quot;universe&quot;] = new JArray(new JObject()
+        {
+            [&quot;instrumentType&quot;] = &quot;CapFloor&quot;,
+            [&quot;instrumentDefinition&quot;] = new JObject()
+            {
+                [&quot;stubRule&quot;] = &quot;Maturity&quot;,
+                [&quot;notionalCcy&quot;] = &quot;USD&quot;,
+                [&quot;startDate&quot;] = &quot;2018-06-15&quot;,
+                [&quot;endDate&quot;] = &quot;2022-06-15&quot;,
+                [&quot;notionalAmount&quot;] = 1000000,
+                [&quot;indexName&quot;] = &quot;Composite&quot;,
+                [&quot;indexTenor&quot;] = &quot;5Y&quot;,
+                [&quot;cmsTemplate&quot;] = &quot;USD_SB3L&quot;,
+                [&quot;interestCalculationMethod&quot;] = &quot;Dcb_Actual_360&quot;,
+                [&quot;interestPaymentFrequency&quot;] = &quot;Quarterly&quot;,
+                [&quot;buySell&quot;] = &quot;Buy&quot;,
+                [&quot;capStrikePercent&quot;] = 1
+            }
+        }),
+        [&quot;pricingParameters&quot;] = new JObject()
+        {
+            [&quot;skipFirstCapFloorlet&quot;] = false,
+            [&quot;valuationDate&quot;] = &quot;2020-02-07&quot;
+        }
+    };
+
+    var data = FinancialContracts.Definition(capFloor).GetData();
+</code></pre>
+<p>In the <strong>instrumentDefinition</strong> object, some values could be provided using the enumerations under the LSEG.Data.Content.IPA.Bond namespace.</p>
+<p>The <strong>instrumentType</strong> must be &quot;CapFloor&quot; to retrieve relevant data for this specific case.</p>

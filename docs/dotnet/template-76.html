@@ -1,0 +1,87 @@
+<h1 id="headlines">Headlines</h1>
+<p>Headlines news data can be retrieved as a list of headlines using the Headlines definition.<br></p>
+<p>Each headline contains a raw content field, a story ID, a headline title and several metadata fields. <br></p>
+<p>These metadata fields contain information about the creators, sources, languages, subjects and instrument codes.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Headlines.Definition()</code></p>
+<h3 id="headlinesdefinition-methods">HeadlinesDefinition Methods</h3>
+<p><strong>IHeadlinesDefinition Query(string query)</strong><br>
+A news query expression.  Optional.  Default: all headlines.</p>
+<p><strong>IHeadlinesDefinition Count(uint count)</strong><br>
+The number of headlines.  Optional.  Default: 100. A value of 0 (zero) retrieves all available headlines within the query - typically only used when the query specifies a date range.</p>
+<p><strong>IHeadlinesDefinition Sort(Headlines.SortOrder sort)</strong><br>
+The sort order of the headlines (<code>newToOld</code>, <code>oldToNew</code>).  Optional.  Default: newToOld.</p>
+<p><strong>IHeadlinesDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IHeadlinesDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>IHeadlinesDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Query</code>, <code>Count</code>, <code>Sort</code>, <code>PageSize</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IHeadlinesResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IHeadlinesResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IHeadlinesResponse GetData(Action&lt;IHeadlinesResponse, IHeadlinesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IHeadlinesResponse GetData(ISession session, Action&lt;IHeadlinesResponse, IHeadlinesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IHeadlinesResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IHeadlinesResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IHeadlinesResponse&gt; GetDataAsync(Action&lt;IHeadlinesResponse, IHeadlinesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IHeadlinesResponse&gt; GetDataAsync(ISession session, Action&lt;IHeadlinesResponse, IHeadlinesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IHeadlinesDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IHeadlinesResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IHeadlinesData</strong> type.</p>
+<h3 id="iheadlinesdata---properties">IHeadlinesData - properties</h3>
+<p>IList&lt;IHeadlineData&gt; Headlines { get; }<br>
+JToken Raw { get; }<br></p>
+<p>Each entry in <strong>Headlines</strong> is an <strong>IHeadlineData</strong> (extends <code>INewsItem</code>):</p>
+<h3 id="iheadlinedata---properties">IHeadlineData - properties</h3>
+<p>string StoryId { get; }<br>
+IList&lt;string&gt; Creators { get; }<br>
+NewsUrgencyType Urgency { get; }<br>
+string HeadlineTitle { get; }<br>
+IList&lt;string&gt; Sources { get; }<br>
+IList&lt;string&gt; Languages { get; }<br>
+IList&lt;string&gt; Subjects { get; }<br>
+IList&lt;string&gt; RICCodes { get; }<br>
+DateTime CreationDate { get; }<br>
+DateTime UpdateDate { get; }<br>
+JObject Raw { get; }<br></p>
+<p><code>NewsUrgencyType</code> values: <code>Regular</code>, <code>Hot</code>.</p>
+<h3 id="usage">Usage</h3>
+<p>The code snipet bellow, exemplifies a couple of use cases for retrieving headlines data. </p>
+<pre><code class="language-csharp">
+    var definition = Headlines.Definition();
+
+    // Default Count: Retrieve the most recent 100 headlines about any instrument
+    var response1 = definition.GetData();
+
+    // Default Count: Retrieve most recent 100 headlines for Apple
+    var response2 = Headlines.Definition().Query(&quot;R:AAPL.O&quot;).GetData();
+
+    // Specify Count: Retrieve most recent N headlines for Apple
+    var response3 = Headlines.Definition().Query(&quot;R:AAPL.O&quot;).Count(15).GetData();
+    
+    // Retrieve a large number of headlines and a callback to retrieve each page.  Each page contains 100 headlines.
+    Headlines.Definition()
+              .Query(&quot;R:AAPL.O&quot;)
+              .Count(350)
+              .GetData((response, def, s) =&gt;
+              {
+                  // Use the response object and display the desired headlines details
+              });
+
+    // Retrieve headlines using queries and sort the result.
+    var startdate = DateTime.Now.AddMonths(-15);
+    var enddate = startdate.AddDays(1);
+
+    var query = $&quot;Apple daterange:\&quot;{startdate:yyyy-MM-dd},{enddate:yyyy-MM-dd}\&quot;&quot;;
+    
+    var response = Headlines.Definition()
+                            .Query(query)
+                            .Count(0)
+                            .Sort(Headlines.SortOrder.oldToNew)
+                            .GetData();
+</code></pre>
+<p>Headline entries can be sorted using the <strong>Sort()</strong> and providing a <strong>Headlines.ShortOrder</strong> value. <br>
+The available values are <strong>&quot;oldToNew&quot;</strong> and <strong>&quot;newToOld&quot;</strong>.</p>

@@ -1,0 +1,156 @@
+<h1 id="symbolconversiondefinition">SymbolConversionDefinition</h1>
+<p>This definition is used to retrieve data from the Search/Lookup API of the Delivery Platform (formerly Refinitiv Data Platform).</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>SymbolConversion.Definition(params string[] symbols)</code><br>
+<code>SymbolConversion.Definition(IEnumerable&lt;string&gt; symbols)</code></p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th><strong>Optional</strong></th>
+<th align="left"><strong>Default value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>symbols</td>
+<td>One or more instruments for which we want to retrieve symbols</td>
+<td>No</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
+<h3 id="symbol-types">Symbol Types</h3>
+<p>The following is a table of supported symbol types that an instrument could have and that can also be used to request symbol data. </p>
+<table>
+<thead>
+<tr>
+<th><strong>Name</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RIC</td>
+<td>Reuters Instrument Code.</td>
+</tr>
+<tr>
+<td>ISIN</td>
+<td>International Securities Identification Number.</td>
+</tr>
+<tr>
+<td>CUSIP</td>
+<td>Committee on Uniform Securities Identification Procedures.  A unique ID used in the U.S and Canada.</td>
+</tr>
+<tr>
+<td>SEDOL</td>
+<td>Stock Exchange Daily Official List.  A seven digit identifier traded on the LSE and other small exchanges across the UK.</td>
+</tr>
+<tr>
+<td>Ticker</td>
+<td>The unique Ticker symbol.</td>
+</tr>
+<tr>
+<td>PermID</td>
+<td>A Permanent Identfier uniquely indentifying an asset.</td>
+</tr>
+<tr>
+<td>LipperID</td>
+<td>LSEG&#39;s Lipper ID.</td>
+</tr>
+<tr>
+<td>ANY</td>
+<td>Any of the defined symbol types.  Note: Only supported when using the full service.</td>
+</tr>
+</tbody></table>
+<h3 id="symbolconversiondefinition-methods">SymbolConversionDefinition Methods</h3>
+<p><strong>Symbols(params string[] symbols)</strong><br>
+<strong>Symbols(IEnumerable<string> symbols)</strong><br>
+Define a list of symbols to convert.</p>
+<p><strong>FromSymbolType(SymbolConversion.SymbolType type)</strong><br>
+Defines the type of symbols specified within the Symbol specification.<br>  Optional.  Default: SymbolType.ANY.</p>
+<p><strong>ToSymbolType(params SymbolConversion.SymbolType[] types)</strong><br>
+<strong>ToSymbolType(IEnumerable&lt;SymbolConversion.SymbolType&gt; types)</strong><br>
+Defines the types to convert to.  Optional.  Default: All SymbolTypes.</p>
+<p><strong>Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface. The extended params act as a fallback in case properties are unavailable, or as an alternative for users that prefer to define the request using native JSON definitions.  Optional.</p>
+<p><strong>Properties { get; }</strong><br>
+Gets the <code>ISymbolConvertDefinitionParams</code> describing the values within the defined request (<code>Symbols</code>, <code>FromSymbolType</code>, <code>ToSymbolType</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>ISymbolConversionResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>ISymbolConversionResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>ISymbolConversionResponse GetData(Action&lt;ISymbolConversionResponse, ISymbolConvertDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>ISymbolConversionResponse GetData(ISession session, Action&lt;ISymbolConversionResponse, ISymbolConvertDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Synchronously retrieve the conversion results from the backend service.</p>
+<p><strong>Task&lt;ISymbolConversionResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ISymbolConversionResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ISymbolConversionResponse&gt; GetDataAsync(Action&lt;ISymbolConversionResponse, ISymbolConvertDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ISymbolConversionResponse&gt; GetDataAsync(ISession session, Action&lt;ISymbolConversionResponse, ISymbolConvertDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the conversion results from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>ISymbolConversionDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>ISymbolConversionResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>ISymbolConversionData</strong> type.</p>
+<h3 id="isymbolconversiondata---properties">ISymbolConversionData - properties</h3>
+<p>IDictionary&lt;string, ISymbolConversionMatches&gt; Matches { get; }<br>
+DataTable Table { get; }<br>
+IList&lt;string&gt; Warnings { get; }<br>
+JObject Raw { get; }<br></p>
+<p>Each entry in <strong>Matches</strong> is an <strong>ISymbolConversionMatches</strong> whose properties are named after the symbol types listed above. If the instrument has a value for a given symbol type, the corresponding property is populated.</p>
+<h3 id="isymbolconversionmatches---properties">ISymbolConversionMatches - properties</h3>
+<p>string Description { get; }<br>
+string RIC { get; }<br>
+string CUSIP { get; }<br>
+string ISIN { get; }<br>
+string SEDOL { get; }<br>
+string PermID { get; }<br>
+string LipperID { get; }<br>
+string Ticker { get; }<br></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates several use cases for symbol conversion.</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.Symbology;
+using LSEG.Data.Core;
+
+ // RIC conversion
+ var response = SymbolConversion
+    .Definition()
+    .Symbols(&quot;IBM&quot;, &quot;AAPL.O&quot;, &quot;GOOGL.O&quot;, &quot;LP60000008&quot;)
+    .FromSymbolType(SymbolConversion.SymbolType.RIC)
+    .GetData();
+
+ // PermID for private company.  
+ // Note: data is available within Eikon but not within Search Lookup (RDP)
+ var missingID = &quot;5050720719&quot;;
+ response = SymbolConversion
+    .Definition(missingID)
+    .FromSymbolType(SymbolConversion.SymbolType.PermID)
+    .GetData();
+
+ // ISINs - convert to all known symbol types
+ response = SymbolConversion
+    .Definition(&quot;US5949181045&quot;, &quot;US02079K1079&quot;)
+    .FromSymbolType(SymbolConversion.SymbolType.ISIN)
+    .GetData();
+
+ // ISINs - convert to RIC and Ticker only.  Include 1 bad ISIN.
+ var symbols = new List&lt;string&gt;() { &quot;US5949181045&quot;, &quot;JUNK&quot;, &quot;US02079K1079&quot; };
+ response = SymbolConversion
+    .Definition()
+    .Symbols(symbols)
+    .FromSymbolType(SymbolConversion.SymbolType.ISIN)
+    .ToSymbolType(SymbolConversion.SymbolType.RIC, SymbolConversion.SymbolType.Ticker)
+    .GetData();
+
+ // SEDOL - convert to all known
+ response = SymbolConversion
+    .Definition(&quot;BH4HKS3&quot;)
+    .FromSymbolType(SymbolConversion.SymbolType.SEDOL)
+    .GetData();
+
+ // Detect the mixed asset list.
+ response = SymbolConversion
+    .Definition(&quot;VOD.L&quot;, &quot;037833100&quot;, &quot;IBM&quot;, &quot;US5949181045&quot;, &quot;5030853586&quot;)
+    .GetData();
+</code></pre>
+<h4 id="the-responses-retrieved-also-contain-the-raw-json-data-">The responses retrieved also contain the raw JSON data. <br></h4>
+<p>You can explore and create your own objects and map the retrieved data to them to fit your specific business needs.</p>

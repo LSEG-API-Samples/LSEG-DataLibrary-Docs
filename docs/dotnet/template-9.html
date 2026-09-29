@@ -1,0 +1,36 @@
+<h1 id="esguniverse-object">ESG.Universe object</h1>
+<p><strong>Universe</strong> provides access to the full universe of organizations, with relevant identifiers, that currently have ESG coverage.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Universe.Definition()</code></p>
+<h3 id="universedefinition-methods">UniverseDefinition Methods</h3>
+<p><strong>IUniverseDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IUniverseDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>IUniverseDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, IUniverseDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, IUniverseDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, IUniverseDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, IUniverseDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IUniverseDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IDataSetResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IDataSet</strong> type.</p>
+<h3 id="idataset---properties">IDataSet - properties</h3>
+<p>JToken Raw { get; }<br>
+DataTable Table { get; }<br>
+IList&lt;IDataSetRecord&gt; Records { get; }<br>
+JToken Errors { get; }<br>
+bool IsEmpty { get; }<br></p>
+<h3 id="usage">Usage</h3>
+<pre><code class="language-csharp">using LSEG.Data.Content.ESG;
+
+var response = Universe.Definition().GetData();
+</code></pre>

@@ -1,0 +1,106 @@
+<h1 id="desktopsession">DesktopSession</h1>
+<p>The <code>DesktopSession</code> connects to the platform through <strong>LSEG Eikon</strong> or <strong>LSEG Workspace</strong> running on the same machine as your application. Each application connecting to the desktop must include an application key. The desktop provides a means to retrieve content from the LSEG Data Platform.</p>
+<p>This session type does <strong>not</strong> work with Eikon Web or Workspace for Web. For a connection that does not host the full desktop application, see <a href="#/sections/session-layer/desktop-direct-session">DesktopDirectSession</a>; to connect directly to the platform, see <a href="#/sections/session-layer/platform-session">PlatformSession</a>.</p>
+<p>The types on this page live in the <code>LSEG.Data.Core</code> namespace.</p>
+<h3 id="entry-points">Entry points</h3>
+<p>The <code>DesktopSession</code> class exposes a <code>Definition(...)</code> factory that returns an <code>IDesktopSessionDefinition</code> fluent builder; the builder&#39;s <code>GetSession()</code> method finalises the request and returns an <code>ISession</code>.</p>
+<p><strong>DesktopSession.Definition(string sessionName = default)</strong><br>
+<strong>DesktopSession.Definition(Stream stream, string resourceName = default)</strong><br>
+<strong>DesktopSession.Definition(JObject config)</strong><br>
+<strong>DesktopSession.Definition(string sessionName, Stream stream, string resourceName = default)</strong><br>
+<strong>DesktopSession.Definition(string sessionName, JObject config)</strong><br>
+Define a Desktop Session request. When <code>sessionName</code> is omitted, the <code>sessions.desktop.default</code> entry from the configuration is used.</p>
+<h3 id="idesktopsessiondefinition-members">IDesktopSessionDefinition members</h3>
+<p><code>IDesktopSessionDefinition</code> is the fluent builder returned by <code>Definition(...)</code>. Each setter returns the builder for chaining; <code>GetSession()</code> (inherited from <code>ISessionDefinition</code>) produces the <code>ISession</code>.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>IDesktopSessionDefinition AppKey(string appKey)</code></td>
+<td>method</td>
+<td>Desktop Application key necessary to authenticate the specific application with the session. Required.</td>
+</tr>
+<tr>
+<td><code>IDesktopSessionDefinition AppName(string appName)</code></td>
+<td>method</td>
+<td>Application name defined by the user and used for request-tracking purposes. Required.</td>
+</tr>
+<tr>
+<td><code>IDesktopSessionDefinition Port(IEnumerable&lt;string&gt; ports)</code></td>
+<td>method</td>
+<td>Optional Desktop Proxy ports. Default: value extracted from <code>.portInUse</code>.</td>
+</tr>
+<tr>
+<td><code>IDesktopSessionDefinition Port(params int[] ports)</code></td>
+<td>method</td>
+<td>Optional Desktop Proxy ports. Default: value extracted from <code>.portInUse</code>.</td>
+</tr>
+</tbody></table>
+<h3 id="idesktopsessiondefinitionparams-members">IDesktopSessionDefinitionParams members</h3>
+<p><code>IDesktopSessionDefinitionParams</code> exposes the read-only view of the parameters defined for the session (retrieved via <code>IDesktopSession.Definition</code>).</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>string AppKey</code></td>
+<td>property</td>
+<td>Desktop Application key necessary to authenticate the specific application with the session.</td>
+</tr>
+<tr>
+<td><code>string AppName</code></td>
+<td>property</td>
+<td>Application name defined by the user in the case of human-friendly request tracking.</td>
+</tr>
+<tr>
+<td><code>int[] Ports</code></td>
+<td>property</td>
+<td>Specified Desktop Proxy ports via interface or configuration. If no value is defined upon definition, the value is set when the session is opened.</td>
+</tr>
+</tbody></table>
+<h3 id="idesktopsession-members">IDesktopSession members</h3>
+<p><code>IDesktopSession</code> is the desktop-specific session interface. It extends the common <code>ISession</code> interface (see <a href="#/sections/session-layer/session">Sessions</a> for <code>Open</code>, <code>OpenAsync</code>, <code>Close</code>, <code>OnState</code>, <code>OnEvent</code>, and the state/event members) with the following:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>IDesktopSession OnStreamingEndpoint(Action&lt;string, IList&lt;IStreamingEndpoint&gt;, ISession&gt; cb)</code></td>
+<td>method</td>
+<td>Optional callback invoked to report all the desktop streaming endpoints.</td>
+</tr>
+<tr>
+<td><code>IDesktopSessionDefinitionParams Definition</code></td>
+<td>property</td>
+<td>Retrieve the parameters defined for the Desktop Session.</td>
+</tr>
+</tbody></table>
+<h3 id="example">Example</h3>
+<p><strong>Create a Desktop session in code:</strong></p>
+<pre><code class="language-csharp">using LSEG.Data.Core;
+
+using (ISession session = DesktopSession.Definition()
+                                        .AppKey(&quot;&lt;your-app-key&gt;&quot;)
+                                        .AppName(&quot;MyApp&quot;)
+                                        .GetSession())
+{
+    if (session.Open() == Session.State.Opened)
+    {
+        // Use the session with Content or Delivery layer objects
+    }
+}
+</code></pre>
+<!-- Example validation: not executed - requires desktop environment (Eikon / Workspace running locally). -->

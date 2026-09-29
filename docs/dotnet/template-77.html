@@ -1,0 +1,39 @@
+<h1 id="news-images">News Images</h1>
+<p>News Images can be retrieved using an image ID, typically found within News Online Reports or Top News Headlines content.</p>
+<pre><code class="language-csharp">IImageResponse response = Image.Definition(imageId).GetData();
+
+byte[] imageBytes = response.Data.Image;
+</code></pre>
+<h3 id="syntax">Syntax</h3>
+<p><code>Image.Definition()</code><br>
+<code>Image.Definition(string imageId)</code></p>
+<h3 id="imagedefinition-methods">ImageDefinition Methods</h3>
+<p><strong>IImageDefinition ImageId(string imageId)</strong><br>
+The ID of the image.  Required.</p>
+<p><strong>IImageDefinition ImageType(Image.ImageType type)</strong><br>
+Specify if we want the response to come back in an HTML format (<code>JSON</code>, <code>IMAGE</code>).  Optional.  Default: <code>JSON</code>.</p>
+<p><strong>IImageDefinition Rendition(string rendition)</strong><br>
+Specifies the rendition type for the image. For Online Reports only. Available values: <code>baseImage</code>, <code>filedImage</code>, <code>thumbnail</code>, <code>viewImage</code>.  Optional.</p>
+<p><strong>IImageDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IImageDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>IImageDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>ImageId</code>, <code>ImageType</code>, <code>Rendition</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IImageResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IImageResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IImageResponse GetData(Action&lt;IImageResponse, IImageDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IImageResponse GetData(ISession session, Action&lt;IImageResponse, IImageDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IImageResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IImageResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IImageResponse&gt; GetDataAsync(Action&lt;IImageResponse, IImageDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IImageResponse&gt; GetDataAsync(ISession session, Action&lt;IImageResponse, IImageDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IImageDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IImageResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IImageData</strong> type.</p>
+<h3 id="iimagedata---properties">IImageData - properties</h3>
+<p>byte[] Image { get; }<br>
+JToken Raw { get; }<br></p>

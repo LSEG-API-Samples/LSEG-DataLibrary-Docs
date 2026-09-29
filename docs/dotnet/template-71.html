@@ -1,0 +1,63 @@
+<h1 id="about-financial-contracts-swaption">About Financial Contracts Swaption</h1>
+<p>A <strong>Swaption</strong> is an instrument type that can be requested using the <strong>FinancialContracts</strong> definition. </p>
+<h3 id="syntax">Syntax</h3>
+<p><code>FinancialContracts.Definition(JObject swaptionRequest)</code></p>
+<h4 id="parameters">Parameters</h4>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th align="left"><strong>Data type</strong></th>
+<th><strong>Optional</strong></th>
+<th align="left"><strong>Default value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>swaptionRequest</td>
+<td>A JObject describing the requested instrument and its details.</td>
+<td align="left">JObject</td>
+<td>No</td>
+<td align="left">null</td>
+</tr>
+</tbody></table>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IFinancialContractsDefinition</code> object.</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create a <strong>FinancialContractsDefinition</strong> instance by providing a request object for <strong>Swaption</strong>:
+We will try to use as many options as possible in one example, but the request object can be modified to fit particular needs. </p>
+<pre><code class="language-csharp"> // Swaption
+var swaption = new JObject()
+{
+    [&quot;fields&quot;] = new JArray(&quot;InstrumentDescription&quot;, &quot;ValuationDate&quot;, &quot;ExpiryDate&quot;,
+                            &quot;OptionType&quot;, &quot;ExerciseStyle&quot;, &quot;NotionalAmount&quot;, &quot;ErrorMessage&quot;,
+                            &quot;NotionalCcy&quot;, &quot;SettlementType&quot;, &quot;SettlementCcy&quot;,
+                            &quot;Tenor&quot;, &quot;UnderlyingTenor&quot;, &quot;StrikePercent&quot;,
+                            &quot;MarketValueInDealCcy&quot;, &quot;PremiumPercent&quot;, &quot;ForwardPremiumInDealCcy&quot;,
+                            &quot;ImpliedVolatilityPercent&quot;, &quot;DeltaPercent&quot;, &quot;DeltaAmountInDealCcy&quot;,
+                            &quot;ThetaAmountInDealCcy&quot;, &quot;VegaAmountInDealCcy&quot;, &quot;GammaAmountInDealCcy&quot;,
+                            &quot;DiscountCurveName&quot;, &quot;ForwardCurveName&quot;),
+    [&quot;universe&quot;] = new JArray(new JObject()
+    {
+        [&quot;instrumentType&quot;] = &quot;Swaption&quot;,
+        [&quot;instrumentDefinition&quot;] = new JObject()
+        {
+            [&quot;settlementType&quot;] = &quot;Cash&quot;,
+            [&quot;tenor&quot;] = &quot;7Y&quot;,
+            [&quot;strikePercent&quot;] = 2.75,
+            [&quot;buySell&quot;] = &quot;Buy&quot;,
+            [&quot;callPut&quot;] = &quot;Call&quot;,
+            [&quot;exerciseStyle&quot;] = &quot;BERM&quot;,
+            [&quot;bermudanSwaptionDefinition&quot;] = new JObject() { [&quot;exerciseScheduleType&quot;] = &quot;FloatLeg&quot; },
+            [&quot;underlyingDefinition&quot;] = new JObject()
+            {
+                [&quot;tenor&quot;] = &quot;3Y&quot;,
+                [&quot;template&quot;] = &quot;NOK_AB6O&quot;
+            }
+        },
+        [&quot;pricingParameters&quot;] = new JObject() { [&quot;valuationDate&quot;] = &quot;2020-04-24&quot; }
+    })
+};
+
+var swaptionData = FinancialContracts.Definition(swaption).GetData();
+</code></pre>

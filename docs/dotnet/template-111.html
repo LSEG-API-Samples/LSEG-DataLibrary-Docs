@@ -1,0 +1,18 @@
+<h1 id="streaming">Streaming</h1>
+<p>Specify whether the stream will retrieve the initial data followed by inserts and updates.  <br>
+A value of <strong>false</strong> implies no streaming and that only the initial data will be delivered. This is commonly referred to as a <strong>snapshot</strong>.<br>
+A value of <strong>true</strong> implies that there will be streaming updates incoming on the <strong>OnRefresh</strong> and <strong>OnUpdate</strong> callbacks. </p>
+<p>The default is <strong>true</strong>. </p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IPricingStream Streaming(bool streaming)</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to disable streaming updates for a pricing stream.</p>
+<pre><code class="language-csharp">var snapshotStream = Pricing.Definition(&quot;CAD=&quot;)
+                            .Fields(&quot;BID&quot;, &quot;ASK&quot;, &quot;DSPLY_NAME&quot;)
+                            .GetStream()
+                            .Streaming(false);
+
+snapshotStream.Open();
+
+var result = snapshotStream[&quot;CAD=&quot;];
+</code></pre>

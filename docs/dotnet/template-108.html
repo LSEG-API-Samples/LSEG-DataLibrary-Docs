@@ -1,0 +1,14 @@
+<h1 id="onupdate">OnUpdate</h1>
+<p>Optional callback invoked upon receiving an Update message containing the fields.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IPricingStream OnUpdate(Action&lt;string, JObject, IPricingStream&gt; cb)</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to display messages received when the stream is updated</p>
+<pre><code class="language-csharp">
+var stream = Pricing.Definition().Universe(&quot;EUR=&quot;)
+                                 .Fields(&quot;BID&quot;, &quot;ASK&quot;, &quot;DSPLY_NAME&quot;)
+                                 .GetStream();
+                                 
+stream.OnUpdate((item, update, s) =&gt; Console.WriteLine($&quot;Update for item {item}: {update[&quot;Fields&quot;][&quot;DSPLY_NAME&quot;]}&quot;))
+      .Open() == Stream.State.Opened
+</code></pre>

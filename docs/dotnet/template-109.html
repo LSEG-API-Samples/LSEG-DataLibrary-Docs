@@ -1,0 +1,14 @@
+<h1 id="open">Open</h1>
+<p>Allows you to open the Pricing connection by sending corresponding requests for all requested instruments.
+It will be opened once all the requested instruments are received either a <a href="../events.md">Refresh</a> or a <a href="../events.md">Status</a> event.
+Then the <strong>Pricing.Stream</strong> can be used in order to retrieve data.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Stream.State Open(CancellationToken cancellationToken = default)</code></p>
+<h3 id="returned-value">Returned value</h3>
+<p>A <code>Stream.State</code> value indicating if the stream opened. </p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create and open a pricing stream.</p>
+<pre><code class="language-csharp">var stream = Pricing.Definition(&quot;EUR=&quot;).GetStream();
+
+var streamState = stream.Open();
+</code></pre>

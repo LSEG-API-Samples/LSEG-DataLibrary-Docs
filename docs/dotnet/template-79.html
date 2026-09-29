@@ -1,0 +1,88 @@
+<h1 id="machine-readable-news-mrn-definition">Machine Readable News (MRN) Definition</h1>
+<p>Using this definition, we can retrieve real-time news headlines, stories, news analytics about companies and their assets and macroeconomic events. Machine Readable News data is retrieved using streams. The streams can be setup with callbacks for different events like incoming data (stream inserts or updates), the stream status and in case any errors are encountered. </p>
+<pre><code class="language-csharp">    var definition = MachineReadableNews.Definition();
+
+    // Set the datafeed then retrieve a streaming object.
+    using (var stream = definition.NewsDatafeed(feed).GetStream())
+    {
+        // A token can be provided to end the ongoing task after a certain period
+        var tokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        
+        // Define our real-time processing then open the stream...
+        stream
+            .OnError((err, s) =&gt; { })
+            .OnStatus((status, s) =&gt; { })
+            .OnNewsStory((newsItem, s) =&gt; { })
+            .OnNewsAnalyticsAssets((newsItem, s) =&gt; { })
+            .OnNewsAnalyticsEvents((newsItem, s) =&gt; { })
+            .Open(tokenSource.Token);
+
+        Console.ReadLine();
+    } 
+</code></pre>
+<h3 id="syntax">Syntax</h3>
+<p><code>MachineReadableNews.Definition()</code></p>
+<h3 id="mrndefinition-methods">MRNDefinition Methods</h3>
+<p><strong>IMRNDefinition NewsDatafeed(MachineReadableNews.Datafeed dataFeed)</strong><br>
+<strong>IMRNDefinition NewsDatafeed(string dataFeed)</strong><br>
+The MRN data feed to subscribe to (<code>MRN_STORY</code>, <code>MRN_NA_ENT0</code>, <code>MRN_NA_DOC</code>).  Optional.  Default: <code>MRN_STORY</code> - headlines and news stories.</p>
+<p><strong>IMRNDefinition Service(string service)</strong><br>
+Override the default service used to manage the real-time streaming data.  Optional.  Default: defined within the streaming platform.</p>
+<p><strong>IMRNDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Define additional request properties, formed as defined within the WebSocket Request specifications, that will be merged with all other properties specified.  Optional.</p>
+<p><strong>IMRNDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Service</code>, <code>DataFeed</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IMRNStream GetStream()</strong><br>
+<strong>IMRNStream GetStream(ISession session)</strong><br>
+Retrieve a streaming interface to manage real-time updates for the specified data feed.</p>
+<h3 id="mrnstream-interface-methods">MRNStream Interface methods</h3>
+<p><strong>IMRNStream OnNewsStory(Action&lt;IMRNStoryData, IMRNStream&gt; newsCb)</strong><br>
+Callback invoked when a complete news story has been received from the MRN service.  Required.</p>
+<p><strong>IMRNStream OnNewsAnalyticsAssets(Action&lt;IMRNAnalyticsData, IMRNStream&gt; newsCb)</strong><br>
+Callback invoked when a complete News Analytics: Company and C&amp;E assets item has been received from the MRN service.  Required.</p>
+<p><strong>IMRNStream OnNewsAnalyticsEvents(Action&lt;IMRNAnalyticsData, IMRNStream&gt; newsCb)</strong><br>
+Callback invoked when a complete News Analytics: Macroeconomic News &amp; Events item has been received from the MRN service.  Required.</p>
+<p><strong>IMRNStream OnNewsGenericEvents(Action&lt;JObject, IMRNStream&gt; newsCb)</strong><br>
+Reserved for unknown datafeeds.  Required.</p>
+<p><strong>IMRNStream OnStatus(Action&lt;JObject, IMRNStream&gt; statusCb)</strong><br>
+Callback invoked when an EventCode event occurs on the MRN streaming service.  Required.</p>
+<p><strong>IMRNStream OnError(Action&lt;JObject, IMRNStream&gt; errorCb)</strong><br>
+Callback invoked if an error occurs resulting from the request.  Required.</p>
+<p><strong>IMRNDefinitionParams Definition { get; }</strong><br>
+Retrieve the parameters defined for the streaming request (see MRNDefinition Properties above).</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IMRNDefinition</code> object.</p>
+<h3 id="imrnstorydata---properties">IMRNStoryData - properties</h3>
+<p><code>IMRNStoryData</code> extends <code>INewsItem</code> (delivered via <code>OnNewsStory</code>):</p>
+<p>string NewsStory { get; }<br>
+NewsStoryType MsgType { get; }<br>
+NewsUrgencyType Urgency { get; }<br>
+string HeadlineTitle { get; }<br>
+IList&lt;string&gt; Sources { get; }<br>
+IList&lt;string&gt; Languages { get; }<br>
+IList&lt;string&gt; Subjects { get; }<br>
+IList&lt;string&gt; RICCodes { get; }<br>
+DateTime CreationDate { get; }<br>
+DateTime UpdateDate { get; }<br>
+JObject Raw { get; }<br></p>
+<p><code>NewsStoryType</code> values: <code>Unknown</code>, <code>Alert</code>, <code>FirstTake</code>, <code>SubsequentTake</code>, <code>Correction</code>, <code>Corrected</code>, <code>Update</code>, <code>Deletion</code>.</p>
+<h3 id="imrnanalyticsdata---properties">IMRNAnalyticsData - properties</h3>
+<p><code>IMRNAnalyticsData</code> extends <code>INewsItem</code> (delivered via <code>OnNewsAnalyticsAssets</code>/<code>OnNewsAnalyticsEvents</code>):</p>
+<p>IList&lt;INewsAssetScores&gt; Scores { get; }<br>
+NewsUrgencyType Urgency { get; }<br>
+string HeadlineTitle { get; }<br>
+IList&lt;string&gt; Sources { get; }<br>
+IList&lt;string&gt; Languages { get; }<br>
+IList&lt;string&gt; Subjects { get; }<br>
+IList&lt;string&gt; RICCodes { get; }<br>
+DateTime CreationDate { get; }<br>
+DateTime UpdateDate { get; }<br>
+JObject Raw { get; }<br></p>
+<p>Each entry in <strong>Scores</strong> is an <strong>INewsAssetScores</strong>:</p>
+<p>string AssetClass { get; }<br>
+string AssetName { get; }<br>
+double? Relevance { get; }<br>
+double? SentimentNegative { get; }<br>
+double? SentimentNeutral { get; }<br>
+double? SentimentPositive { get; }<br></p>

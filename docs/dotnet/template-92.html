@@ -1,0 +1,12 @@
+<h1 id="onupdate">OnUpdate</h1>
+<p>Optional callback invoked when an update has been applied to the chain. <br> 
+Updates typically occur when the order of link positions within the chain change due to market activity. <br>
+In some cases, new elements can be added or removed from the chain. Refer to OnAdd() and OnRemove() for more details.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IChainStream OnUpdate(Action&lt;int, string, string, IChainStream&gt; updateCb)</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to display the messages received when a constituent is updated in the stream.</p>
+<pre><code class="language-csharp">var chainStream = Chain.Definition(&quot;.AV.O&quot;)
+                       .GetStream()
+                       .OnUpdate((index, oldv, newv, stream) =&gt; {});
+</code></pre>

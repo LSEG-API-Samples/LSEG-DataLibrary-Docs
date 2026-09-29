@@ -1,0 +1,113 @@
+<h1 id="about-financial-contracts-bond">About Financial Contracts Bond</h1>
+<p>In this page we exemplify several ways of using bond definitions to retrieve bonds data.</p>
+<h4 id="syntax">Syntax</h4>
+<p><code>Bond.Definition(params string[] instrumentCodes)</code> <br>
+<code>Bond.PricingDefinition()</code> <br>
+<code>Bond.AmortizationItemDefinition(double amount)</code></p>
+<p><code>IBondDefinition</code> exposes a large set of fluent methods to describe every aspect of a bond contract (instrument identification, dates, coupon/rate details, redemption, rounding, pricing parameters, etc.). The examples below demonstrate the most common patterns; the enumerations referenced by these methods are documented in the Related Links below.</p>
+<h4 id="retrieving-data">Retrieving data</h4>
+<p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, IBondDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, IBondDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, IBondDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, IBondDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<p><strong>IBondDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request.</p>
+<h4 id="returned-value">Returned value</h4>
+<p><code>IBondDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IDataSetResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IDataSet</strong> type (<code>Raw</code>, <code>Table</code>, <code>Records</code>, <code>Errors</code>, <code>IsEmpty</code> - see <a href="#/sections/content-layer/ipa/financial-contracts/definition">FinancialContracts.Definition</a>).</p>
+<h4 id="bond-helper-builders">Bond helper builders</h4>
+<p><strong>Bond.PricingDefinition()</strong> returns a <strong>Bond.IPricingDefinition</strong> (properties: <strong>Bond.IPricingRequestParams</strong>), passed to <code>PricingParams()</code> above. It exposes a large set of fluent methods controlling bond pricing calculations - e.g. <code>MarketValueInDealCcy</code>, <code>MarketValueInReportCcy</code>, <code>ProjectedIndexCalculationMethod</code>, <code>ComputeCashFlowFromIssueDate</code>, <code>ComputeCashFlowWithReportCcy</code>, <code>AdjustedCleanPrice</code>, <code>AdjustedDirtyPrice</code>, and more, mirroring the <a href="#/sections/content-layer/ipa/financial-contracts/bond/redemption-date-type">Redemption Date Type</a>, <a href="#/sections/content-layer/ipa/financial-contracts/bond/projected-index-calculation-method">Projected Index Calculation Method</a> and other Related Links enumerations below.</p>
+<p><strong>Bond.AmortizationItemDefinition(double amount)</strong> returns a <strong>Bond.IAmortizationItemDefinition</strong> (properties: <strong>Bond.IAmortizationItemRequestParams</strong>), passed to a bond&#39;s amortization schedule.<br>
+<code>AmortizationFrequency</code>, <code>AmortizationType</code>, <code>StartDate</code>, <code>EndDate</code>, <code>RemainingNotional</code>, <code>Amount</code>.</p>
+<h4 id="usage">Usage</h4>
+<p>The following examples demonstrate how to create various definitions for <strong>Bond</strong> financial contracts: </p>
+<ol>
+<li>A definition for a single bond with defaults </li>
+</ol>
+<pre><code class="language-csharp">using LSEG.Data.Content.IPA;
+
+var data = Bond.Definition(&quot;US10YT=RR&quot;).GetData();
+</code></pre>
+<ol>
+<li> A definition for multiple bond instruments, requesting a subset out of all available fields. </li>
+</ol>
+<pre><code class="language-csharp">using LSEG.Data.Content.IPA;
+
+var data = Bond.Definition(&quot;US10YT=RR&quot;, &quot;US20YT=RR&quot;)
+               .Fields(&quot;InstrumentCode&quot;, &quot;BondType&quot;, &quot;EndDate&quot;, &quot;CouponRatePercent&quot;)
+               .GetData();
+</code></pre>
+<ol start="3">
+<li>A definition for a single bond using various property methods.</li>
+</ol>
+<p>Some of these property methods require enumeration values as parameters.
+The enumeration types used by the property methods are described in the related pages below. </p>
+<pre><code class="language-csharp">using LSEG.Data.Content.IPA;
+
+var data = Bond.Definition().InstrumentCode(&quot;US10YT=RR&quot;)
+                            .IssueDate(&quot;2002-02-28&quot;)
+                            .EndDate(&quot;2032-02-28&quot;)
+                            .NotionalCcy(&quot;USD&quot;)
+                            .InterestPaymentFrequency(Bond.IndexFrequency.Annual)
+                            .FixedRatePercent(7)
+                            .InterestCalculationMethod(Bond.DayCountMethods.Dcb_30_Actual)
+                            .PricingParams(Bond.PricingDefinition().CleanPrice(102))
+                            .Fields(&quot;InstrumentDescription&quot;, &quot;InstrumentCode&quot;, &quot;BondType&quot;, &quot;RIC&quot;,
+                                    &quot;Isin&quot;, &quot;Ticker&quot;, &quot;Cusip&quot;, &quot;IssuePrice&quot;, &quot;CouponRatePercent&quot;,
+                                    &quot;CouponType&quot;, &quot;CouponTypeDescription&quot;)
+                            .GetData();
+</code></pre>
+<ol start="4">
+<li>An example of an invalid bond, where the instrument name can be invalid or unknown </li>
+</ol>
+<pre><code class="language-csharp">using LSEG.Data.Content.IPA;
+
+var data = Bond.Definition(&quot;JUNK&quot;)
+               .Fields(&quot;InstrumentCode&quot;, &quot;BondType&quot;, &quot;EndDate&quot;, &quot;CouponRatePercent&quot;)
+               .GetData();
+</code></pre>
+<ol start="5">
+<li>A definition for a single bond using <strong>extended parameters</strong> to apply a single parameter </li>
+</ol>
+<p>An equivalent would be to use a Bond defition method like the following: </p>
+<p>&quot; .PricingParams(Bond.PricingDefinition().BenchmarkAtIssueYieldPercent(44)) &quot;</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.IPA;
+
+var data = Bond.Definition(&quot;US10YT=RR&quot;).Fields(&quot;InstrumentCode&quot;, &quot;BondType&quot;, &quot;EndDate&quot;)
+                                       .ExtendedParams(new JObject()
+                                       {
+                                           [&quot;pricingParameters&quot;] = new JObject()
+                                           {
+                                               [&quot;benchmarkAtIssueYieldPercent&quot;] = 44
+                                           }
+                                       })
+                                       .GetData();
+</code></pre>
+<h3 id="related-links">Related Links</h3>
+<ul>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/bond-adjustment">Adjustment</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/ammortization">Ammortization</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/benchmark-yield-selection-mode">Benchmark Yield</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/business-day-methods">Business Day Methods</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/compounding-method">Compounding Methods</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/date-rolling">Date Rolling</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/day-count-methods">Day Count Methods</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/direction">Direction</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/fallback-logic">Fallback Logic</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/index-frequency">Index Frequency</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/interest-type">Interest Type</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/price-side">Price Side</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/projected-index-calculation-method">Projected Index Calculation Method</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/redemption-date-type">Redemption Date Type</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/rounding-type">Rounding Type</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/rounding">Rounding</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/stub-rules">Stub Rules</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/yield-type">Yield Type</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/output">Output</a></li>
+</ul>

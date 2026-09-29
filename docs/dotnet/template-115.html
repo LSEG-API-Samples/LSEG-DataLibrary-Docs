@@ -1,0 +1,92 @@
+<h1 id="lookupdefinition">LookupDefinition</h1>
+<p> The lookup service is a convenient, reasonably efficient way to find a single best match for each of a list of symbol terms in a given symbology.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>ILookupDefinition Definition(string terms) =&gt; new LookupDefinition(terms)</code><br>
+<code>ILookupDefinition Definition() =&gt; new LookupDefinition()</code></p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>ILookupDefinition</code> object.</p>
+<h3 id="lookupdefinition-methods">LookupDefinition Methods</h3>
+<p><strong>ILookupDefinition View(Search.View view)</strong><br>
+The supported View to search against the full service.<br>
+The view parameter is optional. Default: Search.LightView.SearchAllLight</p>
+<p><strong>ILookupDefinition View(Search.LightView view)</strong><br>
+The supported View to search against the light service.<br>
+The view parameter is optional. Default: Search.LightView.SearchAllLight</p>
+<p> <strong>ILookupDefinition Terms(string terms)</strong><br>
+ A string of terms defining the symbols to be resolved.</p>
+<p> <strong>ILookupDefinition Scope(string scope)</strong><br>
+ Identifies the symbology which Terms belong to.<br>
+ Optional.  Default: &quot;_AllUnique&quot; (full service), &quot;RIC&quot; (light service)</p>
+<p> <strong>ILookupDefinition Select(string select)</strong><br>
+ A comma-separated list of the properties of a document to be returned in the response.<br>
+ Optional.  Default: &#39;_&#39; (same as main Search service)</p>
+<p> <strong>ILookupDefinition Filter(string filter)</strong><br>
+ Filter values are boolean predicate expressions to be applied to documents.  Required.</p>
+<p> <strong>ILookupDefinition Boost(string boost)</strong><br>
+ Boost applies a scoring boost to  matched documents, which will almost always guarantee that they appear at the top of the results.  <br>
+ Boost supports exactly the same predicate expression syntax as Filter, except Filter restricts which documents are matched.</p>
+<p> <strong>ILookupDefinition Closure(object closure)</strong><br>
+ Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p> <strong>ILookupDefinition ExtendedParams(JObject extendedParams)</strong><br>
+ Apply any properties that are not available within this request interface. The extended params act as a fallback in case properties are unavailable, or as an alternative for users that prefer to define the request using native JSON definitions.  Optional.</p>
+<p> <strong>ILookupDefinitionParams Properties { get; }</strong><br>
+ Gets the properties describing the values within the defined request (<code>View</code>, <code>LightView</code>, <code>Terms</code>, <code>Scope</code>, <code>Select</code>, <code>Filter</code>, <code>Boost</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>ILookupResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>ILookupResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>ILookupResponse GetData(Action&lt;ILookupResponse, ILookupDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>ILookupResponse GetData(ISession session, Action&lt;ILookupResponse, ILookupDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Synchronously retrieve the lookup results from the backend service.</p>
+<p><strong>Task&lt;ILookupResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ILookupResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ILookupResponse&gt; GetDataAsync(Action&lt;ILookupResponse, ILookupDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ILookupResponse&gt; GetDataAsync(ISession session, Action&lt;ILookupResponse, ILookupDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the lookup results from the backend service.</p>
+<h3 id="response">Response</h3>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>ILookupResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>ILookupData</strong> type.</p>
+<h3 id="ilookupdata---properties">ILookupData - properties</h3>
+<p>IDictionary&lt;string, JObject&gt; Matches { get; }<br>
+DataTable Table { get; }<br>
+IList&lt;string&gt; Warnings { get; }<br>
+JObject Raw { get; }<br></p>
+<h3 id="usage">Usage</h3>
+<p>Below we have a provided a code snippet containing several search cases</p>
+<pre><code class="language-csharp">// RICs - convert to all known symbol types using default output
+var lookup = Lookup.Definition()
+                    .View(Search.View.SearchAll)
+                    .Terms(&quot;VOD.L,037833100,IBM,US5949181045&quot;)
+                    .GetData();
+
+// RICs - convert to all known symbol types using targeted output
+lookup = Lookup.Definition()
+               .View(Search.View.SearchAll)
+               .Terms(&quot;VOD.L,037833100,IBM,US5949181045&quot;)
+               .Select(&quot;DocumentTitle, CUSIP, SEDOL, RIC, TickerSymbol, IssueISIN, IssuerOAPermID, FundClassLipperID&quot;)
+               .GetData();
+
+// RICs - convert RICs with default output
+lookup = Lookup.Definition()
+               .Terms(&quot;VOD.L,AAPL.O,IBM,MSFT.O&quot;)
+               .Scope(&quot;RIC&quot;)
+               .GetData();
+
+// RICs - convert to all known symbol types using targeted output
+lookup = Lookup.Definition()
+               .Terms(&quot;VOD.L,AAPL.O,IBM,MSFT.O&quot;)
+               .Scope(&quot;RIC&quot;)
+               .Select(&quot;DocumentTitle,CUSIP,SEDOL,RIC,TickerSymbol,IssueISIN,IssuerOAPermID,FundClassLipperID&quot;)
+               .GetData();
+
+// CUSIPs - convert to all known symbol types using targeted output
+lookup = Lookup.Definition()
+               .Terms(&quot;037833100,459200101,594918104&quot;)
+               .Scope(&quot;CUSIP&quot;)
+               .Select(&quot;DocumentTitle,SEDOL,RIC,TickerSymbol,IssueISIN,IssuerOAPermID,FundClassLipperID&quot;)
+               .GetData();
+
+// Invalid request - Scope must be defined
+lookup = Lookup.Definition()
+               .Terms(&quot;037833100,459200101,594918104&quot;)
+               .Select(&quot;DocumentTitle,SEDOL,RIC,TickerSymbol,IssueISIN,IssuerOAPermID,FundClassLipperID&quot;)
+               .GetData();
+</code></pre>

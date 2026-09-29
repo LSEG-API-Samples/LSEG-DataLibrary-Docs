@@ -1,0 +1,73 @@
+<h1 id="metadata">MetaData</h1>
+<p>The Metadata interface supports the Search service by providing the available properties defined within the data universe.<br>
+Metadata returns a list of properties, based on the specified view, that outlines specific capabilities for each.<br>
+The capabilities are relevant when choosing specific search parameters such as selecting, filtering, naviagating, grouping, etc.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IMetaDataDefinition Definition(Search.ExploreView view = Search.ExploreView.Entities)</code><br>
+<code>IMetaDataDefinition Definition(Search.View view)</code><br>
+<code>IMetaDataDefinition Definition(Search.LightView view)</code></p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IMetaDataDefinition</code> object.</p>
+<h3 id="metadatadefinition-methods">MetaDataDefinition Methods</h3>
+<p><strong>IMetaDataDefinition View(Search.ExploreView view)</strong><br>
+The supported View to search against the explore services.<br>
+The view is optional. Default: Search.ExploreView.Entities.</p>
+<p><strong>IMetaDataDefinition View(Search.View view)</strong><br>
+The supported View to search against the full services.<br>
+The view is optional. Default: Search.ExploreView.Entities.</p>
+<p><strong>IMetaDataDefinition View(Search.LightView view)</strong><br>
+The supported View to search against the light service.<br>
+The view is optional. Default: Search.ExploreView.Entities.</p>
+<p><strong>IMetaDataDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IMetaDataDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface. The extended params act as a fallback in case properties are unavailable, or as an alternative for users that prefer to define the request using native JSON definitions.  Optional.</p>
+<p><strong>IMetaDataDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>View</code>, <code>LightView</code>, <code>ExploreView</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IMetaDataResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IMetaDataResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IMetaDataResponse GetData(Action&lt;IMetaDataResponse, IMetaDataDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IMetaDataResponse GetData(ISession session, Action&lt;IMetaDataResponse, IMetaDataDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Synchronously retrieve the metadata from the backend service.</p>
+<p><strong>Task&lt;IMetaDataResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IMetaDataResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IMetaDataResponse&gt; GetDataAsync(Action&lt;IMetaDataResponse, IMetaDataDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IMetaDataResponse&gt; GetDataAsync(ISession session, Action&lt;IMetaDataResponse, IMetaDataDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the metadata from the backend service.</p>
+<h3 id="response">Response</h3>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IMetaDataResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IMetaDataProperties</strong> type.</p>
+<h3 id="imetadataproperties---properties">IMetaDataProperties - properties</h3>
+<p>DataTable Table { get; }<br>
+JObject Raw { get; }<br></p>
+<h3 id="usage">Usage</h3>
+<p>Below we have a provided a code snippet containing several search cases</p>
+<pre><code class="language-csharp">// Get government corporation instrument metadata and select some specific table data
+var response = MetaData.Definition(Search.View.GovCorpInstruments).GetData();
+if (response.IsSuccess)
+{
+    var table = response.Data.Table;
+
+    // Search for a specific property
+    var result = table.Select(&quot;Property = &#39;RCSAssetCategory&#39;&quot;);
+    Console.WriteLine($&quot;Property {result[0][&quot;Property&quot;]}:&quot;);
+    Console.WriteLine($&quot;Navigable: {result[0][&quot;Navigable&quot;]}&quot;);
+    Console.WriteLine($&quot;Sortable: {result[0][&quot;Sortable&quot;]}&quot;);
+
+    result = table.Select(&quot;Property = &#39;RCSCountryGenealogy&#39;&quot;);  
+    Console.WriteLine($&quot;Property {result[0][&quot;Property&quot;]}:&quot;);
+    Console.WriteLine($&quot;Navigable: {result[0][&quot;Navigable&quot;]}&quot;);
+    Console.WriteLine($&quot;Sortable: {result[0][&quot;Sortable&quot;]}&quot;);  
+
+    result = table.Select(&quot;Property = &#39;SPsRatingsScope.CurrentRatingRank&#39;&quot;);
+    Console.WriteLine($&quot;Property {result[0][&quot;Property&quot;]}:&quot;);
+    Console.WriteLine($&quot;Navigable: {result[0][&quot;Navigable&quot;]}&quot;);
+    Console.WriteLine($&quot;Sortable: {result[0][&quot;Sortable&quot;]}&quot;);
+
+    // Search for a specific nested property and all its sub properties
+    result = table.Select(&quot;Property LIKE &#39;RatingsScope.*&#39;&quot;);
+ }
+
+ // Do a similar search using a light view 
+var response2 = MetaData.Definition(Search.LightView.GovCorpInstruments).GetData();
+</code></pre>

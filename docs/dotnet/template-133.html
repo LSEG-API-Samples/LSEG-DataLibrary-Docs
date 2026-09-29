@@ -1,0 +1,107 @@
+<h1 id="about-metadatacache">About MetadataCache</h1>
+<p><strong>MetadataCache</strong> loads and caches metadata (shared dictionaries, global metadata, and per-instrument metadata) so subsequent stream opens skip the metadata HTTP round-trip.</p>
+<p>Non-instrument (&quot;singleton&quot;) metadata types are accessed through their dedicated accessor (<code>FidDictionary</code>, <code>EnumDictionary</code>, <code>ConsolidatedFields</code>, <code>GlobalMetadata</code>), each an <strong>ISingletonMetadataCache</strong>. Per-instrument metadata is accessed through the <strong>InstrumentMetadata</strong> accessor, an <strong>IInstrumentMetadataCache</strong>.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>MetadataCache.FidDictionary</code><br>
+<code>MetadataCache.EnumDictionary</code><br>
+<code>MetadataCache.ConsolidatedFields</code><br>
+<code>MetadataCache.GlobalMetadata</code><br>
+<code>MetadataCache.InstrumentMetadata</code></p>
+<h3 id="metadatacache-methods">MetadataCache Methods</h3>
+<p><strong>IMetadataCacheLoaderResponse Load(ISession session = null, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IMetadataCacheLoaderResponse&gt; LoadAsync(ISession session = null, CancellationToken cancellationToken = default)</strong><br>
+Loads all singleton metadata types (<code>FidDictionary</code>, <code>EnumDictionary</code>, <code>ConsolidatedFields</code>, <code>GlobalMetadata</code>) into the cache in one call. <code>InstrumentMetadata</code> is excluded - it has no ambient universe and must be loaded explicitly (see below).</p>
+<p><strong>void Clear()</strong><br>
+Removes all cached metadata (singleton and instrument).</p>
+<h3 id="isingletonmetadatacache-methods">ISingletonMetadataCache Methods</h3>
+<p>Each of <code>FidDictionary</code>, <code>EnumDictionary</code>, <code>ConsolidatedFields</code> and <code>GlobalMetadata</code> is an <strong>ISingletonMetadataCache</strong>:</p>
+<p><strong>IMetadataCacheLoaderResponse Load(ISession session = null, CancellationToken ct = default)</strong><br>
+<strong>Task&lt;IMetadataCacheLoaderResponse&gt; LoadAsync(ISession session = null, CancellationToken ct = default)</strong><br>
+Loads this metadata type into the cache.</p>
+<p><strong>IMetadataCacheData GetCacheSnapshot()</strong><br>
+Reads the cached snapshot for this metadata type without triggering a load. The payload is <code>null</code> when the type is not cached.</p>
+<p><strong>void Remove()</strong><br>
+Removes the cached entry for this metadata type.</p>
+<h3 id="iinstrumentmetadatacache-methods">IInstrumentMetadataCache Methods</h3>
+<p><strong>IInstrumentMetadataCacheDefinition Definition(params string[] items)</strong><br>
+<strong>IInstrumentMetadataCacheDefinition Definition(IEnumerable&lt;string&gt; items)</strong><br>
+<strong>IInstrumentMetadataCacheDefinition Definition()</strong><br>
+Creates a definition for the specified instrument metadata items. If created empty, populate the universe using <code>Universe()</code> on the returned definition, otherwise no items will be loaded.</p>
+<p><strong>IMetadataCacheData GetCacheSnapshot(string item)</strong><br>
+Gets the cached instrument metadata for the specified item, without triggering a load.</p>
+<p><strong>IReadOnlyList&lt;string&gt; GetCacheUniverse()</strong><br>
+Gets a list of all cached instrument metadata items.</p>
+<p><strong>void Remove(string item)</strong><br>
+Removes the cached instrument metadata for the specified item. Use this prior to reloading an instrument to ensure fresh data is fetched rather than using potentially stale cached data.</p>
+<p><strong>void Clear()</strong><br>
+Clears all cached instrument metadata entries.</p>
+<h3 id="iinstrumentmetadatacachedefinition-methods">IInstrumentMetadataCacheDefinition Methods</h3>
+<p><strong>IInstrumentMetadataCacheDefinition Universe(params string[] universe)</strong><br>
+<strong>IInstrumentMetadataCacheDefinition Universe(IEnumerable&lt;string&gt; universe)</strong><br>
+Sets the universe of instruments (e.g. RIC item names) whose metadata will be loaded. Replaces any universe set previously (a set, not an append).</p>
+<p><strong>IInstrumentMetadataCacheDefinition InstrumentMetadataTypes(params InstrumentMetadataTypes[] instrumentMetaTypes)</strong><br>
+<strong>IInstrumentMetadataCacheDefinition InstrumentMetadataTypes(IEnumerable&lt;InstrumentMetadataTypes&gt; instrumentMetaTypes)</strong><br>
+Overrides the default set of instrument metadata types to load for the specified universe (default: all types). Values: <code>MarketRulesData</code>, <code>Qualifiers</code>, <code>RuleReferenceData</code>, <code>TimeZone</code>, <code>TradingSessions</code>.</p>
+<p><strong>IMetadataCacheLoaderResponse Load(ISession session = null, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IMetadataCacheLoaderResponse&gt; LoadAsync(ISession session = null, CancellationToken cancellationToken = default)</strong><br>
+Loads all the registered metadata into the cache.</p>
+<p><strong>IInstrumentMetadataCacheDefinitionParams Properties { get; }</strong><br>
+The current request parameters, including the configured universe (<code>Universe</code>, <code>InstrumentMetadataTypes</code>).</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IMetadataCacheLoaderResponse</code> - the aggregate result of a metadata prefetch operation:</p>
+<p>bool IsSuccess { get; }<br>
+IReadOnlyList&lt;IMetadataCacheLoaderError&gt; Errors { get; }<br></p>
+<p>Each entry in <strong>Errors</strong> is an <strong>IMetadataCacheLoaderError</strong> (one per singleton type, or per instrument RIC, that failed):</p>
+<p>MetadataType MetadataType { get; }<br>
+string Item { get; }<br>
+string Error { get; }<br></p>
+<p><code>GetCacheSnapshot()</code> methods return an <strong>IMetadataCacheData</strong>:</p>
+<p>MetadataType MetadataType { get; }<br>
+string Item { get; }<br>
+JObject Data { get; }<br></p>
+<p><code>MetadataType</code> values: <code>FidDictionary</code>, <code>EnumDictionary</code>, <code>ConsolidatedFields</code>, <code>GlobalMetadata</code>, <code>InstrumentMetadata</code>.</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates loading, reading and removing both singleton and per-instrument metadata.</p>
+<pre><code class="language-csharp">using LSEG.Data.Core;
+using LSEG.Data.Metadata.Cache;
+using LSEG.Data.Metadata.Interfaces;
+
+ISession session = Sessions.GetSession();
+session.Open();
+
+// Load ALL singleton metadata types (FID dictionary, enum dictionary, consolidated fields, global metadata) in one call.
+var result = MetadataCache.Load();
+
+// Or load individual singleton types on demand.
+MetadataCache.GlobalMetadata.Load();
+MetadataCache.FidDictionary.Load();
+MetadataCache.EnumDictionary.Load();
+
+// Load instrument metadata for a universe. A bad RIC does not abort the others.
+var instrumentResult = MetadataCache.InstrumentMetadata
+    .Definition(&quot;AAPL.O&quot;, &quot;NVDA.O&quot;, &quot;invalid&quot;)
+    .Load();
+
+// A new universe replaces the previous one (it does not append).
+var instrumentResult2 = MetadataCache.InstrumentMetadata
+    .Definition()
+    .Universe(&quot;GOOGL.O&quot;)
+    .Load();
+
+// GetCacheSnapshot(...) NEVER hits the network - it returns what is cached.
+// Data is null when the item was never loaded (or failed).
+var globalSnapshot = MetadataCache.GlobalMetadata.GetCacheSnapshot();
+var aaplSnapshot = MetadataCache.InstrumentMetadata.GetCacheSnapshot(&quot;AAPL.O&quot;);
+
+// Removal is a pure cache operation.
+MetadataCache.InstrumentMetadata.Remove(&quot;NVDA.O&quot;);
+MetadataCache.FidDictionary.Remove();
+
+// Clear ALL instrument metadata at once.
+MetadataCache.InstrumentMetadata.Clear();
+
+// Clear everything.
+MetadataCache.Clear();
+
+session.Close();
+</code></pre>

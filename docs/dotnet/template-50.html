@@ -1,0 +1,105 @@
+<h1 id="about-financial-contracts-fxcross">About Financial Contracts FxCross</h1>
+<p>A <strong>FxCross</strong> is an instrument type that can be requested using the <strong>FinancialContracts</strong> definition. </p>
+<h3 id="syntax">Syntax</h3>
+<p><code>FinancialContracts.Definition(JObject fxCrossRequest)</code></p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th align="left"><strong>Data type</strong></th>
+<th><strong>Optional</strong></th>
+<th align="left"><strong>Default value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>fxCrossRequest</td>
+<td>An JObject describing the requested instrument and its details.</td>
+<td align="left">JObject</td>
+<td>No</td>
+<td align="left">null</td>
+</tr>
+</tbody></table>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IFinancialContractsDefinition</code> object.</p>
+<h3 id="usage">Usage</h3>
+<p>The following examples demonstrate how to create a <strong>FinancialContractsDefinition</strong> instance by providing a request object for <strong>FxCross</strong>:</p>
+<ol>
+<li>An example retrieving specific fields for <strong>FxSpot</strong> instrument type for <strong>USDAUD</strong> instrument code. <br>
+The universe instrumentType must be <strong>FxCross</strong> and the fxCrossType must be <strong>FxSpot</strong> to retrieve relevant data for this example.</li>
+</ol>
+<pre><code class="language-csharp"> var fxSpotRequest = new JObject()
+ {
+     [&quot;fields&quot;] = new JArray(&quot;FxSpot_BidMidAsk&quot;, &quot;Ccy1SpotDate&quot;, &quot;Ccy2SpotDate&quot;, &quot;ErrorCode&quot;),
+     [&quot;universe&quot;] = new JArray(new JObject()
+     {
+         [&quot;instrumentType&quot;] = &quot;FxCross&quot;,
+         [&quot;instrumentDefinition&quot;] = new JObject()
+         {
+             [&quot;fxCrossType&quot;] = &quot;FxSpot&quot;,
+             [&quot;fxCrossCode&quot;] = &quot;USDAUD&quot;
+         }
+     }),
+     [&quot;marketData&quot;] = new JObject()
+     {
+         [&quot;fxSpots&quot;] = new JArray()
+         {
+             new JObject()
+             {
+                 [&quot;spotDefinition&quot;] = new JObject()
+                 {
+                     [&quot;fxCrossCode&quot;] = &quot;AUDUSD&quot;,
+                     [&quot;Source&quot;] = &quot;Composite&quot;
+                 }
+             }
+         }
+     }
+ };
+ 
+ var fxSpotData = FinancialContracts.Definition(fxSpotRequest).GetData();
+</code></pre>
+<br>
+
+<ol start="2">
+<li>An example retrieving specific fields for <strong>FxSwap</strong> instrument type for <strong>CHFJPY</strong> instrument code. <br>
+The universe instrumentType must be <strong>FxCross</strong> and the fxCrossType must be <strong>FxSwap</strong> to retrieve relevant data for this example.</li>
+</ol>
+<pre><code class="language-csharp">var fxSwapRequest = new JObject()
+{
+    [&quot;fields&quot;] = new JArray(&quot;InstrumentDescription&quot;, &quot;ValuationDate&quot;, &quot;EndDate&quot;,
+                            &quot;FxSwapsCcy1&quot;, &quot;FxSwapsCcy2&quot;, &quot;FxSwapsCcy1Ccy2&quot;,
+                            &quot;FxOutrightCcy1Ccy2&quot;),
+    [&quot;universe&quot;] = new JArray(new JObject()
+    {
+        [&quot;instrumentType&quot;] = &quot;FxCross&quot;,
+        [&quot;instrumentDefinition&quot;] = new JObject()
+        {
+            [&quot;fxCrossType&quot;] = &quot;FxSwap&quot;,
+            [&quot;fxCrossCode&quot;] = &quot;CHFJPY&quot;,
+            [&quot;legs&quot;] = new JArray(new JObject()
+            {
+                [&quot;dealCcyBuySell&quot;] = &quot;Buy&quot;,
+                [&quot;fxLegType&quot;] = &quot;SwapNear&quot;,
+                [&quot;dealAmount&quot;] = 1000000,
+                [&quot;contraAmount&quot;] = 897008.3,
+                [&quot;tenor&quot;] = &quot;1M&quot;
+            }, new JObject()
+            {
+                [&quot;dealCcyBuySell&quot;] = &quot;Sell&quot;,
+                [&quot;fxLegType&quot;] = &quot;SwapFar&quot;,
+                [&quot;dealAmount&quot;] = 1000000,
+                [&quot;contraAmount&quot;] = 900000,
+                [&quot;tenor&quot;] = &quot;1Y&quot;
+            })
+        }
+    }),
+    [&quot;pricingParameters&quot;] = new JObject()
+    {
+        [&quot;valuationDate&quot;] = &quot;2018-02-17T00:00:00Z&quot;,
+        [&quot;priceSide&quot;] = &quot;Ask&quot;
+    }
+};
+
+var data = FinancialContracts.Definition(fxSwapRequest).GetData();
+</code></pre>

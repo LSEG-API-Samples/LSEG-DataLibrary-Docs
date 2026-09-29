@@ -1,0 +1,36 @@
+<h2 id="marketsession">MarketSession</h2>
+<p>The Market Session represents a list of official durations in which trade and quote activities occur for a particular instrument.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Name</strong></th>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PRE</td>
+<td>&quot;pre&quot;</td>
+<td>The definition should retrieve data during pre-market session</td>
+</tr>
+<tr>
+<td>NORMAL</td>
+<td>&quot;normal&quot;</td>
+<td>The definition should retrieve data during normal market session</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>&quot;post&quot;</td>
+<td>The definition should retrieve data during post-market session</td>
+</tr>
+</tbody></table>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create a historical pricing summaries definition for LSEG.L and get the 20 most recent summaries using only pre-market session data.</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.HistoricalPricing;
+
+var definition = Summaries.Definition()
+                          .Universe(&quot;LSEG.L&quot;)
+                          .Sessions(HistoricalPricing.Sessions.pre)
+
+var summariesData = definition.GetData();
+</code></pre>

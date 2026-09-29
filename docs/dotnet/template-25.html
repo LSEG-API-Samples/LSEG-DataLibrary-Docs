@@ -1,0 +1,9 @@
+<h1 id="about-the-content-layer">About the Content Layer</h1>
+<p>The <strong>Content layer</strong> refers to logical market data objects, representing financial items like level 1 market data prices and quotes, Order Books, News, Historical Pricing, Company Research data and so on. 
+These objects are built on top of the <a href="#/sections/delivery-layer/intro">Delivery layer</a> and provide value-add capabilities to manage and access the content within the interface. </p>
+<p>For example, the <a href="#/sections/content-layer/pricing/pricing-stream">Pricing.Stream</a> interface is a thin layer on top of the data services offering realtime market data. </p>
+<p>In addition, interfaces such as <a href="#/sections/content-layer/historical-pricing/historical-pricing">Historical Pricing</a> and Environmental &amp; Social Governance (ESG) are available to allow intuitive access to request and process results. 
+While the native back-end data format supports <strong>JSON</strong> structured messages, the Content layer conveniently prepares data messages in a <strong>user-friendly format</strong> specific to the programming language. For example, Pandas DataFrames for Python, JSON in TypeScript/JavaScript and .NET.</p>
+<p>Because <strong>Content layer</strong> objects are designed to simplify access to specific Web Services exposed by the Data Platform, these objects have a strong dependency on specific API versions of these services. </p>
+<p>They are easy to use but also service dependant. This is not the case for the object of the Delivery layer that are lower level but also service agnostic. Please refer to the <a href="#/sections/delivery-layer/intro">Delivery layer</a> documentation to learn more about these objects and when to use them.</p>
+<p>The Content layer can easily be used by both professional developers and financial coders. It provides great flexibility for familiar and commonly used financial data models.</p>

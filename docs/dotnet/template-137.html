@@ -1,0 +1,22 @@
+<h1 id="logging">Logging</h1>
+<p>The library utilizes the NLog framework internally to provide flexible and convenient logging capabilities, giving the application developer full control of logging output. NLog supports both a configuration file and a C# API to define logging targets and rules.</p>
+<p>The following mechanisms are available, applied in this order of priority:</p>
+<ol>
+<li><strong>Programmatically intercept all log output</strong> - by utilizing the <code>Log</code> interface, an application lambda expression can be defined to capture all library log messages. This can be useful if an application decides to manage library log messages within their own logging frameworks. This mechanism takes priority over the options below.</li>
+<li><strong>Define an NLog configuration</strong> - if no programmatic interface has been defined (option 1), the library will use the defined configuration (<code>NLog.config</code>) to determine logging targets and rules.</li>
+<li><strong>Default logging</strong> - if neither of the options above have been defined, a default logging target and rule applies. By default, all log messages with a log level of <code>LogLevel.Info</code> or higher are sent to a file named <code>RDPLog_&lt;pid&gt;.log</code>.</li>
+</ol>
+<h3 id="log-methods">Log Methods</h3>
+<p><strong>Log.Level</strong> <em>(static property, <code>NLog.LogLevel</code>)</em><br>
+Override the minimum NLog log level for all defined logging rules.  Default: <code>LogLevel.Off</code> (uses the default file-based configuration described above).</p>
+<p><strong>Log.Output</strong> <em>(static property, <code>Action&lt;LogEventInfo, object[]&gt;</code>)</em><br>
+Specify the application lambda expression to manage the log events, intercepting all library log messages.</p>
+<h3 id="usage">Usage</h3>
+<pre><code class="language-csharp">using LSEG.Data;
+
+// Increase the logging verbosity to Trace
+Log.Level = NLog.LogLevel.Trace;
+
+// Alternatively, intercept all log messages programmatically
+Log.Output = (logEvent, args) =&gt; Console.WriteLine($&quot;{logEvent.Level}: {logEvent.FormattedMessage}&quot;);
+</code></pre>

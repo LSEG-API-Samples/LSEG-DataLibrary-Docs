@@ -1,0 +1,156 @@
+<h1 id="deliveryrdpstreamdefinition-object">Delivery.RDPStreamDefinition object</h1>
+<p>Creates a definition used to get an <code>IRDPItemStream</code> (see below) that can subscribe to streaming items of any Domain Model of the Delivery Platform (formerly Refinitiv Data Platform).</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Delivery.RDPStream.Definition()</code></p>
+<h3 id="rdp-stream-definition-methods">RDP Stream Definition methods</h3>
+<p><strong>Api(RDPStream.Api api)</strong><br>
+<strong>Api(string api)</strong><br>
+The streaming API service supporting the RDP streaming data.<br>
+The api paremeter is Optional. Configuration default: QuantativeAnalytics</p>
+<p><strong>Universe(params JObject[] universe)</strong><br>
+<strong>Universe(IEnumerable<JObject> universe)</strong><br>
+<strong>Universe(params string[] universe)</strong><br>
+<strong>Universe(IEnumerable<string> universe)</strong><br>
+<strong>Universe(JArray universe)</strong><br>
+The Universe of item of interest as supported by the underlying RDP streaming service.</p>
+<p><strong>Fields(params string[] fields)</strong><br>
+<strong>Fields(IEnumerable<string> fields)</strong><br>
+<strong>Fields(JArray fields)</strong><br>
+Specify the specific fields delivered when messages arrive.<br></p>
+<p><strong>Parameters(JObject parameters)</strong><br>
+Apply the service-specific parameters for each Universe defined.</p>
+<p><strong>Service(string service)</strong><br>
+Offers the ability to use a specific service to manage the real-time streaming data.<br>
+Optional.  Default: defined within the streaming platform.</p>
+<p><strong>ExtendedParams(JObject obj)</strong><br>
+The streaming platform can offer a multitude of properties, depending on environment configuration.
+In most cases, the default streaming environment is suitable for delivery. However, there may be some
+rare cases where applications may need to define properties that are less commonly used. The extended 
+params specification provides this capability. To extend, applications must form the request properties 
+as defined within the WebSocket Request specifications. If extended properties are included, they will 
+be merged with all other properties specified.</p>
+<p>The possible values for the <strong>RDPStream.Api</strong>:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>QuantitativeAnalytics</td>
+<td>Stream IPAs Financial Contracts.</td>
+</tr>
+<tr>
+<td>Benchmark</td>
+<td>Stream Benchmark data services.</td>
+</tr>
+</tbody></table>
+<p><strong>GetStream()</strong><br>
+<strong>GetStream(ISession session)</strong><br>
+Retrieve an <code>IRDPItemStream</code> to manage real-time updates for the specified universe. When a session is not explicitly supplied, the default session is used.</p>
+<p><strong>Properties</strong> <em>(property, <code>IRDPStreamDefinitionParams</code>)</em><br>
+Retrieve the parameters defined for the streaming request.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IRDPStreamDefinition</code> object.</p>
+<h3 id="irdpitemstream-members">IRDPItemStream members</h3>
+<p><code>GetStream()</code> / <code>GetStream(session)</code> return an <code>IRDPItemStream</code>, used to manage the life cycle of the subscription and register callbacks.</p>
+<p><strong>OnResponse(Action&lt;JObject, IRDPItemStream&gt; cb)</strong><br>
+Optional callback invoked upon receiving the initial response for the request.</p>
+<p><strong>OnUpdate(Action&lt;JObject, IRDPItemStream&gt; cb)</strong><br>
+Optional callback invoked upon receiving an update message containing changes in the market.</p>
+<p><strong>OnAlarm(Action&lt;JObject, IRDPItemStream&gt; alarmCb)</strong><br>
+Optional callback invoked when an alarm is raised for the request.</p>
+<p><strong>Definition</strong> <em>(property, <code>IRDPStreamDefinitionParams</code>)</em><br>
+Retrieve the parameters defined for the streaming request.</p>
+<p><code>IRDPItemStream</code> also implements the shared <strong>IStream</strong> interface, common to every streaming interface in the library (<code>IOMMItemStream</code>, <code>IRDPItemStream</code>, and the content-layer streams), contributing:</p>
+<p><strong>Open(CancellationToken cancellationToken = default)</strong><br>
+Open the stream synchronously. Request the data from the platform and wait until all initial responses have arrived. Returns a <code>Stream.State</code> value (see <a href="#/sections/delivery-layer/state">State</a>).</p>
+<p><strong>OpenAsync(CancellationToken cancellationToken = default)</strong><br>
+Open the stream asynchronously.</p>
+<p><strong>Close()</strong><br>
+<strong>CloseAsync()</strong><br>
+Close all opened resources.</p>
+<p><strong>OpenState</strong> <em>(property, <code>Stream.State</code>)</em><br>
+Indicates if the stream is open with active streaming items.</p>
+<p><strong>Session</strong> <em>(property, <code>ISession</code>)</em><br>
+Session used to open the stream.</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create an RDP stream definition:</p>
+<pre><code class="language-csharp">var universe = new JObject()
+{
+    [&quot;instrumentType&quot;] = &quot;FxCross&quot;,
+    [&quot;instrumentDefinition&quot;] = new JObject()
+    {
+        [&quot;fxCrossType&quot;] = &quot;FxSpot&quot;,
+        [&quot;fxCrossCode&quot;] = &quot;USDAUD&quot;
+    }
+};
+
+var parameters = new JObject()
+{
+    [&quot;marketData&quot;] = new JObject()
+    {
+        [&quot;fxSpots&quot;] = new JArray() 
+        { 
+            new JObject()
+            {
+                [&quot;spotDefinition&quot;] = new JObject()
+                {
+                    [&quot;fxCrossCode&quot;] = &quot;AUDUSD&quot;,
+                    [&quot;Source&quot;] = &quot;Composite&quot;
+                }
+            } 
+        }
+    }
+};
+
+// Note: The RDP stream interface defines a standard set of client =&gt; server request properties.  
+// Because the implementation of the IPA streaming service breaks the standard and defines additional properties, 
+// we are forced to utilize the ExtendedParamscapability below.  
+
+var stream = RDPStream.Definition()
+                      .Universe(universe)
+                      .ExtendedParams(parameters)
+                      .Fields(&quot;FxSpot_BidMidAsk&quot;, &quot;Ccy1SpotDate&quot;, &quot;Ccy2SpotDate&quot;, &quot;ErrorCode&quot;)
+                      .GetStream()
+                      .OnResponse((msg, s) =&gt; Console.WriteLine($&quot;Response: {msg}&quot;))
+                      .OnUpdate((msg, s) =&gt; Console.WriteLine($&quot;Update: {DateTime.Now:HH:mm:ss} - {msg}&quot;))
+                      .OnAlarm((msg, s) =&gt; Console.WriteLine($&quot;Stream alarm: {DateTime.Now:HH:mm:ss}: {msg}&quot;));
+</code></pre>
+<p>The following example shows how to retrieve benchmark data using the RDP Stream Definition: </p>
+<pre><code class="language-csharp">// The following request will perform a snapshot, despite requesting for streaming. 
+var parameters = new JObject()
+{
+    [&quot;calculationTypes&quot;] = new JArray(&quot;vwap&quot;, &quot;volume&quot;),
+    [&quot;timeField&quot;] = &quot;ingest&quot;,
+    [&quot;startTime&quot;] = new JObject()
+    {
+        [&quot;absoluteTime&quot;] = DateTime.Now.AddDays(-1).ToUniversalTime()
+    },
+    [&quot;responseType&quot;] = new JObject()
+    {
+        [&quot;type&quot;] = &quot;streaming&quot;,
+        [&quot;conflation&quot;] = &quot;1m&quot;
+    },
+    [&quot;filters&quot;] = new JArray(new JObject()
+    {
+        [&quot;type&quot;] = &quot;tradeclassification&quot;,
+        [&quot;codes&quot;] = new JArray(&quot;OB&quot;, &quot;AU&quot;)
+    }, new JObject()
+    {
+        [&quot;type&quot;] = &quot;volume&quot;,
+        [&quot;min&quot;] = 0,
+        [&quot;max&quot;] = 100
+    })
+};
+
+var stream = RDPStream.Definition()
+                      .Api(RDPStream.Api.Benchmark)
+                      .Universe(&quot;VOD.L&quot;, &quot;AAPL.O&quot;)
+                      .Parameters(parameters)
+                      .GetStream()
+                      .OnResponse((msg, s) =&gt; Console.WriteLine($&quot;Response: {msg}&quot;))
+                      .OnUpdate((msg, s) =&gt; Console.WriteLine($&quot;Update: {DateTime.Now:HH:mm:ss} - {msg}&quot;))
+                      .OnAlarm((msg, s) =&gt; Console.WriteLine($&quot;Stream alarm: {DateTime.Now:HH:mm:ss}: {msg}&quot;));
+</code></pre>

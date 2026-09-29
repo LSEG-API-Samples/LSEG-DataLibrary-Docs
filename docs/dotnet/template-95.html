@@ -1,0 +1,13 @@
+<h1 id="getstream">GetStream</h1>
+<p>Creates and returns the pricing stream that allows you to get streaming data for previously defined instruments.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>definition.GetStream()</code><br>
+<code>definition.GetStream(ISession session)</code></p>
+<h3 id="returned-value">Returned value</h3>
+<p><a href="#/sections/content-layer/pricing/streams/intro">Pricing.Stream</a> object</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to retrieve streaming data for <strong>EUR=</strong> and <strong>USD=</strong> instruments. </p>
+<pre><code class="language-csharp">var definition = Pricing.Definition(&quot;EUR=&quot;, &quot;USD=&quot;).Fields(&quot;BID&quot;, &quot;ASK&quot;);
+
+var stream = definition.GetStream().Open();
+</code></pre>

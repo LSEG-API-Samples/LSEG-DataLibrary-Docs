@@ -1,0 +1,22 @@
+<h1 id="getcachesnapshot">GetCacheSnapshot</h1>
+<p>Retrieve a snapshot from the live cache for the specified items.  <br>
+The snapshot is a copy of the values from the cache. <br>
+By default, all fields will be copied from the cache.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IDictionary&lt;string, IPriceData&gt; GetCacheSnapshot(params string[] items)</code><br>
+<code>IDictionary&lt;string, IPriceData&gt; GetCacheSnapshot(IEnumerable&lt;string&gt; items, IEnumerable&lt;string&gt; fields = null)</code><br></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to get a snapshot from the cache. </p>
+<pre><code class="language-csharp">var stream = Pricing.Definition(&quot;EUR=&quot;).GetStream();
+
+stream.Open();
+
+// Add one item or a list of items
+stream.AddItems(&quot;MSFT.O&quot;);
+stream.AddItems(new[] { &quot;EUR=&quot;, &quot;GBP=&quot;, &quot;CAD=&quot; }); 
+
+var snapshot = stream.GetCacheSnapshot();
+
+
+stream.Close();
+</code></pre>

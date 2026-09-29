@@ -1,0 +1,102 @@
+<h1 id="fundamentalandreferencedefinition-object">FundamentalAndReference.Definition object</h1>
+<p>This object defines a request definition used to retrieve Fundamental and Reference data.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>FundamentalAndReference.Definition()</code><br>
+<code>FundamentalAndReference.Definition(params string[] universe)</code><br>
+<code>FundamentalAndReference.Definition(IEnumerable&lt;string&gt; universe)</code><br></p>
+<h3 id="fundamentalandreference-parameters">FundamentalAndReference Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th><strong>Optional</strong></th>
+<th align="left"><strong>Default value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>universe</td>
+<td>Single instrument, multiple instruments or list of instruments</td>
+<td>No</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
+<p>You can set one or more instruments when calling the Definition() method.
+Another way of specifying the instrument (RIC) is using the Universe() method in continuation of the Definition() method. 
+For a request to be valid, at least one universe is required. </p>
+<h3 id="fundamentalandreferencedefinition-methods">FundamentalAndReferenceDefinition Methods</h3>
+<p><strong>IFundamentalAndReferenceDefinition Universe(params string[] universe)</strong><br>
+<strong>IFundamentalAndReferenceDefinition Universe(IEnumerable&lt;string&gt; universe)</strong><br>
+A comma separated list of instruments supporting multiple instrument types, i.e. RIC, ISIN, SEDOL, etc.  Required.</p>
+<p><strong>IFundamentalAndReferenceDefinition Fields(params string[] fields)</strong><br>
+<strong>IFundamentalAndReferenceDefinition Fields(IEnumerable&lt;string&gt; fields)</strong><br>
+<strong>IFundamentalAndReferenceDefinition Fields(params FRField[] fields)</strong><br>
+<strong>IFundamentalAndReferenceDefinition Fields(IEnumerable&lt;FRField&gt; fields)</strong><br>
+A comma separated list of fields (e.g. <code>TR.PriceClose</code>). Can also contain local parameters (e.g. <code>TR.PriceClose(Curn:CAD)</code>).  Optional.</p>
+<p>Each <code>FRField(string field)</code> can further specify:<br>
+<strong>FRField Params(IDictionary&lt;string, string&gt; parameters)</strong> - a dictionary of parameters for the field.<br>
+<strong>FRField SortDirection(FRField.SortDirectionType sortDirection)</strong> - the sort direction (<code>Asc</code>, <code>Desc</code>).<br>
+<strong>FRField SortPriority(int priority)</strong> - the sort priority, where the highest priority is 0 (zero).</p>
+<p><strong>IFundamentalAndReferenceDefinition Parameters(JObject parameters)</strong><br>
+Parameters to apply to all fields (global parameters). Name of a parameter is the name of a property in the object, value of the parameter is the value of that property (e.g. <code>&quot;SDate&quot;: &quot;-2D&quot;</code>).  Optional.</p>
+<p><strong>IFundamentalAndReferenceDefinition Output(string output)</strong><br>
+Output layout for the service.  Optional.</p>
+<p><strong>IFundamentalAndReferenceDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IDataGridDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Universe</code>, <code>Fields</code>, <code>Parameters</code>, <code>Output</code>, <code>Closure</code>).</p>
+<p><code>IFundamentalAndReferenceDefinition</code> extends the generic <strong>IDataSetDefinition</strong> interface, which contributes the parameterless <code>GetData</code>/<code>GetDataAsync</code> overloads below to every data-set-based content object (Fundamental and Reference, Historical Pricing Events/Summaries/SingleEvent).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, IDataGridDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, IDataGridDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, IDataGridDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, IDataGridDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IFundamentalAndReferenceDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IDataSetResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IDataSet</strong> type.</p>
+<h3 id="idataset---properties">IDataSet - properties</h3>
+<p>JToken Raw { get; }<br>
+DataTable Table { get; }<br>
+IList&lt;IDataSetRecord&gt; Records { get; }<br>
+JToken Errors { get; }<br>
+bool IsEmpty { get; }<br></p>
+<p>Each entry in <strong>Records</strong> is an <strong>IDataSetRecord</strong> describing the requested <code>Universe</code>, the <code>Fields</code> returned, and the corresponding <code>Data</code> points for that instrument.</p>
+<h3 id="idatasetrecord---properties">IDataSetRecord - properties</h3>
+<p>IDataSetUniverse Universe { get; }<br>
+JArray Fields { get; }<br>
+IList&lt;JArray&gt; Data { get; }<br></p>
+<h3 id="idatasetuniverse---properties">IDataSetUniverse - properties</h3>
+<p>string Instrument { get; }<br>
+string CommonName { get; }<br>
+string PermID { get; }<br>
+string Currency { get; }<br></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create a Fundamental And Reference object definition to get revenue for &quot;IBM.N&quot;</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.Data;
+
+var definition = FundamentalAndReference.Definition(&quot;IBM.N&quot;).Fields(&quot;TR.Revenue&quot;);
+</code></pre>
+<p>Another example showing how to get real time data fields for Apple </p>
+<pre><code class="language-csharp">using LSEG.Data.Content.Data;
+
+var definition = FundamentalAndReference.Definition()
+                                        .Universe(&quot;AAPL.O&quot;)
+                                        .Fields(&quot;BID&quot;, &quot;CF_BID&quot;, &quot;CF_ASK&quot;, &quot;CF_LAST&quot;);
+</code></pre>
+<p>One more example showing how to retrieve historical data between for a given interval, by specifying a start date and end date as parameters </p>
+<pre><code class="language-csharp">using LSEG.Data.Content.Data;
+
+var definition = FundamentalAndReference.Definition(&quot;BHP.AX&quot;)
+                                        .Fields(&quot;TR.AdjmtFactorAdjustmentDate&quot;)
+                                        .Parameters(new JObject()
+                                        {
+                                            {&quot;SDate&quot;, &quot;1980-01-01&quot; },
+                                            {&quot;EDate&quot;, &quot;2018-09-29&quot; }
+                                        });
+</code></pre>

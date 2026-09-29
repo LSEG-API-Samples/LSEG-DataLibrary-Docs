@@ -1,0 +1,43 @@
+<h1 id="top-news-headlines">Top News Headlines</h1>
+<p>Once you have retrieved a Top News page ID (see <a href="#/sections/content-layer/news/top-news">Top News</a>), you can use it to retrieve the headlines for that page.</p>
+<pre><code class="language-csharp">var page = TopNews.Definition().GetData().Data.Categories[&quot;MARKETS&quot;][0];
+
+var headlines = TopNewsHeadlines.Definition(page.TopNewsID).GetData();
+</code></pre>
+<h3 id="syntax">Syntax</h3>
+<p><code>TopNewsHeadlines.Definition()</code><br>
+<code>TopNewsHeadlines.Definition(string newsID)</code></p>
+<h3 id="topnewsheadlinesdefinition-methods">TopNewsHeadlinesDefinition Methods</h3>
+<p><strong>ITopNewsHeadlinesDefinition NewsId(string newsId)</strong><br>
+Specify the ID of the Top News page. The ID is available when you retrieve the Top News Categories (<code>ITopNewsPage.TopNewsID</code>).  Required.</p>
+<p><strong>ITopNewsHeadlinesDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>ITopNewsHeadlinesDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>ITopNewsHeadlinesDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>NewsId</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>ITopNewsHeadlinesResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>ITopNewsHeadlinesResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>ITopNewsHeadlinesResponse GetData(Action&lt;ITopNewsHeadlinesResponse, ITopNewsHeadlinesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>ITopNewsHeadlinesResponse GetData(ISession session, Action&lt;ITopNewsHeadlinesResponse, ITopNewsHeadlinesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;ITopNewsHeadlinesResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ITopNewsHeadlinesResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ITopNewsHeadlinesResponse&gt; GetDataAsync(Action&lt;ITopNewsHeadlinesResponse, ITopNewsHeadlinesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ITopNewsHeadlinesResponse&gt; GetDataAsync(ISession session, Action&lt;ITopNewsHeadlinesResponse, ITopNewsHeadlinesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>ITopNewsHeadlinesDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>ITopNewsHeadlinesResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>ITopNewsHeadlinesData</strong> type.</p>
+<h3 id="itopnewsheadlinesdata---properties">ITopNewsHeadlinesData - properties</h3>
+<p>IList&lt;ITopNewsHeadlinesNode&gt; Headlines { get; }<br>
+JToken Raw { get; }<br></p>
+<p>Each entry in <strong>Headlines</strong> is an <strong>ITopNewsHeadlinesNode</strong>:</p>
+<h3 id="itopnewsheadlinesnode---properties">ITopNewsHeadlinesNode - properties</h3>
+<p>string Text { get; }<br>
+string Snippet { get; }<br>
+string ImageId { get; }<br>
+DateTime VersionCreated { get; }<br>
+string StoryId { get; }<br></p>
+<p>The <strong>StoryId</strong> can be used to retrieve the full story (see <a href="#/sections/content-layer/news/stories">News Stories</a>). The <strong>ImageId</strong> can be used to retrieve the associated image (see <a href="#/sections/content-layer/news/images">Images</a>).</p>

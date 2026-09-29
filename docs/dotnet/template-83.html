@@ -1,0 +1,40 @@
+<h1 id="top-news">Top News</h1>
+<p>Retrieving top news can be done like this: </p>
+<pre><code class="language-csharp">    var topNews = TopNews.Definition().GetData();
+</code></pre>
+<p>The incoming object will contain a dictionary of categorized paginated top news.</p>
+<pre><code class="language-csharp">    public IDictionary&lt;string, IList&lt;ITopNewsPage&gt;&gt; Categories { get; set; }
+</code></pre>
+<p>Each top news page contains the main information about a top news like its name, ID and revision ID and date, where applicable. </p>
+<h3 id="syntax">Syntax</h3>
+<p><code>TopNews.Definition()</code></p>
+<h3 id="topnewsdefinition-methods">TopNewsDefinition Methods</h3>
+<p><strong>ITopNewsDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>ITopNewsDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>ITopNewsDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>ITopNewsResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>ITopNewsResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>ITopNewsResponse GetData(Action&lt;ITopNewsResponse, ITopNewsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>ITopNewsResponse GetData(ISession session, Action&lt;ITopNewsResponse, ITopNewsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;ITopNewsResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ITopNewsResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ITopNewsResponse&gt; GetDataAsync(Action&lt;ITopNewsResponse, ITopNewsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ITopNewsResponse&gt; GetDataAsync(ISession session, Action&lt;ITopNewsResponse, ITopNewsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>ITopNewsDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>ITopNewsResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>ITopNewsData</strong> type.</p>
+<h3 id="itopnewsdata---properties">ITopNewsData - properties</h3>
+<p>IDictionary&lt;string, IList&lt;ITopNewsPage&gt;&gt; Categories { get; }<br>
+JToken Raw { get; }<br></p>
+<h3 id="itopnewspage---properties">ITopNewsPage - properties</h3>
+<p>string Page { get; }<br>
+string RevisionID { get; }<br>
+DateTime RevisionDate { get; }<br>
+string TopNewsID { get; }<br></p>
+<p>The <strong>TopNewsID</strong> of a page can be used to retrieve its headlines (see <a href="#/sections/content-layer/news/top-news-headlines">Top News Headlines</a>).</p>

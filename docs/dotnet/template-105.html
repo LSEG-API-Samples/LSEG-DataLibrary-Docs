@@ -1,0 +1,13 @@
+<h1 id="onerror">OnError</h1>
+<p>Optional callback invoked if an error occurs resulting from the request.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IPricingStream OnError(Action&lt;string, JObject, IPricingStream&gt; errorCb)</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to display the messages received when a data retrieval error happens</p>
+<pre><code class="language-csharp">var stream = Pricing.Definition().Universe(&quot;EUR=&quot;)
+                                 .Fields(&quot;BID&quot;, &quot;ASK&quot;, &quot;DSPLY_NAME&quot;)
+                                 .GetStream();
+                                 
+stream.OnError((item, err, s) =&gt; Console.WriteLine($&quot;Error: {err}&quot;))
+      .Open() == Stream.State.Opened
+</code></pre>

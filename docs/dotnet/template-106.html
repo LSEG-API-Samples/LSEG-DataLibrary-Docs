@@ -1,0 +1,13 @@
+<h1 id="onrefresh">OnRefresh</h1>
+<p>Optional callback invoked upon receiving a Refresh message containing the fields.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IPricingStream OnRefresh(Action&lt;string, JObject, IPricingStream&gt; cb)</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to display the refresh related data.</p>
+<pre><code class="language-csharp">var stream = Pricing.Definition().Universe(&quot;EUR=&quot;)
+                                 .Fields(&quot;BID&quot;, &quot;ASK&quot;, &quot;DSPLY_NAME&quot;)
+                                 .GetStream();
+                                 
+stream.OnRefresh((item, refresh, s) =&gt; Console.WriteLine($&quot;Refresh for item {item}: {refresh[&quot;Fields&quot;]}&quot;))
+      .Open() == Stream.State.Opened
+</code></pre>

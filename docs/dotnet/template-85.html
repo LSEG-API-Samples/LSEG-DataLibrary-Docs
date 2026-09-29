@@ -1,0 +1,68 @@
+<h1 id="pricingchaindefinition-object">Pricing.Chain.Definition object</h1>
+<p>A definition used to retrieve data about the specified chains and decode them dynamically.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IChainDefinition Definition()</code><br>
+<code>IChainDefinition Definition(string item)</code></p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th align="left"><strong>Data type</strong></th>
+<th><strong>Optional</strong></th>
+<th align="left"><strong>Default value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>item</td>
+<td>The name of the chain</td>
+<td align="left">string</td>
+<td>No</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
+<h3 id="pricingchaindefinition-methods">Pricing.ChainDefinition methods</h3>
+<p><strong>IChainDefinition Name(string name)</strong><br>
+Defines the name of the Chain RIC.  Required.</p>
+<p><strong>IChainDefinition SkipSummaryLinks(bool skip)</strong><br>
+Indicator to skip the summary links within the constituents.  The number of Summary links within a chain are defined based on a display template ID within the Chain.  A dictionary of template IDs have been loaded within the interface to provide a lookup to determine the number of summary links. Optional.  Default: True.</p>
+<p><strong>IChainDefinition SkipEmptyLinks(bool skip)</strong><br>
+Indicator to skip the empty links within the constituents. <br>
+Applicable to streaming only. Optional.  Default: True.</p>
+<p><strong>IChainDefinition Service(string service)</strong><br>
+The name of the service providing the desired streaming data. <br>
+The parameter is optional and applicable to streaming only.<br>
+Default: defined within the streaming platform.</p>
+<p><strong>IChainDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IChainDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface. The extended params act as a fallback in case properties are unavailable, or as an alternative for users that prefer to define the request using native JSON definitions.  Optional.</p>
+<p><strong>IChainsDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Name</code>, <code>SkipSummaryLinks</code>, <code>SkipEmptyLinks</code>, <code>Service</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IChainResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IChainResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IChainResponse GetData(Action&lt;IChainResponse, IChainsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IChainResponse GetData(ISession session, Action&lt;IChainResponse, IChainsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve a chain snapshot for the specified item.</p>
+<p><strong>Task&lt;IChainResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IChainResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IChainResponse&gt; GetDataAsync(Action&lt;IChainResponse, IChainsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IChainResponse&gt; GetDataAsync(ISession session, Action&lt;IChainResponse, IChainsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve a chain snapshot for the specified item.</p>
+<p><strong>IChainStream GetStream()</strong><br>
+<strong>IChainStream GetStream(ISession session)</strong><br>
+Retrieve a streaming interface to manage real-time chain updates. See <a href="#/sections/content-layer/pricing/chain/streams/intro">Chain Stream</a>.</p>
+<h3 id="response">Response</h3>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IChainResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IChainData</strong> type.</p>
+<h3 id="ichaindata---properties">IChainData - properties</h3>
+<p>string DisplayName { get; }<br>
+IList&lt;string&gt; Constituents { get; }<br>
+JToken Raw { get; }<br></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create a pricing chain definition and retrieve data. </p>
+<pre><code class="language-csharp">var chain = &quot;.AV.O&quot;;            // Nasdaq Top 25
+
+IChainResponse response = Chain.Definition(chain).GetData();
+</code></pre>

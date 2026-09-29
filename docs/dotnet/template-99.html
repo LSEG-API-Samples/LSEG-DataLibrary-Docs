@@ -1,0 +1,22 @@
+<h1 id="additems">AddItems</h1>
+<p>Allows to add items to the stream, even when the stream has been already opened. <br>
+We can even specify the incoming fields for the requested instrument. </p>
+<h3 id="syntax">Syntax</h3>
+<p><code>void AddItems(params string[] items)</code><br>
+<code>void AddItems(IEnumerable&lt;string&gt; items)</code><br>
+<code>void AddItems(IEnumerable&lt;string&gt; items, IEnumerable&lt;string&gt; fields)</code><br></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to add items to a pricing stream.</p>
+<pre><code class="language-csharp">var stream = Pricing.Definition(&quot;EUR=&quot;).GetStream();
+
+stream.Open();
+
+// Add one item or a list of items
+stream.AddItems(&quot;MSFT.O&quot;);
+stream.AddItems(new[] { &quot;EUR=&quot;, &quot;GBP=&quot;, &quot;CAD=&quot; }); 
+
+// Add a list of items, in this case one, and a specified list of fields to be retrieved for it
+stream.AddItems(new[] { &quot;AAPL.O&quot; }, new[] { &quot;BID&quot;, &quot;ASK&quot;, &quot;HST_CLOSE&quot;, &quot;IRGPRC&quot;, &quot;DSPLY_NAME&quot; });
+
+stream.Close();
+</code></pre>

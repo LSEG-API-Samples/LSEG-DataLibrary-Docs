@@ -1,0 +1,20 @@
+<h1 id="removeitems">RemoveItems</h1>
+<p>Allows to remove item(s) to the stream, even when the stream has been already opened. </p>
+<p>The item(s) will automatically close. </p>
+<h3 id="syntax">Syntax</h3>
+<p><code>void RemoveItems(params string[] items)</code>
+<code>void RemoveItems(IEnumerable&lt;string&gt; items)</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to remove items to a pricing stream.</p>
+<pre><code class="language-csharp">var stream = Pricing.Definition().Fields(&quot;DSPLY_NAME&quot;, &quot;BID&quot;, &quot;ASK&quot;);
+
+stream.Open();
+
+// Add a list of items
+stream.AddItems(new[] { &quot;EUR=&quot;, &quot;GBP=&quot;, &quot;CAD=&quot; }); 
+
+// Remove one - GBP=
+stream.RemoveItems(&quot;GBP=&quot;);
+
+stream.Close();
+</code></pre>

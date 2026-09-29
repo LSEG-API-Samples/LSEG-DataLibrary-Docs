@@ -1,0 +1,39 @@
+<h1 id="analyze">Analyze</h1>
+<h3 id="description">Description</h3>
+<p>Computes a tree expression from a user query string. <br>
+Breaks down a user query string into News related entities, then aggregates them into a boolean filtering tree.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Analyze.Definition()</code><br>
+<code>Analyze.Definition(string query)</code></p>
+<h3 id="analyzedefinition-methods">AnalyzeDefinition Methods</h3>
+<p><strong>IAnalyzeDefinition Query(string query)</strong><br>
+A news query expression.  Optional.  Default: no query conditions.</p>
+<p><strong>IAnalyzeDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IAnalyzeDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>IAnalyzeDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Query</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IAnalyzeResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IAnalyzeResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IAnalyzeResponse GetData(Action&lt;IAnalyzeResponse, IAnalyzeDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IAnalyzeResponse GetData(ISession session, Action&lt;IAnalyzeResponse, IAnalyzeDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IAnalyzeResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IAnalyzeResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IAnalyzeResponse&gt; GetDataAsync(Action&lt;IAnalyzeResponse, IAnalyzeDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IAnalyzeResponse&gt; GetDataAsync(ISession session, Action&lt;IAnalyzeResponse, IAnalyzeDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IAnalyzeDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IAnalyzeResponse</strong> object (implements <code>IResponse</code>). Unlike the other News responses, the response object&#39;s &quot;<strong>Data</strong>&quot; property is a plain <code>JObject</code> representing the computed tree expression - there is no nested data interface.</p>
+<h3 id="usage">Usage</h3>
+<pre><code class="language-csharp">    // Analyze the following news query string
+    string query = &quot;AA&quot;;   // All Alerts
+    
+    //query = &quot;PresetTopic:[Energy Market] AND &#39;carbon&#39;&quot;;
+    var response = Analyze.Definition(query).GetData();
+
+    var tree = response.Data; // JObject representing the boolean filtering tree
+</code></pre>

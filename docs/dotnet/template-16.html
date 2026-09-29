@@ -1,0 +1,65 @@
+<h1 id="about-eventsstream-object">About Events.Stream object</h1>
+<p><strong>Events.Stream objects</strong> are used to retrieve, process and manage real-time historical pricing events, blending live trades, quotes and corrections into the historical events retrieved via <a href="#/sections/content-layer/historical-pricing/events/definition">Events.Definition</a>.</p>
+<h3 id="properties">Properties</h3>
+<p><strong>Stream.State OpenState { get; }</strong><br>
+Current state of the stream.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Name</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>State.Pending</td>
+<td>The stream is waiting to be opened or is closed.</td>
+</tr>
+<tr>
+<td>State.Opened</td>
+<td>The stream is open and ready to work.</td>
+</tr>
+<tr>
+<td>State.Closed</td>
+<td>The stream is closed.</td>
+</tr>
+</tbody></table>
+<p><strong>ISession Session { get; }</strong><br>
+Session used to open the stream.</p>
+<p><strong>int LastMsgSeqNum { get; }</strong><br>
+The sequence number (SeqNumber) for the last real-time message processed. This value can be used to cross-reference the generated INSERT or UPDATE record received.</p>
+<p><strong>JObject InstrumentMetadata { get; }</strong><br>
+The instrument metadata for the given stream instrument.</p>
+<p><strong>IEventsDefinitionParams Definition { get; }</strong><br>
+Retrieve the parameters defined for the streaming request (see <a href="#/sections/content-layer/historical-pricing/events/definition">Events.Definition Properties</a>).</p>
+<h3 id="events-stream-interface-methods">Events Stream Interface methods</h3>
+<p><strong>Stream.State Open(CancellationToken cancellationToken = default)</strong><br>
+Open the stream synchronously. Request the data from the platform and wait until all initial responses have arrived.</p>
+<p><strong>Task&lt;Stream.State&gt; OpenAsync(CancellationToken cancellationToken = default)</strong><br>
+Open the stream asynchronously.</p>
+<p><strong>void Close()</strong><br>
+<strong>Task CloseAsync()</strong><br>
+Close all opened resources.</p>
+<p><strong>IEventsStream OnInsert(Action&lt;IDataSet, IEventsStream&gt; cb)</strong><br>
+Callback invoked upon receiving historical data bars to be inserted at specific points in time.</p>
+<p><strong>IEventsStream OnUpdate(Action&lt;IDataSet, IEventsStream&gt; cb)</strong><br>
+Callback invoked upon receiving an update to the most recent historical bar.</p>
+<p><strong>IEventsStream OnStatus(Action&lt;JObject, IEventsStream&gt; cb)</strong><br>
+Callback invoked when a stream status event occurs on the service.</p>
+<p><strong>IEventsStream OnError(Action&lt;string, IEventsStream&gt; cb)</strong><br>
+Callback invoked if an error occurs resulting from the request.  Required.</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to retrieve streaming trade events for AAPL.O, blending real-time updates into the historical data.</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.HistoricalPricing;
+
+var stream = Events.Definition(&quot;AAPL.O&quot;)
+                   .Fields(&quot;RTL&quot;, &quot;SEQNUM&quot;, &quot;TRDPRC_1&quot;, &quot;TRDVOL_1&quot;, &quot;HIGH_1&quot;, &quot;LOW_1&quot;, &quot;TRADE_ID&quot;, &quot;QUALIFIERS&quot;)
+                   .EventTypes(Events.EventType.trade)
+                   .Count(5)
+                   .GetStream();
+
+stream.OnInsert((data, s) =&gt; Console.WriteLine($&quot;INSERT: {DateTime.Now}. RT Seqnum: {s.LastMsgSeqNum}\n{data.Table}&quot;))
+      .OnUpdate((update, s) =&gt; Console.WriteLine($&quot;UPDATE: {DateTime.Now}. RT Seqnum: {s.LastMsgSeqNum}\n{update.Table}&quot;))
+      .OnStatus((status, s) =&gt; Console.WriteLine($&quot;Received status: {status}&quot;))
+      .OnError((error, s) =&gt; Console.WriteLine($&quot;Received error: {error}&quot;))
+      .Open();
+</code></pre>

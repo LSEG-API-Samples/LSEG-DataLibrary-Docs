@@ -1,0 +1,65 @@
+<h1 id="news-stories">News Stories</h1>
+<p>Retrieving news stories is a two-step process: </p>
+<ol>
+<li>We have to first retrieve the headlines and extract the story ID from each </li>
+</ol>
+<pre><code class="language-csharp">    // Retrieve the latest news headline in English about Apple.
+    IHeadlinesResponse headline = Headlines.Definition().Query($&quot;L:EN and Apple,&quot;)
+                                                        .Sort(Headlines.SortOrder.oldToNew)
+                                                        .Count(1)
+                                                        .GetData();
+
+    // Get the story ID of the first (and in this case, the only) news headline
+    var storyID = headline.Data.Headlines[0]?.StoryId;
+</code></pre>
+<ol start="2">
+<li>Using the storyID from step 1, we request the news story content like this </li>
+</ol>
+<pre><code class="language-csharp">    IStoryResponse story = Story.Definition(storyID).GetData();
+
+    // The result contains a raw json, headline title, story content as simple text or html content
+    var raw = story.Data.Raw; 
+    var headlineTitle = story.Data.HeadlineTitle; 
+    var storyText = story.Data.NewsStory;
+    var storyHtmlText = story.Data.HtmlNewsStory; 
+</code></pre>
+<h3 id="syntax">Syntax</h3>
+<p><code>Story.Definition()</code><br>
+<code>Story.Definition(string storyId)</code></p>
+<h3 id="storydefinition-methods">StoryDefinition Methods</h3>
+<p><strong>IStoryDefinition StoryId(string storyId)</strong><br>
+Specify the ID of the story to retrieve. The story identifier is available when you retrieve a story headline.  Required.</p>
+<p><strong>IStoryDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IStoryDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>IStoryDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>StoryId</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IStoryResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IStoryResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IStoryResponse GetData(Action&lt;IStoryResponse, IStoryDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IStoryResponse GetData(ISession session, Action&lt;IStoryResponse, IStoryDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IStoryResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IStoryResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IStoryResponse&gt; GetDataAsync(Action&lt;IStoryResponse, IStoryDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IStoryResponse&gt; GetDataAsync(ISession session, Action&lt;IStoryResponse, IStoryDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IStoryDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IStoryResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IStoryData</strong> type.</p>
+<h3 id="istorydata---properties">IStoryData - properties</h3>
+<p><code>IStoryData</code> extends <code>INewsItem</code>:</p>
+<p>string NewsStory { get; }<br>
+string HtmlNewsStory { get; }<br>
+IList&lt;string&gt; Creators { get; }<br>
+NewsUrgencyType Urgency { get; }<br>
+string HeadlineTitle { get; }<br>
+IList&lt;string&gt; Sources { get; }<br>
+IList&lt;string&gt; Languages { get; }<br>
+IList&lt;string&gt; Subjects { get; }<br>
+IList&lt;string&gt; RICCodes { get; }<br>
+DateTime CreationDate { get; }<br>
+DateTime UpdateDate { get; }<br>
+JObject Raw { get; }<br></p>

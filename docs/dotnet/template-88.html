@@ -1,0 +1,16 @@
+<h1 id="close">Close</h1>
+<p>Allows you to close the streaming chain connection.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>streamingChain.Close()</code></p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>void</code> - nothing. </p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to close previously opened pricing chain stream.</p>
+<pre><code class="language-csharp">var chainStream = Chain.Definition(&quot;.AV.O&quot;).GetStream();
+
+chainStream.open();
+
+// get and process the streaming data
+
+chainStream.close();
+</code></pre>

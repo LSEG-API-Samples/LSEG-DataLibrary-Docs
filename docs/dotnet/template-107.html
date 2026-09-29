@@ -1,0 +1,14 @@
+<h1 id="onstatus">OnStatus</h1>
+<p>Optional callback invoked when a EventCode event occurs on the streaming service.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IPricingStream OnStatus(Action&lt;string, JObject, IPricingStream&gt; statusCb)</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to display messages received when the stream status is successfully received:</p>
+<pre><code class="language-csharp">
+var stream = Pricing.Definition().Universe(&quot;EUR=&quot;)
+                                 .Fields(&quot;BID&quot;, &quot;ASK&quot;, &quot;DSPLY_NAME&quot;)
+                                 .GetStream();
+                                 
+stream.OnStatus((item, status, s) =&gt; Console.WriteLine($&quot;Status for item: {item}: {status}&quot;))
+      .Open() == Stream.State.Opened
+</code></pre>

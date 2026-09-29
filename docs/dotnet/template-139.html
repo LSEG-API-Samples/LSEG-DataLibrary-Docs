@@ -1,0 +1,263 @@
+<h1 id="sessions---definitions-and-use-cases">Sessions - Definitions and Use Cases</h1>
+<p>The following page will take you through session creation, configuration and usage.</p>
+<p>You will see examples on how to create a default session, a specific desktop or platform session, how to use multiple sessions in a given program and what options each of the session types has. Along the way, you will be introduced to several session related concepts, like session state, session events, several authentication and authorization features and configuration.</p>
+<p>The session-layer types described here live in the <code>LSEG.Data.Core</code> namespace. Each concrete session variant (<code>DesktopSession</code>, <code>DesktopDirectSession</code>, <code>PlatformSession</code>) exposes a <code>Definition(...)</code> factory returning a session-specific <code>I…Definition</code> fluent builder; the builder&#39;s <code>GetSession()</code> method finalises the request and returns an <code>ISession</code>.</p>
+<h3 id="entry-points">Entry points</h3>
+<p>The <code>Session</code> class is the generic factory used when the session type is chosen from configuration (JSON file):</p>
+<p><strong>Session.Definition(string sessionName = default)</strong><br>
+<strong>Session.Definition(Stream stream, string resourceName = default)</strong><br>
+<strong>Session.Definition(JObject config)</strong><br>
+<strong>Session.Definition(string sessionName, Stream stream, string resourceName = default)</strong><br>
+<strong>Session.Definition(string sessionName, JObject config)</strong><br>
+Define a session request. When <code>sessionName</code> is omitted, the <code>sessions.default</code> entry from the configuration is used. Each overload returns an <code>ISessionDefinition</code> whose <code>GetSession()</code> produces an <code>ISession</code>.</p>
+<p><strong>Session.DefaultSession</strong> <em>(static property, <code>ISession</code>)</em><br>
+The last session created through any of the <code>Definition(...)</code> factories. Convenient for library-level code that needs an implicit session handle.</p>
+<p><strong>Session.StateMsg(State state, string sessionName)</strong> <em>(static)</em><br>
+Text message associated with a <code>Session.State</code> code.</p>
+<p>For type-specific configuration in code (rather than JSON), use the dedicated factories described on their own pages:</p>
+<ul>
+<li><a href="#/sections/session-layer/desktop-session">DesktopSession</a> — for Eikon / Workspace desktop connections.</li>
+<li><a href="#/sections/session-layer/desktop-direct-session">DesktopDirectSession</a> — for Workspace API Gateway (WAG) connections.</li>
+<li><a href="#/sections/session-layer/platform-session">PlatformSession</a> — for direct Delivery Platform / RDP connections.</li>
+</ul>
+<h3 id="isession-members">ISession members</h3>
+<p><code>ISession</code> is the common interface implemented by every session variant.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Session.State Open(CancellationToken cancellationToken = default)</code></td>
+<td>method</td>
+<td>Open the session synchronously. Blocks until authentication and platform-specific resource initialisation complete.</td>
+</tr>
+<tr>
+<td><code>Task&lt;Session.State&gt; OpenAsync(CancellationToken cancellationToken = default)</code></td>
+<td>method</td>
+<td>Open the session asynchronously.</td>
+</tr>
+<tr>
+<td><code>bool Close()</code></td>
+<td>method</td>
+<td>Close all opened resources.</td>
+</tr>
+<tr>
+<td><code>Task&lt;bool&gt; CloseAsync()</code></td>
+<td>method</td>
+<td>Close all opened resources asynchronously.</td>
+</tr>
+<tr>
+<td><code>ISession OnState(Action&lt;Session.State, string, ISession&gt; cb)</code></td>
+<td>method</td>
+<td>Register a callback invoked when the session state changes.</td>
+</tr>
+<tr>
+<td><code>ISession OnEvent(Action&lt;Session.EventCode, JObject, ISession&gt; cb)</code></td>
+<td>method</td>
+<td>Register a callback invoked when a session event is reported.</td>
+</tr>
+<tr>
+<td><code>Session.State OpenState</code></td>
+<td>property</td>
+<td>Current open state of the session.</td>
+</tr>
+<tr>
+<td><code>Session.EventCode LastEventCode</code></td>
+<td>property</td>
+<td>Latest event code reported for the session.</td>
+</tr>
+<tr>
+<td><code>object LastEventMessage</code></td>
+<td>property</td>
+<td>Latest event message payload reported for the session.</td>
+</tr>
+<tr>
+<td><code>Connection.State StreamingState</code></td>
+<td>property</td>
+<td>Current state of the underlying streaming connection.</td>
+</tr>
+<tr>
+<td><code>bool SupportsDataRequests</code></td>
+<td>property</td>
+<td>Whether the session supports RESTful data requests. Notably <code>false</code> for sessions configured only for deployed streaming services.</td>
+</tr>
+</tbody></table>
+<h3 id="session-state">Session State</h3>
+<p><code>Session.State</code> (the <code>LSEG.Data.Core.State</code> enum).</p>
+<table>
+<thead>
+<tr>
+<th><strong>State</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>State.Pending</td>
+<td>The session is waiting to be opened or closed.</td>
+</tr>
+<tr>
+<td>State.Opened</td>
+<td>The session is open and ready to work.</td>
+</tr>
+<tr>
+<td>State.Closed</td>
+<td>The session is closed.</td>
+</tr>
+</tbody></table>
+<h3 id="session-event-codes">Session Event Codes</h3>
+<p><code>Session.EventCode</code> (<code>LSEG.Data.Core.EventCode</code>).</p>
+<table>
+<thead>
+<tr>
+<th><strong>Event Code</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>EventCode.None</td>
+<td>EventCode not set.</td>
+</tr>
+<tr>
+<td>EventCode.StreamConnected</td>
+<td>Denotes the connection to the streaming service has been successfully established.</td>
+</tr>
+<tr>
+<td>EventCode.StreamDisconnected</td>
+<td>Denotes the connection to the streaming service is not established.</td>
+</tr>
+<tr>
+<td>EventCode.SessionAuthenticationSuccess</td>
+<td>Denotes the session has successfully authenticated this client.</td>
+</tr>
+<tr>
+<td>EventCode.SessionAuthenticationFailed</td>
+<td>Denotes the session has failed to authenticate this client.</td>
+</tr>
+<tr>
+<td>EventCode.StreamAuthenticationSuccess</td>
+<td>Denotes the stream has successfully authenticated this client.</td>
+</tr>
+<tr>
+<td>EventCode.StreamAuthenticationFailed</td>
+<td>Denotes the stream has failed to authenticate this client.</td>
+</tr>
+<tr>
+<td>EventCode.StreamDiscoveryFailed</td>
+<td>Unable to query the streaming service based on specified location during streaming service discovery.</td>
+</tr>
+<tr>
+<td>EventCode.TokenRefreshFailed</td>
+<td>The request to refresh the access token for the session has failed.</td>
+</tr>
+<tr>
+<td>EventCode.TokenRevokeFailed</td>
+<td>The request to revoke the refresh token failed.</td>
+</tr>
+<tr>
+<td>EventCode.RealTimeAccessAllowed</td>
+<td>Real-time access has been granted to this session.</td>
+</tr>
+<tr>
+<td>EventCode.RealTimeAccessDenied</td>
+<td>Real-time access has been denied for this session.</td>
+</tr>
+</tbody></table>
+<!-- Maintainer review required: `RealTimeAccessAllowed` and `RealTimeAccessDenied` are enum fields with no XML `<summary>` in the SDK; descriptions above are inferred from the field names. -->
+
+<h3 id="oauth-20-grant-types-for-platform-sessions">OAuth 2.0 grant types for platform sessions</h3>
+<p><code>PlatformSession</code> authenticates against RDP with an <code>IGrant</code> implementation supplied via <code>OAuthGrantType(IGrant grant)</code>.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Grant class</strong></th>
+<th><strong>Purpose</strong></th>
+<th><strong>Required setters</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GrantPassword</code></td>
+<td>Resource-Owner Password Grant. Exchanges a user&#39;s credentials for an access token.</td>
+<td><code>UserName(string)</code>, <code>Password(string)</code>, optionally <code>Scope(string)</code></td>
+</tr>
+<tr>
+<td><code>ClientCredentials</code></td>
+<td>Client Credentials Grant. Exchanges a client ID / client secret pair for an access token.</td>
+<td><code>ClientID(string)</code>, <code>ClientSecret(string)</code>, optionally <code>Scope(string)</code></td>
+</tr>
+<tr>
+<td><code>ClientAssertion</code></td>
+<td>Client Credentials Grant with a signed JWT assertion.</td>
+<td><code>ClientID(string)</code>, one of <code>JWKFilename(string)</code> / <code>JsonWebKey(JObject)</code>, optionally <code>Scope(string)</code></td>
+</tr>
+</tbody></table>
+<p>All three grant classes are <code>IDisposable</code> and are typically created inside a <code>using</code> scope.</p>
+<h3 id="examples">Examples</h3>
+<p><strong>Create a session driven by configuration (session type comes from the JSON <code>sessions</code> block):</strong></p>
+<pre><code class="language-csharp">using (ISession session = Session.Definition().GetSession())
+{
+    if (session.Open() == Session.State.Opened)
+    {
+        logger.Info(&quot;Created session. Done.&quot;);
+    }
+} 
+</code></pre>
+<p><strong>Pick a named session from configuration:</strong></p>
+<pre><code class="language-csharp">// Desktop Session (name matches the entry under `sessions.desktop.*` in configuration)
+using (ISession desktopSession = Session.Definition(&quot;desktop&quot;).GetSession())
+{
+    // Open and use session here
+}
+
+// Platform Session created explicitly in code
+var platformSession = PlatformSession.Definition().GetSession();
+</code></pre>
+<p>Sessions can also be configured by embedding a JSON configuration file in your project. The example below assumes there is an embedded resource at the root level. At runtime the assembly is queried for that resource, which is then passed as a stream to the session <code>Definition()</code> call. When using a custom configuration, several other details will be required as follows:</p>
+<pre><code class="language-csharp">var resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+using var resource = Assembly.GetExecutingAssembly().GetManifestResourceStream(resources[0]);
+
+// We need to also specify an ADS (Advanced Distribution Server) host 
+var session = PlatformSession.Definition(resource)
+                             .Host(GlobalSettings.RTDSHost)
+                             .GetSession();
+
+// Alternatively, we can use an OAuth grant
+// We recommend using Global Settings to load this information from environment variables and avoid hard-coding
+
+using var grantPassword = new GrantPassword().UserName(GlobalSettings.MachineID)
+                                             .Password(GlobalSettings.MachinePasswd);
+
+using (var platformSession = PlatformSession.Definition(resource)
+                                            .AppKey(GlobalSettings.AppKey)
+                                            .OAuthGrantType(grantPassword)
+                                            .TakeSignonControl(true)
+                                            .GetSession())
+{
+    platformSession.OnStreamingEndpoint((api, endpoints, s) =&gt; DisplayEndpoints(api, endpoints))
+                   .OnState((state, msg, s) =&gt; Console.WriteLine($&quot;State: {state}. {msg}&quot;))
+                   .OnEvent((eventCode, msg, s) =&gt; Console.WriteLine($&quot;Event: {eventCode}. {msg}&quot;));
+}
+</code></pre>
+<!-- Maintainer review required: `GlobalSettings`, `AppKey` and `Host` on `IPlatformSessionDefinition` are referenced by existing examples but neither type appears as a public entry in the generated API inventory. Verify their public surface directly against the SDK. -->
+
+<p>The example below shows how to register and use callbacks for session state and events.</p>
+<pre><code class="language-csharp">List&lt;Session.EventCode&gt; events = new();
+List&lt;Session.State&gt; states = new();
+
+var platformSession = PlatformSession.Definition().GetSession();
+
+var sessionState = platformSession.OnEvent((e, o, s) =&gt;
+                                  {
+                                      output.WriteLine($&quot;Event: {e} - {o}&quot;);
+                                      events.Add(e);
+                                  }).OnState((state, o, s) =&gt;
+                                  {
+                                      output.WriteLine($&quot;State: {state} - {o}&quot;);
+                                      states.Add(state);
+                                  }).Open();
+
+var isSessionClosed = platformSession.Close();
+</code></pre>

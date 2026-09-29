@@ -1,0 +1,97 @@
+<h1 id="ipavolatilitysurfacedefinition-object">IPA.VolatilitySurface.Definition object</h1>
+<p><strong>Definition</strong> allows you to retrieve Volatility Surface data within a specific session.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>VolatilitySurface.Definition(JObject request = null)</code></p>
+<h3 id="volatilitysurface-definition-parameters">VolatilitySurface Definition Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th><strong>Optional</strong></th>
+<th align="left"><strong>Default value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>request</td>
+<td>A request object required to price a Volatility Surface.</td>
+<td>Yes</td>
+<td align="left">null</td>
+</tr>
+</tbody></table>
+<h3 id="volatilitysurfacedefinition-methods">VolatilitySurfaceDefinition Methods</h3>
+<p><strong>IVolatilitySurfaceDefinition NativeRequestParams(JObject request)</strong><br>
+The native JSON request. The request object is a flexible interface supporting all IPA Financial Contract interfaces.  Optional.</p>
+<p><strong>IVolatilitySurfaceDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IFinancialContractsDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>NativeRequestParams</code>, <code>Closure</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, IFinancialContractsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, IFinancialContractsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, IFinancialContractsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, IFinancialContractsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IVolatilitySurfaceDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IDataSetResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IDataSet</strong> type (<code>Raw</code>, <code>Table</code>, <code>Records</code>, <code>Errors</code>, <code>IsEmpty</code> - see <a href="#/sections/content-layer/ipa/financial-contracts/definition">FinancialContracts.Definition</a>).</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to request an ETI and an FX Volatility Surface using native request objects:</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.IPA;
+using Newtonsoft.Json.Linq;
+
+var etiSurface = new JObject()
+{
+    [&quot;surfaceTag&quot;] = &quot;myEti&quot;,
+    [&quot;underlyingType&quot;] = &quot;Eti&quot;,
+    [&quot;underlyingDefinition&quot;] = new JObject()
+    {
+        [&quot;instrumentCode&quot;] = &quot;BNPP.PA&quot;
+    },
+    [&quot;surfaceParameters&quot;] = new JObject()
+    {
+        [&quot;priceSide&quot;] = &quot;Mid&quot;,
+        [&quot;volatilityModel&quot;] = &quot;SSVI&quot;,
+        [&quot;xAxis&quot;] = &quot;Date&quot;,
+        [&quot;yAxis&quot;] = &quot;Moneyness&quot;
+    },
+    [&quot;surfaceLayout&quot;] = new JObject()
+    {
+        [&quot;format&quot;] = &quot;Matrix&quot;,
+        [&quot;yPointCount&quot;] = 10
+    }
+};
+
+var fxSurface = new JObject()
+{
+    [&quot;surfaceTag&quot;] = &quot;myFx&quot;,
+    [&quot;underlyingType&quot;] = &quot;Fx&quot;,
+    [&quot;underlyingDefinition&quot;] = new JObject()
+    {
+        [&quot;fxCrossCode&quot;] = &quot;EURUSD&quot;
+    },
+    [&quot;surfaceParameters&quot;] = new JObject()
+    {
+        [&quot;calculationDate&quot;] = &quot;2018-08-20T00:00:00Z&quot;,
+        [&quot;returnAtm&quot;] = true,
+        [&quot;xAxis&quot;] = &quot;Date&quot;,
+        [&quot;yAxis&quot;] = &quot;Strike&quot;
+    },
+    [&quot;surfaceLayout&quot;] = new JObject()
+    {
+        [&quot;format&quot;] = &quot;Matrix&quot;
+    }
+};
+
+var requestDetails = new JObject()
+{
+    [&quot;universe&quot;] = new JArray(etiSurface, fxSurface)
+};
+
+var response = VolatilitySurface.Definition(requestDetails).GetData();
+</code></pre>

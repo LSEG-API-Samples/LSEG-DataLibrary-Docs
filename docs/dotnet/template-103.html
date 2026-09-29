@@ -1,0 +1,15 @@
+<h1 id="itemexists">ItemExists</h1>
+<p>Check if the specified item exists within the stream cache.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>bool ItemExists(string item)</code></p>
+<h3 id="usage">Usage</h3>
+<pre><code class="language-csharp">var definition = Pricing.Definition().Fields(&quot;DSPLY_NAME&quot;, &quot;BID&quot;, &quot;ASK&quot;);
+
+stream.Open();
+
+var item = &quot;EUR=&quot;;
+stream.AddItems(item);
+var itemExists = stream.ItemExists(item); // true
+
+stream.Close();
+</code></pre>

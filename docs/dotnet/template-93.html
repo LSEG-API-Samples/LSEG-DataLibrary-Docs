@@ -1,0 +1,12 @@
+<h1 id="open">Open</h1>
+<p>Allows you to open a streaming chain connection.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Stream.State Open(CancellationToken cancellationToken = default)</code></p>
+<h3 id="returned-value">Returned value</h3>
+<p>A <code>Stream.State</code> value indicating if the stream opened. </p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create and open a pricing chain stream.</p>
+<pre><code class="language-csharp">var stream = Chain.Definition(&quot;.AV.O&quot;).GetStream();
+
+var streamState = stream.Open();
+</code></pre>

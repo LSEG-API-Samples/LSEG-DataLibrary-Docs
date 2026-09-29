@@ -1,0 +1,50 @@
+<h1 id="esgscores-object">ESG.Scores object</h1>
+<p><strong>Scores</strong> provides full coverage of LSEG&#39;s proprietary ESG Scores with full available history.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Scores.Definition(params string[] universe)</code><br>
+<code>Scores.Definition(IEnumerable&lt;string&gt; universe)</code><br>
+<code>Scores.Definition()</code></p>
+<h3 id="scoresdefinition-methods">ScoresDefinition Methods</h3>
+<p><strong>IScoresDefinition ServiceType(ServiceType type)</strong><br>
+The <a href="#/sections/content-layer/esg/service-type">service type</a> providing different coverage.  Optional.  Default: <code>ServiceType.full</code>.</p>
+<p><strong>IScoresDefinition Universe(params string[] universe)</strong><br>
+<strong>IScoresDefinition Universe(IEnumerable&lt;string&gt; universe)</strong><br>
+A comma-separated list of items.  Required.</p>
+<p><strong>IScoresDefinition Start(int start)</strong><br>
+<strong>IScoresDefinition End(int end)</strong><br>
+Range representing the number of Financial Years of data to return. The options available start with <code>0</code> for the latest Financial and then negative numbers for further Financials - for example, <code>Start(0)</code> and <code>End(-2)</code> will return the last three Financial years.  Optional.  Default: -20.</p>
+<p><strong>IScoresDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IScoresDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>IScoresDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>ServiceType</code>, <code>Universe</code>, <code>Start</code>, <code>End</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, IScoresDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, IScoresDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, IScoresDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, IScoresDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IScoresDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IDataSetResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IDataSet</strong> type.</p>
+<h3 id="idataset---properties">IDataSet - properties</h3>
+<p>JToken Raw { get; }<br>
+DataTable Table { get; }<br>
+IList&lt;IDataSetRecord&gt; Records { get; }<br>
+JToken Errors { get; }<br>
+bool IsEmpty { get; }<br></p>
+<h3 id="usage">Usage</h3>
+<pre><code class="language-csharp">using LSEG.Data.Content.ESG;
+
+var response = Scores.Definition(&quot;AAPL.O&quot;).GetData();
+</code></pre>
+<h3 id="related-links">Related links</h3>
+<ul>
+<li><a href="#/sections/content-layer/esg/service-type">ServiceType</a></li>
+</ul>

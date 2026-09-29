@@ -1,0 +1,178 @@
+<h1 id="searchdefinition">SearchDefinition</h1>
+<p>Defines a Search request to idenfity a matching set of documents which satisfy a criteria, sorts it, and selects a subset of the matches to return as the result set. Each step can be controlled via parameters.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>ISearchDefinition Definition(ExploreView view = ExploreView.Entities)</code><br>
+<code>ISearchDefinition Definition(View view)</code><br>
+<code>ISearchDefinition Definition(LightView view)</code></p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th align="left"><strong>Data type</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>view</td>
+<td>A value representing the type of View the Search service shoudl use</td>
+<td align="left">enum</td>
+</tr>
+</tbody></table>
+<h3 id="returned-value">Returned value</h3>
+<p><code>ISearchDefinition</code> object.</p>
+<h3 id="searchdefinition-methods">SearchDefinition Methods</h3>
+<p><strong>ISearchDefinition View(Search.ExploreView view)</strong><br>
+The supported View to search against the explore services.<br>
+The view is optional. Default: Search.ExploreView.Entities.</p>
+<p><strong>ISearchDefinition View(Search.View view)</strong><br>
+The supported View to search against the full services.<br>
+The view is optional. Default: Search.ExploreView.Entities.</p>
+<p><strong>ISearchDefinition View(Search.LightView view)</strong><br>
+The supported View to search against the light service.<br>
+The view is optional. Default: Search.ExploreView.Entities.</p>
+<p><strong>ISearchDefinition Query(string query)</strong><br>
+The query expression defining freeform entry of search terms.</p>
+<p><strong>ISearchDefinition Filter(string filter)</strong><br>
+Filter expression supports structured predicate expressions.</p>
+<p><strong>ISearchDefinition Select(string select)</strong><br>
+A comma-separated list of the properties of a document to be returned in the response.</p>
+<p><strong>ISearchDefinition Boost(string boost)</strong><br>
+Boost applies a scoring boost to documents it matches, which will almost always guarantee that they appear at the top of the results. <br>
+Boost supports exactly the same predicate expression syntax as Filter, except Filter restricts which documents are matched.</p>
+<p><strong>ISearchDefinition OrderBy(string order)</strong><br>
+Defines the order in which matching documents should be returned. Default is by score descending.</p>
+<p><strong>ISearchDefinition GroupBy(string group)</strong><br>
+Returned documents are grouped into buckets based on their value for this property.</p>
+<p><strong>ISearchDefinition GroupCount(uint count)</strong><br>
+When supplied in combination with GroupBy, sets the maximum number of documents to be returned per bucket.</p>
+<p><strong>ISearchDefinition Top(uint top)</strong><br>
+The maximum number of documents to retrieve. Default is 10. Must be non-negative. <br>
+A value of 0 returns no hits but sets the Total based on matches.</p>
+<p><strong>ISearchDefinition Skip(uint skip)</strong><br>
+The number of documents to skip in the sorted result set before returning the next Top.</p>
+<p><strong>ISearchDefinition Navigators(string navigators)</strong><br>
+This can name one or more properties, separated by commas, each of which must be Navigable.</p>
+<p><strong>ISearchDefinition Features(string features)</strong><br>
+This can name one or more properties, separated by commas, each of which must be Navigable.</p>
+<p><strong>ISearchDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>ISearchDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface. The extended params act as a fallback in case properties are unavailable, or as an alternative for users that prefer to define the request using native JSON definitions.  Optional.</p>
+<p><strong>ISearchDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>View</code>, <code>LightView</code>, <code>Query</code>, <code>Filter</code>, <code>Select</code>, <code>Boost</code>, <code>OrderBy</code>, <code>GroupBy</code>, <code>GroupCount</code>, <code>Top</code>, <code>Skip</code>, <code>Navigators</code>, <code>Features</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>ISearchResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>ISearchResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>ISearchResponse GetData(Action&lt;ISearchResponse, ISearchDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>ISearchResponse GetData(ISession session, Action&lt;ISearchResponse, ISearchDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Synchronously retrieve the search results from the backend service.</p>
+<p><strong>Task&lt;ISearchResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ISearchResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ISearchResponse&gt; GetDataAsync(Action&lt;ISearchResponse, ISearchDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;ISearchResponse&gt; GetDataAsync(ISession session, Action&lt;ISearchResponse, ISearchDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the search results from the backend service.</p>
+<h3 id="response">Response</h3>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>ISearchResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>ISearchData</strong> type.</p>
+<h3 id="isearchdata---properties">ISearchData - properties</h3>
+<p>int? Total { get; }<br>
+IList&lt;JObject&gt; Hits { get; }<br>
+DataTable Table { get; }<br>
+JObject Navigators { get; }<br>
+IList&lt;string&gt; Warnings { get; }<br>
+JObject Raw { get; }<br></p>
+<h3 id="usage">Usage</h3>
+<p>Below we have a provided a code snippet containing several search cases</p>
+<pre><code class="language-csharp">// Search for Top CEOs where Apple appears in the document - Display DocumentTitle and its subtype/components.
+// Note: Include an invalid property not related to people (BondType)
+var request = Search.Definition()
+                    .View(Search.View.SearchAll)
+                    .Query(&quot;CEO Apple&quot;)
+                    .Select(&quot;DocumentTitle, DTSubjectName, BondType, DTSimpleType, DTCharacteristics&quot;);
+
+// Invalid request - ShortName can&#39;t be used in startswith function because it doesn&#39;t support the
+// &#39;Exact&#39; match capability.
+request = Search.Definition(Search.View.Organisations)
+                .Filter(&quot;startswith(ShortName,&#39;H&#39;)&quot;);
+
+// Search for past and present executives within Apple Inc.
+request = Search.Definition(Search.View.People)
+                .Filter(&quot;OfficerDirector(CompanyId eq &#39;4295905573&#39;)&quot;)
+                .Top(30)
+                .Select(&quot;FullName, YearOfBirth, PrimaryTitleAsReported&quot;);
+
+
+// Search for all the RICs where &#39;LSE&#39; is in the name, exclude all derivatives and ensure the state is active (AC)
+request = Search.Definition(Search.View.Quotes)
+                .Filter(&quot;TickerSymbol eq &#39;LSE&#39; and AssetType ne &#39;derivative&#39; and AssetState eq &#39;AC&#39;&quot;)
+                .Select(&quot;AssetState, DTSubjectName, DTSimpleType, DTSource, DTCharacteristics, RIC, SearchAllCategoryv3, AssetType&quot;);
+
+// Oil refineries in Venezula, Especially ones that arzen&#39;t currently operational (Boost plant status).
+request = Search.Definition(Search.View.PhysicalAssets)
+                .Filter(&quot;RCSAssetTypeLeaf eq &#39;oil refinery&#39; and RCSRegionLeaf eq &#39;Venezuela&#39;&quot;)
+                .Boost(&quot;PlantStatus ne &#39;Normal Operation&#39;&quot;)
+                .Select(&quot;DocumentTitle, PlantStatus&quot;)
+                .Top(100);
+
+// The youngest CEO&#39;s
+request = Search.Definition(Search.View.People)
+                .Query(&quot;ceo&quot;)
+                .OrderBy(&quot;YearOfBirth desc,LastName,FirstName&quot;)
+                .Select(&quot;YearOfBirth, name&quot;); 
+
+// Top currencies for Gov Corp Bonds
+request = Search.Definition(Search.View.GovCorpInstruments)
+                .Top(0)
+                .Navigators(&quot;Currency(buckets:5,desc:sum_FaceOutstandingUSD,calc:max_CouponRate)&quot;);
+
+// Top 2 rate indicators for each central bank
+request = Search.Definition(Search.View.IndicatorQuotes)
+                .Query(&quot;rates&quot;)
+                .GroupBy(&quot;CentralBankName&quot;)
+                .GroupCount(2)
+                .Select(&quot;CentralBankName,DocumentTitle,RIC&quot;);
+
+// Top 10 Gov Corp instruments for specific range of coupon rates and ratings.
+// Note: &quot;_&quot; in Select means to include default fields.
+var filter = &quot;RatingsScope(RatingType eq &#39;MBU&#39;) and AssetState eq &#39;AC&#39;&quot;;
+request = Search.Definition(Search.View.GovCorpInstruments)
+                .Top(10)
+                .Filter(filter)
+                .Select(&quot;_, RatingsScope(filter:((RatingType xeq &#39;MBU&#39;))), RatingX1XRatingRank&quot;);
+
+// Use _debugall as a tool to inspect all available Properties for a given search
+request = Search.Definition(Search.View.SearchAll)
+                .Query(&quot;CFO IBM&quot;)
+                .Top(1)
+                .Select(&quot;_debugall&quot;);
+
+// Search for all the RICs where &#39;LSE&#39; is in the name, exclude all derivatives and ensure the state is active (AC)
+request = Search.Definition()
+                .View(Search.LightView.EquityQuotes)
+                .Filter(&quot;TickerSymbol eq &#39;LSE&#39; and AssetType ne &#39;derivative&#39; and AssetState eq &#39;AC&#39;&quot;)
+                .Select(&quot;DocumentTitle, AssetState, RIC, SearchAllCategoryv3, AssetType&quot;);
+
+request = Search.Definition()
+                .View(Search.LightView.SearchAllLight)
+                .Filter(&quot;IssuerName eq &#39;US Treasury&#39; and Currency eq &#39;USD&#39; and SearchAllCategoryv3 eq &#39;Bonds&#39; and IsActive eq true&quot;)
+                .Select(&quot;RIC,ISIN,IssuerName,MaturityDate,CouponRate&quot;);
+
+// Top currencies for Gov Corp Bonds
+request = Search.Definition(Search.LightView.GovCorpInstruments)
+                .Top(0)
+                .Navigators(&quot;Currency(buckets:5,calc:max_CouponRate)&quot;);
+
+// Top 2 rate indicators for each central bank
+request = Search.Definition(Search.LightView.IndicatorQuotes)
+                .Query(&quot;rates&quot;)
+                .GroupCount(2)
+                .Select(&quot;DocumentTitle,RIC&quot;);
+
+// Find any data on Bill Gates
+request = Search.Definition(Search.LightView.SearchAllLight)
+                .Query(&quot;Bill Gates&quot;);
+</code></pre>
+<h3 id="related-links">Related Links</h3>
+<ul>
+<li><a href="#/sections/content-layer/search/views">Search Views</a></li>
+</ul>

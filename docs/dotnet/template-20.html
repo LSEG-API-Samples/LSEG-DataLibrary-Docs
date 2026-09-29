@@ -1,0 +1,72 @@
+<h1 id="singleeventdefinition-object">SingleEvent.Definition object</h1>
+<p>This object defines the request definition used to retrieve a single time series pricing event.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>SingleEvent.Definition()</code><br>
+<code>SingleEvent.Definition(string ric)</code></p>
+<h3 id="singleeventdefinition-methods">SingleEventDefinition Methods</h3>
+<p><strong>ISingleEventDefinition Universe(string universe)</strong><br>
+A universe element, e.g. RIC item name.  Required.</p>
+<p><strong>ISingleEventDefinition Fields(params string[] fields)</strong><br>
+<strong>ISingleEventDefinition Fields(IEnumerable&lt;string&gt; fields)</strong><br>
+A comma separated list of fields to be returned in the response.  Optional.</p>
+<p><strong>ISingleEventDefinition EventTypes(params Events.EventType[] eventTypes)</strong><br>
+<strong>ISingleEventDefinition EventTypes(IEnumerable&lt;Events.EventType&gt; eventTypes)</strong><br>
+A list of <a href="#/sections/content-layer/historical-pricing/event-types">event</a> types to apply.  Optional.  Default: trade, quote, correction.</p>
+<p><strong>ISingleEventDefinition Start(DateTime date)</strong><br>
+<strong>ISingleEventDefinition Start(string date)</strong><br>
+The start date (UTC) and timestamp of the query.  Optional.</p>
+<p><strong>ISingleEventDefinition End(DateTime date)</strong><br>
+<strong>ISingleEventDefinition End(string date)</strong><br>
+The end date (UTC) and timestamp of the query.  Optional.</p>
+<p><strong>ISingleEventDefinition Adjustments(params Events.Adjustments[] adjustments)</strong><br>
+<strong>ISingleEventDefinition Adjustments(IEnumerable&lt;Events.Adjustments&gt; adjustments)</strong><br>
+A list of <a href="#/sections/content-layer/historical-pricing/adjusments">adjustment</a> types to apply.  Optional.</p>
+<p><strong>ISingleEventDefinition Qos(HistoricalPricing.Qos qos)</strong><br>
+Enforce a specific historical pricing <a href="#/sections/content-layer/historical-pricing/qos-types">Quality of Service</a>.  Optional.  Default: best quality based on permissions.</p>
+<p><strong>ISingleEventDefinition Sessions(params HistoricalPricing.Sessions[] sessions)</strong><br>
+<strong>ISingleEventDefinition Sessions(IEnumerable&lt;HistoricalPricing.Sessions&gt; sessions)</strong><br>
+The list of <a href="#/sections/content-layer/historical-pricing/sessions">market session</a> classifications to apply.  Optional.</p>
+<p><strong>ISingleEventDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>ISingleEventDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Specifies the parameters that will be merged with the request.  Optional.</p>
+<p><strong>ISingleEventDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Universe</code>, <code>View</code>, <code>EventTypes</code>, <code>StartDate</code>, <code>EndDate</code>, <code>Adjustments</code>, <code>Qos</code>, <code>Sessions</code>, <code>ExtendedParams</code>, <code>Closure</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, ISingleEventDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, ISingleEventDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, ISingleEventDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, ISingleEventDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>ISingleEventDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IDataSetResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IDataSet</strong> type.</p>
+<h3 id="idataset---properties">IDataSet - properties</h3>
+<p>JToken Raw { get; }<br>
+DataTable Table { get; }<br>
+IList&lt;IDataSetRecord&gt; Records { get; }<br>
+JToken Errors { get; }<br>
+bool IsEmpty { get; }<br></p>
+<p>Each entry in <strong>Records</strong> is an <strong>IDataSetRecord</strong> describing the requested <code>Universe</code>, the <code>Fields</code> returned, and the corresponding <code>Data</code> points for that instrument.</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create a single-event definition object for VOD.L, filtering trade events within a date range.</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.HistoricalPricing;
+
+var response = SingleEvent.Definition(&quot;VOD.L&quot;)
+                          .EventTypes(Events.EventType.trade)
+                          .Start(new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+                          .End(&quot;2022-01-10&quot;)
+                          .GetData();
+</code></pre>
+<h3 id="related-links">Related links</h3>
+<ul>
+<li><a href="#/sections/content-layer/historical-pricing/adjusments">Adjustments</a></li>
+<li><a href="#/sections/content-layer/historical-pricing/event-types">Event types</a></li>
+<li><a href="#/sections/content-layer/historical-pricing/qos-types">Quality of Service (QoS)</a></li>
+<li><a href="#/sections/content-layer/historical-pricing/sessions">Market sessions</a></li>
+</ul>

@@ -1,0 +1,22 @@
+<h1 id="getstream">GetStream</h1>
+<p>Creates a <a href="#/sections/content-layer/pricing/chain/streams/intro">Pricing.ChainStream</a> object for the defined data.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>definition.GetStream()</code></p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>ChainStream</code> object</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to get service directory stream object</p>
+<pre><code class="language-csharp">// Create a non-streaming chain (simple syntax) - skip summaries and any blank links.
+var chainStream = Chain.Definition(chain).GetStream().Streaming(false).Open();
+
+Console.WriteLine($&quot;\nRetrieved Chain RIC: {chain.DisplayName}&quot;);
+
+// Display the 3 first elements of the chain
+int idx = 0;
+foreach (string constituent in chain.Constituents.Take(3))
+{
+    Console.WriteLine($&quot;\t{++idx,2}. {constituent}&quot;);
+}
+
+Console.WriteLine($&quot;\t...\n\t&lt;total of {constituents.Count} elements.&gt;&quot;);
+</code></pre>

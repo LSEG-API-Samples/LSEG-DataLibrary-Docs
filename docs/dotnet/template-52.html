@@ -1,0 +1,11 @@
+<h1 id="about-financial-contracts">About Financial Contracts</h1>
+<p><strong>Financial Contracts</strong> allows you to retrieve data about financial instruments using multiple content objects belonging to the Financial Contracts group that includes:</p>
+<ul>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/bond/definition">Bond</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/cap-floor/intro">CapFloor</a> </li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/fx-cross/intro">FxCross</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/intro">Option</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/swaption/intro">Swaption</a></li>
+</ul>
+<p>Each asset type (<code>Bond</code>, <code>OptionEti</code>, <code>OptionFx</code>, etc.) implements the common <strong>IFinancialAssetType</strong> interface, exposing a single <code>JToken Serialize()</code> method used internally to package the asset&#39;s parameters into the JSON structure expected by the Financial Contracts endpoint.</p>
+<p>Similarly, the pricing-parameter sub-definitions used by each asset type (e.g. <code>Bond.PricingDefinition()</code>) implement the common <strong>IPricingParameters</strong> interface, also exposing a <code>JToken Serialize()</code> method.</p>

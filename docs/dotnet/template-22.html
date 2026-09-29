@@ -1,0 +1,218 @@
+<h1 id="historicalpricingsummariesdefinition-object">HistoricalPricing.Summaries.Definition object</h1>
+<p>This object defines the request definition used to retrieve particular historical pricing summaries data.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>HistoricalPricing.Summaries.Definition(params string[] items)</code><br>
+<code>HistoricalPricing.Summaries.Definition(IEnumearable&lt;string&gt; items)</code><br>
+<code>HistoricalPricing.Summaries.Definition()</code></p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th><strong>Optional</strong></th>
+<th align="left"><strong>Default value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>items</td>
+<td>A collection of instruments</td>
+<td>No</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
+<p>The universe can be specified using either the Definition() method or the Universe() method.
+For a request to be valid it must specify at least one valid universe.</p>
+<h3 id="summariesdefinition-methods">SummariesDefinition Methods</h3>
+<p><strong>ISummariesDefinition Universe(params string[] universe)</strong><br>
+<strong>ISummariesDefinition Universe(IEnumerable&lt;string&gt; universe)</strong><br>
+List of instruments, e.g. RIC item names.  Note: Multiple items only applicable for interday.  Required.</p>
+<p><strong>ISummariesDefinition Fields(params string[] fields)</strong><br>
+<strong>ISummariesDefinition Fields(IEnumerable&lt;string&gt; fields)</strong><br>
+A comma separated list of fields to be returned in the response.  Optional.  Default: all available fields.</p>
+<p><strong>ISummariesDefinition Interval(Summaries.Interval interval)</strong><br>
+The interval specification.  Optional.  Default: the backend returns the lowest interday interval.</p>
+<p><strong>ISummariesDefinition Start(DateTime date)</strong><br>
+<strong>ISummariesDefinition Start(string date)</strong><br>
+The start date (ISO8601 format) of the period.  Required for Intraday intervals.</p>
+<p><strong>ISummariesDefinition End(DateTime date)</strong><br>
+<strong>ISummariesDefinition End(string date)</strong><br>
+The end date (ISO8601 format) of the period.  Required for Intraday intervals.</p>
+<p><strong>ISummariesDefinition Adjustments(params Summaries.Adjustments[] adjustments)</strong><br>
+<strong>ISummariesDefinition Adjustments(IEnumerable&lt;Summaries.Adjustments&gt; adjustments)</strong><br>
+A list of <a href="#/sections/content-layer/historical-pricing/adjusments">adjustment</a> types to apply.  Optional.</p>
+<p><strong>ISummariesDefinition Count(uint count)</strong><br>
+The maximum number of data items returned.  Optional.  Default: 20 (unless both <code>Start</code> and <code>End</code> are specified).</p>
+<p><strong>ISummariesDefinition Sessions(params HistoricalPricing.Sessions[] sessions)</strong><br>
+<strong>ISummariesDefinition Sessions(IEnumerable&lt;HistoricalPricing.Sessions&gt; sessions)</strong><br>
+The list of <a href="#/sections/content-layer/historical-pricing/sessions">market session</a> classifications to apply.  Applicable to intraday summary intervals only.  Optional.</p>
+<p><strong>ISummariesDefinition TimestampLabel(Summaries.TimestampLabel label)</strong><br>
+The pattern of timestamp label in the response.  Optional.</p>
+<p><strong>ISummariesDefinition Qos(HistoricalPricing.Qos qos)</strong><br>
+Enforce a specific historical pricing <a href="#/sections/content-layer/historical-pricing/qos-types">Quality of Service</a>.  Optional.  Default: best quality based on permissions.</p>
+<p><strong>ISummariesDefinition Service(string service)</strong><br>
+The name of the service providing the desired streaming price data.  Optional.  Default: defined within the streaming platform.</p>
+<p><strong>ISummariesDefinition PinStart(bool pinStart)</strong><br>
+Dictates the position of the returned data within the time series.  Optional.  Default: false.</p>
+<p><strong>ISummariesDefinition UseChunking(bool useChunking)</strong><br>
+Enables the chunking feature, fetching intraday summaries directly from the CDN. Advised for use with large amounts of data.  Optional.  Default: false.</p>
+<p><strong>ISummariesDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Specifies the parameters that will be merged with the request.  Optional.</p>
+<p><strong>ISummariesDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>ISummariesDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Universe</code>, <code>View</code>, <code>Interval</code>, <code>StartDate</code>, <code>EndDate</code>, <code>Adjustments</code>, <code>MaxCount</code>, <code>Sessions</code>, <code>TimestampLabel</code>, <code>Qos</code>, <code>Service</code>, <code>PinStart</code>, <code>ExtendedParams</code>, <code>Closure</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, ISummariesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, ISummariesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, IChunkDetails, ISummariesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, IChunkDetails, ISummariesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the chunked data from the backend service. Streams multiple responses as chunks are received and processed, then aggregates them into a single response once all chunks have been processed. Use <code>IChunkDetails</code> to identify the chunk details like index, position, or the total number of records available for that specific chunk.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, ISummariesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, ISummariesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, IChunkDetails, ISummariesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, IChunkDetails, ISummariesDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the chunked data from the backend service. To stream chunks as they are retrieved, implement the callback in this overload.</p>
+<p><strong>ISummariesStream GetStream()</strong><br>
+<strong>ISummariesStream GetStream(ISession session)</strong><br>
+Retrieve a streaming interface to manage real-time updates for the specified historical pricing request. See <a href="#/sections/content-layer/historical-pricing/summaries/streams/intro">Summaries.Stream</a>.</p>
+<h4 id="streaming-usage">Streaming usage</h4>
+<p>The following example demonstrates how to retrieve streaming daily summaries for AAPL.O, blending real-time updates into the initial historical snapshot.</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.HistoricalPricing;
+
+var stream = Summaries.Definition(&quot;AAPL.O&quot;)
+                      .Fields(&quot;HIGH_1&quot;, &quot;LOW_1&quot;, &quot;OPEN_PRC&quot;, &quot;TRDPRC_1&quot;, &quot;HST_CLOSE&quot;, &quot;NUM_MOVES&quot;, &quot;ACVOL_UNS&quot;)
+                      .Interval(Summaries.Interval.P1D)
+                      .Count(5)
+                      .GetStream();
+
+stream.OnInsert((data, s) =&gt; Console.WriteLine($&quot;INSERT: {DateTime.Now}. RT Seqnum: {s.LastMsgSeqNum}\n{data.Table}&quot;))
+      .OnUpdate((update, s) =&gt; Console.WriteLine($&quot;UPDATE: {DateTime.Now}. RT Seqnum: {s.LastMsgSeqNum}\n{update.Table}&quot;))
+      .OnStatus((status, s) =&gt; Console.WriteLine($&quot;Received status: {status}&quot;))
+      .OnError((error, s) =&gt; Console.WriteLine($&quot;Received error: {error}&quot;))
+      .BlendRealtimeInSnapshot(true)
+      .Open();
+</code></pre>
+<h3 id="returned-value">Returned value</h3>
+<p><code>ISummariesDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IDataSetResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IDataSet</strong> type.</p>
+<h3 id="idataset---properties">IDataSet - properties</h3>
+<p>JToken Raw { get; }<br>
+DataTable Table { get; }<br>
+IList&lt;IDataSetRecord&gt; Records { get; }<br>
+JToken Errors { get; }<br>
+bool IsEmpty { get; }<br></p>
+<p>Each entry in <strong>Records</strong> is an <strong>IDataSetRecord</strong> describing the requested <code>Universe</code>, the <code>Fields</code> returned, and the corresponding <code>Data</code> points for that instrument.</p>
+<h4 id="usage">Usage</h4>
+<p>The following examples demonstrates how to create a historical pricing summaries definition object for LSEG.L and retrieve data. </p>
+<pre><code class="language-csharp">using LSEG.Data.Content.HistoricalPricing;
+
+var definition = Summaries.Definition(&quot;LSEG.L&quot;);
+
+var summariesData = definition.GetData();
+</code></pre>
+<p>The universe can be specified using either the Definition() method or the Universe() method.
+For a request to be valid it specify at least one valid universe. </p>
+<p>The following example creates a summaries definition with several details.</p>
+<p>A summary interday interval of 1 Day (Summaries.Interval.P1D) means that the definition will retrieve daily bars. </p>
+<p>Another detail is the Quality of Service (QoS) that is explicitly specified as &quot;delayed&quot;. 
+This means that we are requesting delayed data for the instrument defined in the Universe() method.
+If no QoS is defined, the definition will attempt to retrieve real-time data. 
+If the user has no permissions to retrieve real time data, it will retrieve delayed data. </p>
+<p>The Fields() method can be used to specify which fields should be retrieved. 
+If no fields are defined, then all the available fields of the instrument will be retrieved.</p>
+<p>The Count() method can be used to specify the maximum number of rows. </p>
+<pre><code class="language-csharp">using LSEG.Data.Content.HistoricalPricing;
+
+var response = Summaries.Definition()
+                        .Universe(&quot;AAPL.O&quot;)
+                        .Interval(Summaries.Interval.P1D)
+                        .Qos(HistoricalPricing.Qos.delayed)
+                        .Fields(&quot;DATE&quot;, &quot;HIGH_1&quot;, &quot;LOW_1&quot;)
+                        .Count(1000)
+                        .GetData();
+</code></pre>
+<p>The example below shows how to retrieve data by specifying the interday interval of 1 Month.
+We can also mention a desired time interval using the Start() and End() methods.   </p>
+<pre><code class="language-csharp">using LSEG.Data.Content.HistoricalPricing;
+
+var response = Summaries.Definition(&quot;VOD.L&quot;)
+                        .Interval(Summaries.Interval.P1M) // Interday - 1 Month 
+                        .Fields(&quot;TRDPRC_1&quot;, &quot;LOW_1&quot;, &quot;HIGH_1&quot;)
+                        .Start(new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+                        .End(&quot;2022-01-10&quot;)
+                        .GetData();
+</code></pre>
+<h3 id="summaries-intervals">Summaries Intervals</h3>
+<p>The list of intervals for interday and intraday for Summaries.Interval</p>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>P1D</td>
+<td>One (1) day (daily) duration Interday interval.</td>
+</tr>
+<tr>
+<td>P7D</td>
+<td>Seven (7) day (weekly) duration Interday interval.</td>
+</tr>
+<tr>
+<td>P1W</td>
+<td>One (1) week (weekly) duration Interday interval.</td>
+</tr>
+<tr>
+<td>P1M</td>
+<td>One (1) month (monthly) duration Interday interval.</td>
+</tr>
+<tr>
+<td>P3M</td>
+<td>Three (3) month (quarterly) duration Interday interval.</td>
+</tr>
+<tr>
+<td>P12M</td>
+<td>Twelve (12) month (yearly) duration Interday interval.</td>
+</tr>
+<tr>
+<td>P1Y</td>
+<td>One (1) year (yearly) duration Interday interval.</td>
+</tr>
+<tr>
+<td>PT1M</td>
+<td>One (1) minute duration Intraday interval.</td>
+</tr>
+<tr>
+<td>PT5M</td>
+<td>Five (5) minute duration Intraday interval.</td>
+</tr>
+<tr>
+<td>PT10M</td>
+<td>Ten (10) minute duration Intraday interval.</td>
+</tr>
+<tr>
+<td>PT30M</td>
+<td>Thirty (30) minute duration Intraday interval.</td>
+</tr>
+<tr>
+<td>PT60M</td>
+<td>Sixty (60) minute (hourly) duration Intraday interval.</td>
+</tr>
+<tr>
+<td>PT1H</td>
+<td>One (1) hours (hourly) duration Intraday interval.</td>
+</tr>
+</tbody></table>
+<h3 id="related-links">Related Links</h3>
+<ul>
+<li><a href="#/sections/content-layer/historical-pricing/adjusments">Adjustments</a></li>
+<li><a href="#/sections/content-layer/historical-pricing/sessions">Market sessions</a></li>
+</ul>

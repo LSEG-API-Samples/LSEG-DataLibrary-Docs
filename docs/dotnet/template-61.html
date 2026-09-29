@@ -1,0 +1,193 @@
+<h1 id="about-the-financial-contracts-option-eti">About the Financial Contracts Option ETI</h1>
+<p>Financial Contracts provide 2 main definition for retrieving options data:</p>
+<p><strong>OptionFxDefinition</strong><br>
+<strong>OptionEtiDefinition</strong></p>
+<p>Alternatively, option data can also be retrieved using <strong>FinancialContractsDefinition</strong> with a specific request object.</p>
+<h3 id="optionetidefinition---options-methods">OptionEtiDefinition - options methods</h3>
+<p><strong>InstrumentTag(string tag)</strong><br>
+A user-defined string to identify the instrument.</p>
+<p><strong>InstrumentCode(string code)</strong><br>
+RIC of an ETI option, used to retrieve the option contract description. Optional.<br>If not specified, instrumentCode of UnderlyingDefinition must be provided.</p>
+<p><strong>PricingParams(OptionEti.IEtiPricingDefintion pricing)</strong><br>
+Properties used to control the Fx pricing calculations.</p>
+<p><strong>Fields(params string[] fields)</strong><br>
+The collection of fields included within the response. Default: all available on the server.</p>
+<p><strong>Fields(IEnumerable<string> fields)</strong><br>
+The collection of fields included within the response. Default: all available on the server.</p>
+<p><strong>Outputs(params FinancialContracts.Output[] outputs)</strong><br>
+Defines the sections that will be returned within the response.</p>
+<p><strong>Outputs(IEnumerable&lt;FinancialContracts.Output&gt; outputs)</strong><br>
+Defines the sections that will be returned within the response.</p>
+<p><strong>Strike(double strike)</strong><br>
+Option strike price. Required only if pricing an OTC Option.</p>
+<p><strong>BuySell(FinancialContracts.BuySell buySell)</strong><br>
+The side of the deal.  Optional. Default: Buy.</p>
+<p><strong>CallPut(FinancialContracts.CallPut callPut)</strong><br>
+Defines the type of an option.  Optional. Default: Call.</p>
+<p><strong>ExcerciseStyle(OptionEti.ExerciseStyle style)</strong><br>
+Defines the exercise style of the option.  Optional. Default: Euro.</p>
+<p><strong>EndDate(DateTime date)</strong><br>
+The Option expiry date expressed in ISO 8601 format. Required only when pricing an OTC Option.</p>
+<p><strong>EndDate(string date)</strong><br>
+The Option expiry date expressed in ISO 8601 format. Required only when pricing an OTC Option.</p>
+<p><strong>UnderlyingInstrument(string underlying)</strong><br>
+Details of the underlying Instrument Code.</p>
+<p><strong>AsianDefinition(OptionEti.IEtiAsianDefinition asian)</strong><br>
+An Asian option is an option type where the payoff depends on the average price of the underlying asset over a certain period of time.</p>
+<p><strong>BarrierDefinition(OptionEti.IEtiBarrierDefintion barrier)</strong><br>
+Details of a barrier option. Required only when defining a barrier option.</p>
+<p><strong>DoubleBarriersDefinition(OptionEti.IEtiDoubleBarrierDefinition barrier)</strong><br>
+Details of an FX double barrier option. Required only when defining a barrier option.</p>
+<p><strong>BinaryDefinition(OptionEti.IEtiBinaryDefinition binary)</strong><br>
+Details of an Fx binary option. Required only when defining a binary option.</p>
+<p><strong>CBBCDefinition(OptionEti.IEtiCbbcDefinition cbbc)</strong><br>
+Details for CBBC (Call Bear/Bull Contract) option. Required only when defining a CBBC option</p>
+<p><strong>LotSize(double lotSize)</strong><br>
+The lot size (the number of options bought or sold in one transaction). Optional.  Default: 2.</p>
+<p><strong>DealContract(int contract)</strong><br>
+Number of contracts bought or sold in the deal.  Optional</p>
+<p><strong>Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.
+The extended params acts as a fallback measure in case properties are unavailable. 
+It is also an alternative for users that prefer to define the request using native json definitions.</p>
+<p><strong>IOptionEtiDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Fields</code>, <code>Outputs</code>, <code>InstrumentTag</code>, <code>InstrumentCode</code>, <code>Strike</code>, <code>BuySell</code>, <code>CallPut</code>, <code>ExerciseStyle</code>, <code>EndDate</code>, <code>UnderlyingInstrument</code>, <code>PricingDefinition</code>, <code>AsianDefinition</code>, <code>BarrierDefinition</code>, <code>DoubleBarrierDefinition</code>, and more).</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IOptionEtiDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IDataSetResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IDataSet</strong> type (<code>Raw</code>, <code>Table</code>, <code>Records</code>, <code>Errors</code>, <code>IsEmpty</code> - see <a href="#/sections/content-layer/ipa/financial-contracts/definition">FinancialContracts.Definition</a>).</p>
+<h3 id="sub-definition-builders">Sub-definition builders</h3>
+<p>The following static builders create the sub-definition objects accepted by <code>PricingParams()</code>, <code>AsianDefinition()</code>, <code>BarrierDefinition()</code>, <code>DoubleBarriersDefinition()</code>, <code>BinaryDefinition()</code> and <code>CBBCDefinition()</code> above. Each exposes its own <code>Properties</code> companion interface (<code>...Params</code>) describing the values within the defined sub-request.</p>
+<p><strong>OptionEti.PricingDefinition()</strong> returns an <strong>IEtiPricingDefintion</strong> (properties: <strong>IEtiPricingDefinitionParams</strong>)<br>
+<code>ValuationDate</code>, <code>MarketDataDate</code>, <code>ReportCcy</code>, <code>MarketValueInDealCcy</code>, <code>PricingModelType</code>, <code>DividendType</code>, <code>DividendYieldPercent</code>, <code>VolatilityPercent</code>, <code>RiskFreeRatePercent</code>, <code>UnderlyingPrice</code>, <code>VolatilityType</code>, <code>OptionPriceSide</code>, <code>OptionTimeStamp</code>, <code>UnderlyingPriceSide</code>, <code>UnderlyingTimeStamp</code>.</p>
+<p><strong>OptionEti.BarrierDefinition(BarrierStyle style, double level)</strong> returns an <strong>IEtiBarrierDefintion</strong> (properties: <strong>IEtiBarrierDefinitionParams</strong>)<br>
+<code>UpOrDown</code>, <code>InOrOut</code>.  <code>BarrierStyle</code> values: <code>None</code>, <code>American</code>, <code>European</code>.</p>
+<p><strong>OptionEti.AsianDefinition</strong> → <strong>IEtiAsianDefinition</strong> (properties: <strong>IEtiAsianDefinitionParams</strong>)<br>
+<code>AverageSoFar</code>, <code>AverageType</code>, <code>FixingCalendar</code>, <code>FixingFrequency</code>, <code>FixingStartDate</code>, <code>FixingEndDate</code>, <code>IncludeHolidays</code>, <code>IncludeWeekends</code>.</p>
+<p><strong>OptionEti.DoubleBarrierDefinition</strong> → <strong>IEtiDoubleBarrierDefinition</strong> (properties: <strong>IEtiDoubleBarrierDefinitionParams</strong>)<br>
+<code>InOrOut</code>.  Properties also expose <code>BarrierMode</code> and the upper/lower <code>Option.IDoubleBarrierInfoDefinition</code> (<code>BarrierUp</code>/<code>BarrierDown</code>).</p>
+<p><strong>OptionEti.BinaryDefinition</strong> → <strong>IEtiBinaryDefinition</strong> (properties: <strong>IEtiBinaryDefinitionParams</strong>)<br>
+<code>NotionalAmount</code>.  Properties also expose <code>BinaryType</code>, <code>Level</code> and <code>UpOrDown</code>.</p>
+<p><strong>OptionEti.CBBCDefinition</strong> → <strong>IEtiCbbcDefinition</strong> (properties: <strong>IEtiCbbcDefinitionParams</strong>)<br>
+<code>ConversionRatio</code>.  Properties also expose <code>Level</code>.</p>
+<h3 id="usage">Usage</h3>
+<ol>
+<li>An example of a simple ETI option with default parameters
+```csharp</li>
+</ol>
+<p>var data = OptionEti.Definition(&quot;AAPLM192420500.U&quot;).GetData();</p>
+<pre><code>
+2. An example of multiple ETI options requesting specific fields data retrieval
+```csharp
+var data = OptionEti.Definition(&quot;AAPLA192420000.U&quot;, &quot;AAPLA192426000.U&quot;)
+                    .Fields(&quot;InstrumentCode&quot;, &quot;StrikePrice&quot;, &quot;EndDate&quot;, &quot;ExerciseType&quot;,
+                            &quot;OptionPrice&quot;, &quot;UnderlyingRIC&quot;, &quot;ErrorMessage&quot;)
+                    .GetData();
+</code></pre>
+<ol start="3">
+<li><p>An example of an ETI option with multiple specific properties </p>
+<pre><code class="language-csharp">var data  = OptionEti.Definition()
+                  .ExcerciseStyle(OptionEti.ExerciseStyle.Amer)
+                  .Strike(255)
+                  .EndDate(DateTime.Now.AddDays(30))
+                  .BuySell(FinancialContracts.BuySell.Sell)
+                  .CallPut(FinancialContracts.CallPut.Call)
+                  .UnderlyingInstrument(&quot;AAPL.O&quot;)
+                  .Fields(&quot;InstrumentCode&quot;, &quot;ExerciseType&quot;, &quot;ValuationDate&quot;, &quot;EndDate&quot;,
+                          &quot;StrikePrice&quot;, &quot;OptionPrice&quot;, &quot;UnderlyingRIC&quot;, &quot;UnderlyingPrice&quot;,
+                          &quot;ExerciseStyle&quot;, &quot;ErrorMessage&quot;)
+                  .GetData();
+</code></pre>
+</li>
+<li><p>An example of requesting an ETI option using the Financial Contracts definition with a specific request object 
+```csharp 
+var eti = new JObject()
+{
+ [&quot;universe&quot;] = new JArray(new JObject()
+ {</p>
+<pre><code> [&quot;instrumentType&quot;] = &quot;Option&quot;,
+ [&quot;instrumentDefinition&quot;] = new JObject()
+ {
+     [&quot;InstrumentCode&quot;] = &quot;AAPLM192420500.U&quot;,
+     [&quot;underlyingType&quot;] = &quot;Eti&quot;
+ }
+</code></pre>
+<p> })
+};</p>
+</li>
+</ol>
+<p>var data = FinancialContracts.Definition(eti).GetData();</p>
+<pre><code>
+5. An example of requesting multiple ETI options using the Financial Contracts definition with a specific request object 
+```csharp 
+var eti = new JObject()
+{
+    [&quot;fields&quot;] = new JArray(&quot;InstrumentCode&quot;, &quot;StrikePrice&quot;, &quot;EndDate&quot;, &quot;ExerciseType&quot;,
+                            &quot;OptionPrice&quot;, &quot;UnderlyingRIC&quot;, &quot;ErrorMessage&quot;),
+    [&quot;universe&quot;] = new JArray(new JObject()
+    {
+        [&quot;instrumentType&quot;] = &quot;Option&quot;,
+        [&quot;instrumentDefinition&quot;] = new JObject()
+        {
+            [&quot;InstrumentCode&quot;] = &quot;AAPLA192420000.U&quot;,
+            [&quot;underlyingType&quot;] = &quot;Eti&quot;
+        }
+    }, new JObject()
+    {
+        [&quot;instrumentType&quot;] = &quot;Option&quot;,
+        [&quot;instrumentDefinition&quot;] = new JObject()
+        {
+            [&quot;InstrumentCode&quot;] = &quot;AAPLA192426000.U&quot;,
+            [&quot;underlyingType&quot;] = &quot;Eti&quot;
+        }
+    })
+};
+
+var data = FinancialContracts.Definition(eti).GetData();
+</code></pre>
+<ol start="6">
+<li>An example of requesting an ETI option with multiple definition properties usign the Financial Contracts definition with a specific request object.
+```csharp 
+var eti = new JObject()
+{
+ [&quot;fields&quot;] = new JArray(&quot;InstrumentCode&quot;, &quot;ExerciseType&quot;, &quot;ValuationDate&quot;, &quot;EndDate&quot;,<pre><code>                     &quot;StrikePrice&quot;, &quot;OptionPrice&quot;, &quot;UnderlyingRIC&quot;, &quot;UnderlyingPrice&quot;,
+                     &quot;ExerciseStyle&quot;, &quot;ErrorMessage&quot;),
+</code></pre>
+ [&quot;universe&quot;] = new JArray(new JObject()
+ {<pre><code> [&quot;instrumentType&quot;] = &quot;Option&quot;,
+ [&quot;instrumentDefinition&quot;] = new JObject()
+ {
+     [&quot;underlyingType&quot;] = &quot;Eti&quot;,
+     [&quot;buySell&quot;] = &quot;Sell&quot;,
+     [&quot;callPut&quot;] = &quot;Call&quot;,
+     [&quot;endDate&quot;] = $&quot;{DateTime.Now.AddDays(30):O}&quot;,
+     [&quot;exerciseStyle&quot;] = &quot;Amer&quot;,
+     [&quot;strike&quot;] = 255,
+     [&quot;UnderlyingDefinition&quot;] = new JObject() { [&quot;instrumentCode&quot;] = &quot;AAPL.O&quot; }
+ }
+</code></pre>
+ })
+};</li>
+</ol>
+<p>var data = FinancialContracts.Definition(eti).GetData();</p>
+<p>```</p>
+<h4 id="related-links">Related Links</h4>
+<ul>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/barrier-mode">BarrierMode</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/binary-type">BinaryType</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/buy-sell">BuySell</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/call-put">CallPut</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/dividend-type">DividendType</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/double-binary-type">DoubleBinaryType</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/exercise-style">ExerciseStyle</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/in-or-out">InOrOut</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/pricing-model-type">PricingModelType</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/settlement-type">SettlementType</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/time-stamp">TimeStamp</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/time-zone">TimeZone</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/up-or-down">UpOrDown</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/volatility-model">VolatilityModel</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/option/volatility-type">VolatilityType</a></li>
+<li><a href="#/sections/content-layer/ipa/financial-contracts/output">Output</a></li>
+</ul>

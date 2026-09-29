@@ -1,0 +1,56 @@
+<h1 id="pricingdefinition-object">Pricing.Definition object</h1>
+<p>The Pricing Definition defines a request used to retrieve pricing data for specified instruments.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Pricing.Definition()</code>
+<code>Pricing.Definition(params string[] universe)</code>
+<code>Pricing.Definition(IEnumerable&lt;string&gt; universe)</code></p>
+<p>At least one universe has to be specified either when creating the definition or using the <strong>Universe()</strong> method</p>
+<h3 id="pricingdefinition-methods">PricingDefinition Methods</h3>
+<p><strong>IPricingDefinition Universe(params string[] universe)</strong><br>
+<strong>IPricingDefinition Universe(IEnumerable&lt;string&gt; universe)</strong><br>
+List of RICs to request.  Required.</p>
+<p><strong>IPricingDefinition Service(string service)</strong><br>
+The name of the service providing the desired streaming price data.  Optional.  Default: defined within the streaming platform.</p>
+<p><strong>IPricingDefinition Fields(params string[] fields)</strong><br>
+<strong>IPricingDefinition Fields(IEnumerable&lt;string&gt; fields)</strong><br>
+Specify the specific fields delivered when messages arrive.  Optional.  Default: all fields.</p>
+<p><strong>IPricingDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Define additional request properties that will be merged with all other properties specified. Applications must form the request properties as defined within the WebSocket Request specifications.  Optional.</p>
+<p><strong>IPricingDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IPricingDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Universe</code>, <code>View</code>, <code>Service</code>, <code>ExtendedParams</code>, <code>Closure</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IPricingResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IPricingResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IPricingResponse GetData(Action&lt;IPricingResponse, IPricingDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IPricingResponse GetData(ISession session, Action&lt;IPricingResponse, IPricingDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve a market data snapshot for the specified universe of items.</p>
+<p><strong>Task&lt;IPricingResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IPricingResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IPricingResponse&gt; GetDataAsync(Action&lt;IPricingResponse, IPricingDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IPricingResponse&gt; GetDataAsync(ISession session, Action&lt;IPricingResponse, IPricingDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve a market data snapshot for the specified universe of items.</p>
+<p><strong>IPricingStream GetStream()</strong><br>
+<strong>IPricingStream GetStream(ISession session)</strong><br>
+Retrieve a streaming interface to manage real-time updates for the specified universe of items. See <a href="#/sections/content-layer/pricing/streams/intro">Pricing.Stream</a>.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IPricingDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IPricingResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>ISnapshotData</strong> type.</p>
+<h3 id="isnapshotdata---properties">ISnapshotData - properties</h3>
+<p>JToken Raw { get; }<br>
+IDictionary&lt;string, IPriceData&gt; Prices { get; }<br></p>
+<p>Each entry in <strong>Prices</strong> is an <strong>IPriceData</strong>, keyed by item name:</p>
+<h3 id="ipricedata---properties">IPriceData - properties</h3>
+<p>string ItemName { get; }<br>
+JToken this[string fieldName] { get; }<br>
+JToken Fields(params string[] fields)<br>
+JToken Fields(IEnumerable&lt;string&gt; fields)<br>
+JToken Fields()<br></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create a pricing definition for <strong>EUR=</strong> and <strong>USD=</strong> instruments.</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.Pricing;
+
+var definition = Pricing.Definition(&quot;EUR=&quot;, &quot;USD=&quot;)
+                        .Fields(&quot;BID&quot;, &quot;ASK&quot;); // If no fields are specified, all available fields are returned
+</code></pre>

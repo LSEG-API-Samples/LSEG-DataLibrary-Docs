@@ -1,0 +1,58 @@
+<h1 id="about-curves-and-surfaces">About Curves and Surfaces</h1>
+<p><strong>Volatility Surface</strong> data can be retrieved at the Content layer using the <a href="#/sections/content-layer/ipa/surfaces/definition">VolatilitySurface.Definition</a> object, similar to <a href="#/sections/content-layer/ipa/financial-contracts/definition">FinancialContracts.Definition</a>.<br></p>
+<p>Alternatively, the same data can also be retrieved using the <strong>EndpointRequestDefinition</strong> at the <strong>Delivery</strong> layer, as shown below.</p>
+<p>An example is provided below as follows: </p>
+<pre><code class="language-csharp">
+ var etiSurface = new JObject()
+ {
+     [&quot;surfaceTag&quot;] = &quot;myEti&quot;,
+     [&quot;underlyingType&quot;] = &quot;Eti&quot;,
+     [&quot;underlyingDefinition&quot;] = new JObject()
+     {
+         [&quot;instrumentCode&quot;] = &quot;BNPP.PA&quot;
+     },
+     [&quot;surfaceParameters&quot;] = new JObject()
+     {
+         [&quot;priceSide&quot;] = &quot;Mid&quot;,
+         [&quot;volatilityModel&quot;] = &quot;SSVI&quot;,
+         [&quot;xAxis&quot;] = &quot;Date&quot;,
+         [&quot;yAxis&quot;] = &quot;Moneyness&quot;
+     },
+     [&quot;surfaceLayout&quot;] = new JObject()
+     {
+         [&quot;format&quot;] = &quot;Matrix&quot;,
+         [&quot;yPointCount&quot;] = 10
+     }
+ };
+
+ var fxSurface = new JObject()
+ {
+     [&quot;surfaceTag&quot;] = &quot;myFx&quot;,
+     [&quot;underlyingType&quot;] = &quot;Fx&quot;,
+     [&quot;underlyingDefinition&quot;] = new JObject()
+     {
+         [&quot;fxCrossCode&quot;] = &quot;EURUSD&quot;
+     },
+     [&quot;surfaceParameters&quot;] = new JObject()
+     {
+         [&quot;calculationDate&quot;] = &quot;2018-08-20T00:00:00Z&quot;,
+         [&quot;returnAtm&quot;] = true,
+         [&quot;xAxis&quot;] = &quot;Date&quot;,
+         [&quot;yAxis&quot;] = &quot;Strike&quot;
+     },
+     [&quot;surfaceLayout&quot;] = new JObject()
+     {
+         [&quot;format&quot;] = &quot;Matrix&quot;
+     }
+ };
+
+ var requestDetails = new JObject()
+ {
+     [&quot;universe&quot;] = new JArray(etiSurface, fxSurface)
+ };
+
+ var response = EndpointRequest.Definition(intradayEndpoint)
+                               .Method(EndpointRequest.Method.POST)
+                               .BodyParameters(requestDetails)
+                               .GetData();
+</code></pre>

@@ -1,0 +1,121 @@
+<h1 id="deliveryommstream-object">Delivery.OMMStream object</h1>
+<p>Creates a definition that can be used to get an <code>IOMMItemStream</code> (see below) that can be used to subscribe to streaming items of any Domain Model (e.g. MarkePrice, MarketByPrice...) exposed by the underlying <a href="https://developers.refinitiv.com/elektron/websocket-api">WebSocket protocol</a> of the Delivery Platform (formerly Refinitiv Data Platform).</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Delivery.OMMStream.Definition()</code><br>
+<code>Delivery.OMMStream.Definition(params string[] items)</code><br>
+<code>Delivery.OMMStream.Definition(IEnumerable&lt;string&gt; items)</code><br></p>
+<h3 id="methods">Methods</h3>
+<p><strong>Api(OMMStream.Api api)</strong><br>
+<strong>Api(string api)</strong><br>
+The streaming API service supporting the OMM streaming data.</p>
+<p><strong>Name(params string[] itemNames)</strong><br>
+<strong>Name(IEnumerable<string> itemNames)</strong><br>
+The collection of item names of interest.  Eg: AAPL.O (RIC)</p>
+<p><strong>Fields(params string[] fields)</strong><br>
+<strong>Fields(IEnumerable<string> fields)</strong><br>
+Specify a subset of fields from the service to be delivered.<br>
+Eg: Fields(BID&quot;, &quot;BIDSIZE&quot;, &quot;ASK&quot;, &quot;ASKSIZE&quot;, &quot;TRDPRC_1&quot;, &quot;TRDVOL_1&quot;)</p>
+<p><strong>Service(string service)</strong><br>
+The streaming platform can optionally manage the realtime streaming data through multiple, configured services.<br>As such, this interfaces offers the ability to override the default.</p>
+<p><strong>Domain(string domain)</strong><br>
+The domain for the specific data of interest.  For example, MarketPrice, MarketByPrice, MarketByOrder, etc.  <br>
+Refer to the WebSockets documentation for all defined domains. Default: MarketPrice.</p>
+<p><strong>EnablePlugin(FieldEngineType fieldEngineType)</strong><br>
+<strong>DisablePlugin(FieldEngineType fieldEngineType)</strong><br>
+Enable or disable a specific plugin within the streaming services. Only takes effect if plugin usage is enabled via <code>UsePlugins(true)</code>. By default, all plugins are enabled for a DesktopDirect session and disabled for all other session types; each item stream can have its own set of plugins enabled or disabled.</p>
+<p><strong>UsePlugins(bool usePlugins)</strong><br>
+Enable or disable the use of plugins within the streaming services for this item stream. Optional.</p>
+<p><strong>ExtendedParams(JObject obj)</strong>
+The streaming platform can offer a multitude of properties, depending on how the enviroment is configured. <br>
+In most cases, the default streaming environment is suitable for delivery.  However, there may be some
+rare cases where applications may need to define properties that are less commonly used.  The extended 
+params specification provides this capability.  To extend, applications must form the request properties 
+as defined within the WebSocket Request specifications.  If extended properties are included, they will 
+be merged with all other properties specified.</p>
+<p>The possible values for the <strong>EndpointRequest.Api</strong>:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pricing</td>
+<td>Stream Market Data instruments.</td>
+</tr>
+<tr>
+<td>CustomInstruments</td>
+<td>Stream user-defined custom instruments.</td>
+</tr>
+</tbody></table>
+<p><strong>GetStream()</strong><br>
+<strong>GetStream(ISession session)</strong><br>
+Retrieve an <code>IOMMItemStream</code> to manage real-time updates for the specified items. When a session is not explicitly supplied, the default session is used.</p>
+<p><strong>Properties</strong> <em>(property, <code>IOMMStreamDefinitionParams</code>)</em><br>
+Retrieve the parameters defined for the streaming request.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IOMMStreamDefinition</code> object.</p>
+<h3 id="iommitemstream-members">IOMMItemStream members</h3>
+<p><code>GetStream()</code> / <code>GetStream(session)</code> return an <code>IOMMItemStream</code>, used to manage the life cycle of the subscription and register callbacks.</p>
+<p><strong>Close(params string[] items)</strong><br>
+<strong>Close(IEnumerable&lt;string&gt; items)</strong><br>
+<strong>CloseAsync(params string[] items)</strong><br>
+<strong>CloseAsync(IEnumerable&lt;string&gt; items)</strong><br>
+Close the specified items. Default: all open streams will be closed.</p>
+<p><strong>Streaming(bool streaming)</strong><br>
+A value of <code>true</code> instructs the stream to deliver the initial image followed by updates as market conditions change. A value of <code>false</code> instructs the stream to deliver only the initial image, or snapshot. Optional. Default: <code>true</code>.</p>
+<p><strong>OnRefresh(Action&lt;string, JObject, IOMMItemStream&gt; cb)</strong><br>
+Optional callback invoked upon receiving a Refresh message containing the fields.</p>
+<p><strong>OnUpdate(Action&lt;string, JObject, IOMMItemStream&gt; cb)</strong><br>
+Optional callback invoked upon receiving an Update message containing the fields.</p>
+<p><strong>OnStatus(Action&lt;string, JObject, IOMMItemStream&gt; statusCb)</strong><br>
+Optional callback invoked when a status event occurs for the specified item.</p>
+<p><strong>OnComplete(Action&lt;IOMMItemStream&gt; cb)</strong><br>
+Optional callback invoked when the request to open the stream has completed (typically once the complete item image and/or item status messages have been received for all requested items).</p>
+<p><strong>OnError(Action&lt;string, JObject, IOMMItemStream&gt; errorCb)</strong><br>
+Optional callback invoked if an error occurs resulting from the request.</p>
+<p><strong>Definition</strong> <em>(property, <code>IOMMStreamDefinitionParams</code>)</em><br>
+Retrieve the parameters defined for the streaming request.</p>
+<p><code>IOMMItemStream</code> also implements the shared <strong>IStream</strong> interface, common to every streaming interface in the library (<code>IOMMItemStream</code>, <code>IRDPItemStream</code>, and the content-layer streams), contributing:</p>
+<p><strong>Open(CancellationToken cancellationToken = default)</strong><br>
+Open the stream synchronously. Request the data from the platform and wait until all initial responses have arrived. Returns a <code>Stream.State</code> value (see <a href="#/sections/delivery-layer/state">State</a>).</p>
+<p><strong>OpenAsync(CancellationToken cancellationToken = default)</strong><br>
+Open the stream asynchronously.</p>
+<p><strong>Close()</strong><br>
+<strong>CloseAsync()</strong><br>
+Close all opened resources for the stream (equivalent to <code>Close()</code>/<code>CloseAsync()</code> with no items - see above for closing specific items).</p>
+<p><strong>OpenState</strong> <em>(property, <code>Stream.State</code>)</em><br>
+Indicates if the stream is open with active streaming items.</p>
+<p><strong>Session</strong> <em>(property, <code>ISession</code>)</em><br>
+Session used to open the stream.</p>
+<h4 id="usage">Usage</h4>
+<p>The following example demonstrates how to create an OMM stream definition and capture snapshot data:</p>
+<pre><code class="language-csharp">// Request a snapshot for the Canadian Dollar.
+var stream = OMMStream.Definition(&quot;CAD=&quot;)
+                      .Fields(&quot;BID&quot;, &quot;ASK&quot;, &quot;HIGH_1&quot;, &quot;LOW_1&quot;)
+                      .GetStream().OnRefresh((a, b, c) =&gt; {})
+                      .OnStatus((a, b, c) =&gt; {});
+
+// By setting streaming the false, we are requesting only a snapshot of the historical data 
+// without any incoming streaming updates 
+stream.Streaming(false).Open();
+</code></pre>
+<p>The following example demonstrates how to create an OMM stream with multiple registered callbacks and request stream data: </p>
+<pre><code class="language-csharp">var stream1 = OMMStream.Definition(&quot;EUR=&quot;)
+                        .GetStream()
+                        .OnRefresh((item, msg, s) =&gt; Console.WriteLine($&quot;{DateTime.Now}:{msg}&quot;))
+                        .OnUpdate((item, msg, s) =&gt; DumpMsg(item, msg))
+                        .OnStatus((item, msg, s) =&gt; Console.WriteLine($&quot;{DateTime.Now} =&gt; Status1: {msg}&quot;))
+                        .OnError((item, msg, s) =&gt; Console.WriteLine($&quot;Stream1 error: {DateTime.Now}:{msg}&quot;));
+</code></pre>
+<p>The following example demonstrates how to request bulk snapshot data using the OMM Stream:  </p>
+<pre><code class="language-csharp">// Read in the batch of items to request for
+var items =  new List&lt;string&gt; { &quot;.A1UTI&quot;, &quot;.A3DOW&quot;, &quot;.A4DOW&quot;, &quot;.AAPIDX&quot; };
+
+var stream = OMMStream.Definition(items)
+                      .GetStream()
+                      .OnComplete(s =&gt; Console.WriteLine(&quot;Bulk request completed&quot;));
+ 
+stream.Streaming(false).Open();
+</code></pre>

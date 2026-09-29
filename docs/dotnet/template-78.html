@@ -1,0 +1,25 @@
+<h1 id="about-news">About News</h1>
+<p>The News content object allows you to retrieve Headlines and Story data stored on the Delivery Platform (formerly Refinitiv Data Platform).
+Several news types can be retrieved using different definitions contained in the <strong>LSEG.Data.Content.News</strong> namespace.
+A short description for each is provided below. Clicking on the bolded definition names will lead to details page for each. </p>
+<p><a href="#/sections/content-layer/news/headlines"><strong>Headlines</strong></a> <br>
+We can retrieve headline data using the <strong>Headlines.Definition()</strong></p>
+<p><a href="#/sections/content-layer/news/top-news"><strong>TopNews</strong></a> <br>
+We can retrieve the top news categories using the <strong>TopNews.Definition()</strong></p>
+<p><a href="#/sections/content-layer/news/top-news-headlines"><strong>Top News Headlines</strong></a> <br>
+Once we have a Top News page ID, its headlines can be retrieved using the <strong>TopNewsHeadlines.Definition(newsID)</strong></p>
+<p><a href="#/sections/content-layer/news/stories"><strong>News Stories</strong></a> <br>
+News stories with their headline and content can be retrieved using the <strong>Story.Definition(storyID)</strong></p>
+<p><a href="#/sections/content-layer/news/reports"><strong>Online Reports</strong></a> <br>
+Online reports listing can be retrieved using the <strong>OnlineReportsListing.Definition()</strong> <br>
+The definition <strong>GetData()</strong> will retrieve a list of listings containg report IDs and other details <br>
+We can use a report ID to retrieve its detials using an <strong>OnlineReports.Definition(reportID)</strong> <br>
+When retrieving the details we can also choose to retrieve it&#39;s full content or truncated data.</p>
+<p><a href="#/sections/content-layer/news/images"><strong>Images</strong></a> <br>
+News images referenced by Online Reports or Top News Headlines can be retrieved using the <strong>Image.Definition(imageID)</strong></p>
+<p><a href="#/sections/content-layer/news/analyze"><strong>Analyze</strong></a> <br>
+News data can also be retrieved as a tree structure using the <strong>Analyze.Definition(query)</strong><br>
+This definition breaks down a user query string into news related entities, then aggregates them into a boolean filtering tree.</p>
+<p><a href="#/sections/content-layer/news/mrn"><strong>Machine Readable News</strong></a> <br>
+This definition is responsible for requesting, packaging and presenting Machine Readable News (MRN) as headlines and stories. <br>
+It will perform all the heavy lifting of breaking down the MRN compressed news segments and packaging them up in simple,application-ready objects.</p>

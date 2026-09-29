@@ -1,0 +1,10 @@
+<h1 id="onerror">OnError</h1>
+<p>Optional callback invoked if an error occurs resulting from the request.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>IChainStream OnError(Action&lt;string, JObject, IChainStream&gt; errorCb)</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to display the messages received when the streaming receives an error message.</p>
+<pre><code class="language-csharp">var chainStream = Chain.Definition(&quot;.AV.O&quot;)
+                       .GetStream()
+                       .OnError((item, error, stream) =&gt; {});
+</code></pre>

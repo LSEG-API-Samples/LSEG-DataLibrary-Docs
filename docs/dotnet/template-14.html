@@ -1,0 +1,129 @@
+<h1 id="eventsdefinition-object">Events.Definition object</h1>
+<p>This object defines the request definition used to retrieve Historical pricing events data.</p>
+<h3 id="syntax">Syntax</h3>
+<p> <code>Events.Definition()</code><br>
+ <code>Events.Definition(params string[] items)</code><br>
+ <code>Events.Definition(IEnumerable&lt;string&gt; items)</code></p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+<th><strong>Optional</strong></th>
+<th align="left"><strong>Default value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>items</td>
+<td>Single instrument, multiple instruments or list of instruments</td>
+<td>No</td>
+<td align="left">-</td>
+</tr>
+</tbody></table>
+<p>You can set one or more universes when calling the Definition() method.
+Another way of specifying the universe is using the Universe() method in continuation of the Definition() method. 
+For a request to be valid, at least one universe is required. </p>
+<h3 id="eventsdefinition-methods">EventsDefinition Methods</h3>
+<p><strong>IEventsDefinition Universe(params string[] universe)</strong><br>
+<strong>IEventsDefinition Universe(IEnumerable&lt;string&gt; universe)</strong><br>
+List of instruments, e.g. RIC item names.  Required.</p>
+<p><strong>IEventsDefinition Fields(params string[] fields)</strong><br>
+<strong>IEventsDefinition Fields(IEnumerable&lt;string&gt; fields)</strong><br>
+A comma separated list of fields to be returned in the response.  Optional.</p>
+<p><strong>IEventsDefinition EventTypes(params Events.EventType[] eventTypes)</strong><br>
+<strong>IEventsDefinition EventTypes(IEnumerable&lt;Events.EventType&gt; eventTypes)</strong><br>
+A list of <a href="#/sections/content-layer/historical-pricing/event-types">event</a> types to apply.  Optional.  Default: trade, quote, correction.</p>
+<p><strong>IEventsDefinition Start(DateTime date)</strong><br>
+<strong>IEventsDefinition Start(string date)</strong><br>
+The start date (UTC) and timestamp of the query.  Optional.</p>
+<p><strong>IEventsDefinition End(DateTime date)</strong><br>
+<strong>IEventsDefinition End(string date)</strong><br>
+The end date (UTC) and timestamp of the query.  Optional.</p>
+<p><strong>IEventsDefinition Adjustments(params Events.Adjustments[] adjustments)</strong><br>
+<strong>IEventsDefinition Adjustments(IEnumerable&lt;Events.Adjustments&gt; adjustments)</strong><br>
+A list of <a href="#/sections/content-layer/historical-pricing/adjusments">adjustment</a> types to apply.  Optional.</p>
+<p><strong>IEventsDefinition Count(uint count)</strong><br>
+This value is applicable for single instrument requests. The maximum number of data items returned. Optional.  Default: 20 (unless both <code>Start</code> and <code>End</code> are specified).</p>
+<p><strong>IEventsDefinition Sessions(params HistoricalPricing.Sessions[] sessions)</strong><br>
+<strong>IEventsDefinition Sessions(IEnumerable&lt;HistoricalPricing.Sessions&gt; sessions)</strong><br>
+The list of <a href="#/sections/content-layer/historical-pricing/sessions">market session</a> classifications to apply.  Optional.</p>
+<p><strong>IEventsDefinition Qos(HistoricalPricing.Qos qos)</strong><br>
+Enforce a specific historical pricing <a href="#/sections/content-layer/historical-pricing/qos-types">Quality of Service</a>.  Optional.  Default: best quality based on permissions.</p>
+<p><strong>IEventsDefinition Service(string service)</strong><br>
+The name of the service providing the desired streaming price data.  Optional.  Default: defined within the streaming platform.</p>
+<p><strong>IEventsDefinition PinStart(bool pinStart)</strong><br>
+Dictates the position of the returned data within the time series.  Optional.  Default: false.</p>
+<p><strong>IEventsDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Specifies the parameters that will be merged with the request. Optional.</p>
+<p><strong>IEventsDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IEventsDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Universe</code>, <code>View</code>, <code>EventTypes</code>, <code>StartDate</code>, <code>EndDate</code>, <code>Adjustments</code>, <code>MaxCount</code>, <code>Sessions</code>, <code>PinStart</code>, <code>ExtendedParams</code>, <code>Qos</code>, <code>Service</code>, <code>Closure</code>).</p>
+<p>When <strong>QoS</strong> is not specified, the default is real-time data retrieval, unless the universe name contains a &quot;/&quot;, indicating delayed QoS.</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<p><strong>IEventsStream GetStream()</strong><br>
+<strong>IEventsStream GetStream(ISession session)</strong><br>
+Retrieve a streaming interface to manage real-time updates for the specified historical pricing request. See <a href="#/sections/content-layer/historical-pricing/events/streams/intro">Events.Stream</a>.</p>
+<h4 id="streaming-usage">Streaming usage</h4>
+<p>The following example demonstrates how to retrieve streaming trade events for AAPL.O, blending real-time updates into the historical data.</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.HistoricalPricing;
+
+var stream = Events.Definition(&quot;AAPL.O&quot;)
+                   .Fields(&quot;RTL&quot;, &quot;SEQNUM&quot;, &quot;TRDPRC_1&quot;, &quot;TRDVOL_1&quot;, &quot;HIGH_1&quot;, &quot;LOW_1&quot;, &quot;TRADE_ID&quot;, &quot;QUALIFIERS&quot;)
+                   .EventTypes(Events.EventType.trade)
+                   .Count(5)
+                   .GetStream();
+
+stream.OnInsert((data, s) =&gt; Console.WriteLine($&quot;INSERT: {DateTime.Now}. RT Seqnum: {s.LastMsgSeqNum}\n{data.Table}&quot;))
+      .OnUpdate((update, s) =&gt; Console.WriteLine($&quot;UPDATE: {DateTime.Now}. RT Seqnum: {s.LastMsgSeqNum}\n{update.Table}&quot;))
+      .OnStatus((status, s) =&gt; Console.WriteLine($&quot;Received status: {status}&quot;))
+      .OnError((error, s) =&gt; Console.WriteLine($&quot;Received error: {error}&quot;))
+      .Open();
+</code></pre>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IEventsDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IDataSetResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IDataSet</strong> type.</p>
+<h3 id="idataset---properties">IDataSet - properties</h3>
+<p>JToken Raw { get; }<br>
+DataTable Table { get; }<br>
+IList&lt;IDataSetRecord&gt; Records { get; }<br>
+JToken Errors { get; }<br>
+bool IsEmpty { get; }<br></p>
+<p>Each entry in <strong>Records</strong> is an <strong>IDataSetRecord</strong> describing the requested <code>Universe</code>, the <code>Fields</code> returned, and the corresponding <code>Data</code> points for that instrument.</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create a historical pricing events definition object for LSEG.L which retrieves the 20 most recent events.</p>
+<pre><code class="language-csharp">using LSEG.Data.Content.HistoricalPricing;
+
+var definition = Events.Definition(&quot;LSEG.L&quot;);
+</code></pre>
+<p>The following example demonstrates how to get the last 3 historical pricing data rows for VOD.L and truncate the data to retrieve only several specific fields:</p>
+<pre><code class="language-csharp">var definition = Events.Definition().Universe(&quot;VOD.L&quot;)
+                                    .Count(3)
+                                    .Fields(&quot;DATE_TIME&quot;, &quot;EVENT_TYPE&quot;, &quot;BID&quot;, &quot;ASK&quot;, &quot;ASKSIZE&quot;);
+
+var response = await definition.GetDataAsync();
+</code></pre>
+<p>The following example demonstrates how to get the last five historical pricing data rows for VOD.L, specifying the event type and adjustment type </p>
+<pre><code class="language-csharp">var response = Events.Definition(&quot;VOD.L&quot;)
+                     .EventTypes(Events.EventType.trade)
+                     .Adjustments(Events.Adjustments.exchangeCorrection)
+                     .GetData();
+</code></pre>
+<h3 id="related-links">Related Links</h3>
+<ul>
+<li><a href="#/sections/content-layer/historical-pricing/adjusments">Adjustments</a></li>
+<li><a href="#/sections/content-layer/historical-pricing/event-types">Event types</a></li>
+<li><a href="#/sections/content-layer/historical-pricing/qos-types">Quality of Service (QoS)</a></li>
+<li><a href="#/sections/content-layer/historical-pricing/sessions">Market sessions</a></li>
+</ul>

@@ -1,0 +1,12 @@
+<h1 id="about-the-delivery-layer">About the Delivery Layer</h1>
+<p>The Delivery layer provides objects allowing your application to interact with the Delivery Platform (formerly Refinitiv Data Platform) data service via the following delivery modes:</p>
+<ul>
+<li>  Request (HTTP Request/Response)</li>
+<li>  Stream (WebSockets)</li>
+<li>  Queue (Alerts)</li>
+<li>  Files (bulk)</li>
+</ul>
+<p>Every data service exposes one or several of these delivery modes to make its data available to client applications. For each of these delivery modes, the Delivery layer defines classes that can be used to easily retrieve data from these data services in raw JSON format.</p>
+<p>Classes defined in the Delivery layer do not dependent on any specific data service exposed by the Data Platform. They are service agnostic, meaning that you can use them to access to any service available on the platform.</p>
+<p>Designed as the lowest abstraction layer, the Delivery layer targets developers who need specific features that are not offered by other higher level abstraction layers (<a href="#/sections/content-layer/intro">Content</a> &amp; Function). This layer targets professional developers but can also be used by financial coders with good programming skills.</p>
+<p>In order to use the Delivery layer for a specific service of the Data Platform (formerly Refinitiv Data Platform), you need to understand the different message formats, protocols and possible interactions available for the service. These details are described for each individual service in the Data Platform <a href="https://apidocs.refinitiv.com/Apps/ApiDocs">API Playground</a>.</p>

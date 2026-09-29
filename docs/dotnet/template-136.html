@@ -1,0 +1,17 @@
+<h1 id="about-the-session-layer">About the Session Layer</h1>
+<p>This part of the documentation covers the session layer of the library.</p>
+<p>Accessing the Delivery Platform (formerly Refinitiv Data Platform) to retrieve content requires your application to authenticate and manage a  connection. LSEG Data Libraries provide this managed access through an interface called a session. The session is the interface to the  platform and is responsible for defining authentication details, managing connection resources, and implementing the necessary protocol for communication.</p>
+<p>Depending on the access point your application uses to connect, it can choose from one of the session implementations to initiate the connection. For the creation phase, all session implementations expose the same API and behave in the same way.
+Once the session is created and opened, the application uses it in conjunction with objects of the Content or Delivery Layer to access the content and services available on the Data Platform.</p>
+<p>Depending on the access point your application uses to connect to the Delivery Platform (formerly Refinitiv Data Platform), it creates and opens one of the following sessions:</p>
+<ul>
+<li><p><strong>Desktop:</strong> This type of session is used to connect to the platform either through Eikon or Workspace. It requires that Eikon or Workspace are running alongside your application. This type of session does not work with Eikon Web or Workspace for Web. See <a href="#/sections/session-layer/desktop-session">DesktopSession</a>.</p>
+</li>
+<li><p><strong>DesktopDirect:</strong> This type of session communicates with the platform via WAG (Workspace API Gateway). It is intended for applications that need direct access to the streaming and RESTful services exposed to the desktop without hosting Workspace application. See <a href="#/sections/session-layer/desktop-direct-session">DesktopDirectSession</a>.</p>
+</li>
+<li><p><strong>Platform:</strong> This type of session is used to connect directly to the platform or through a local real-time enterprise platform. It requires a platform account (either a user or a machine account) if you would like to connect directly to RDP, you need to provide platform credentials to create the session. If you would like to work through a local platform, it requires the IP of the local platform and a user name (e.g. DACS user name). See <a href="#/sections/session-layer/platform-session">PlatformSession</a>.</p>
+</li>
+</ul>
+<p>Only Platform and Desktop session types require an App Key that uniquely identifies your application. To obtain an App Key for your application, refer to the LSEG Data Libraries.</p>
+<p>DesktopDirect requires an Entra Application ID registered via the OnboardingApp first.</p>
+<p>Platform sessions authenticate against RDP using one of the OAuth 2.0 grant types exposed by the library — <code>GrantPassword</code> (resource owner password), <code>ClientCredentials</code> (client id + client secret), or <code>ClientAssertion</code> (client id + signed JWT). All three grant classes implement the common <code>IGrant</code> interface and are supplied to a platform session through <code>OAuthGrantType(IGrant grant)</code>.</p>

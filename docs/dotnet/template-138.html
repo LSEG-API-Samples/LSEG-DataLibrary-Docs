@@ -1,0 +1,139 @@
+<h1 id="platformsession">PlatformSession</h1>
+<p>The <code>PlatformSession</code> connects directly to the platform (LSEG Data Platform / RDP) or through a local real-time enterprise platform. The <code>PlatformSession</code> specification details the properties specific to RDP, including how an RDP user is authenticated when accessing content from the platform. A session into RDP supports requests such as streaming data, non-streaming data, message queues, and bulk data.</p>
+<p>Connecting directly to RDP requires a platform account (a user or a machine account) and platform credentials. Working through a local platform requires the IP of the local platform and a user name (e.g. a DACS user name).</p>
+<p>For desktop connections, see <a href="#/sections/session-layer/desktop-session">DesktopSession</a> and <a href="#/sections/session-layer/desktop-direct-session">DesktopDirectSession</a>.</p>
+<p>The types on this page live in the <code>LSEG.Data.Core</code> namespace.</p>
+<h3 id="entry-points">Entry points</h3>
+<p>The <code>PlatformSession</code> class exposes a <code>Definition(...)</code> factory that returns an <code>IPlatformSessionDefinition</code> fluent builder; the builder&#39;s <code>GetSession()</code> method finalises the request and returns an <code>ISession</code>.</p>
+<p><strong>PlatformSession.Definition(string sessionName = default)</strong><br>
+<strong>PlatformSession.Definition(Stream stream, string resourceName = default)</strong><br>
+<strong>PlatformSession.Definition(JObject config)</strong><br>
+<strong>PlatformSession.Definition(string sessionName, Stream stream, string resourceName = default)</strong><br>
+<strong>PlatformSession.Definition(string sessionName, JObject config)</strong><br>
+Define a Platform Session request. When <code>sessionName</code> is omitted, the <code>sessions.platform.default</code> entry from the configuration is used.</p>
+<h3 id="iplatformsession-members">IPlatformSession members</h3>
+<p><code>IPlatformSession</code> is the platform-specific session interface. It extends the common <code>ISession</code> interface (see <a href="#/sections/session-layer/session">Sessions</a> for <code>Open</code>, <code>OpenAsync</code>, <code>Close</code>, <code>OnState</code>, <code>OnEvent</code>, and the state/event members) with the following:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>IPlatformSession OnStreamingEndpoint(Action&lt;string, IList&lt;IStreamingEndpoint&gt;, ISession&gt; cb)</code></td>
+<td>method</td>
+<td>Optional callback invoked to report all the RDP platform streaming endpoints.</td>
+</tr>
+<tr>
+<td><code>IPlatformSessionDefinitionParams Definition</code></td>
+<td>property</td>
+<td>Retrieve the parameters defined for the Platform Session.</td>
+</tr>
+</tbody></table>
+<h3 id="authentication--oauth-20-grant-types">Authentication — OAuth 2.0 grant types</h3>
+<p><code>PlatformSession</code> authenticates against RDP with an <code>IGrant</code> implementation supplied to the session definition via <code>OAuthGrantType(IGrant grant)</code>. Three grant classes are available; all implement <code>IGrant</code>, are <code>IDisposable</code>, and are typically created inside a <code>using</code> scope.</p>
+<p><strong>GrantPassword</strong> — Resource-Owner Password Grant. Exchanges a user&#39;s credentials for an access token.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GrantPassword UserName(string user)</code></td>
+<td>method</td>
+<td>Defines the user&#39;s username required by the grant type. Required.</td>
+</tr>
+<tr>
+<td><code>GrantPassword Password(string password)</code></td>
+<td>method</td>
+<td>Defines the user&#39;s password required by this grant type. Required.</td>
+</tr>
+<tr>
+<td><code>GrantPassword Scope(string scope)</code></td>
+<td>method</td>
+<td>Limits the scope of RDP services for this sign-on session. Optional. Default: <code>trapi</code> (full scope of services).</td>
+</tr>
+</tbody></table>
+<p><strong>ClientCredentials</strong> — Client Credentials Grant. Exchanges a client ID / client secret pair for an access token.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ClientCredentials ClientID(string id)</code></td>
+<td>method</td>
+<td>Defines the client ID required by the grant type. Required.</td>
+</tr>
+<tr>
+<td><code>ClientCredentials ClientSecret(string secret)</code></td>
+<td>method</td>
+<td>Defines the client secret required by this grant type. Required.</td>
+</tr>
+<tr>
+<td><code>ClientCredentials Scope(string scope)</code></td>
+<td>method</td>
+<td>Limits the scope of RDP services for this sign-on session. Optional. Default: <code>trapi</code>.</td>
+</tr>
+</tbody></table>
+<p><strong>ClientAssertion</strong> — Client Credentials Grant with a signed JWT assertion.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Member</strong></th>
+<th><strong>Kind</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ClientAssertion ClientID(string id)</code></td>
+<td>method</td>
+<td>Defines the client ID required by the grant type. Required.</td>
+</tr>
+<tr>
+<td><code>ClientAssertion JWKFilename(string fname)</code></td>
+<td>method</td>
+<td>Defines the JWK file used to generate the assertion.</td>
+</tr>
+<tr>
+<td><code>ClientAssertion JsonWebKey(JObject jwk)</code></td>
+<td>method</td>
+<td>Defines the JWK used to generate the assertion.</td>
+</tr>
+<tr>
+<td><code>ClientAssertion Scope(string scope)</code></td>
+<td>method</td>
+<td>Limits the scope of RDP services for this sign-on session. Optional. Default: <code>trapi</code>.</td>
+</tr>
+</tbody></table>
+<h3 id="example">Example</h3>
+<p><strong>Create a Platform session with a password grant:</strong></p>
+<pre><code class="language-csharp">using LSEG.Data.Core;
+
+using var grantPassword = new GrantPassword().UserName(&quot;&lt;machine-id&gt;&quot;)
+                                             .Password(&quot;&lt;password&gt;&quot;);
+
+using (var platformSession = PlatformSession.Definition()
+                                            .AppKey(&quot;&lt;your-app-key&gt;&quot;)
+                                            .OAuthGrantType(grantPassword)
+                                            .TakeSignonControl(true)
+                                            .GetSession())
+{
+    platformSession.OnStreamingEndpoint((api, endpoints, s) =&gt; { /* inspect endpoints */ })
+                   .OnState((state, msg, s) =&gt; Console.WriteLine($&quot;State: {state}. {msg}&quot;))
+                   .OnEvent((eventCode, msg, s) =&gt; Console.WriteLine($&quot;Event: {eventCode}. {msg}&quot;));
+
+    platformSession.Open();
+}
+</code></pre>
+<!-- Example validation: not executed - requires credentials and network access to RDP. -->
+
+<!-- Maintainer review required: the `IPlatformSessionDefinition` builder members used above (`AppKey`, `OAuthGrantType`, `TakeSignonControl`, and `Host` for deployed ADS connections) are taken from the SDK's official `Examples/` usage; `IPlatformSessionDefinition` and `IPlatformSessionDefinitionParams` are not present in the generated API inventory, so their exact signatures could not be confirmed. Verify against `LSEG.Data/Core/Session/PlatformSession/`. -->

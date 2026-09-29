@@ -1,0 +1,104 @@
+<h1 id="reports">Reports</h1>
+<h3 id="retrieving-online-reports-is-a-two-step-process">Retrieving online reports is a two-step process:</h3>
+<p><strong>Step 1</strong>: We have to first retrieve the report listings and extract the report ID from each </p>
+<pre><code class="language-csharp">IOnlineReportsListingResponse listing = OnlineReportsListing.Definition().GetData();
+
+if (listing.IsSuccess)
+{
+    var reportIds = new List&lt;string&gt;();
+
+    // The report also has a Name property 
+    foreach (IOnlineReport report in listing.Data.OnlineReports)
+    {
+        // The region report token might contain properties like &quot;language&quot; and &quot;description&quot;
+        // Here we just extract the report ID 
+        foreach (JToken regionReport in report.Reports)
+        {
+            reportIds.Add(regionReport[&quot;reportId&quot;].ToString());
+        }
+    }
+}
+</code></pre>
+<br>
+
+<p><strong>Step 2</strong>: Using the report IDs we extracted at step 1, we select one and retrieve its online report story details </p>
+<pre><code class="language-csharp">// US Science reports
+IOnlineReportsResponse reportStory = OnlineReports.Definition(&quot;OLUSSCIENCE&quot;)
+                                                  .FullContent(false)
+                                                  .GetData(); 
+
+foreach (IOnlineReportStory story in reportStory.Data.OnlineReportStories)
+{
+    Console.WriteLine(&quot;----------------------------------------------------------&quot;);
+    Console.WriteLine($&quot;{story.CreationDate}: {story.HeadlineTitle}&quot;);
+    Console.WriteLine($&quot;content Type: {story.ContentType}\n{story.NewsStory}&quot;);
+}
+</code></pre>
+<h3 id="syntax">Syntax</h3>
+<p><code>OnlineReportsListing.Definition()</code><br>
+<code>OnlineReports.Definition()</code><br>
+<code>OnlineReports.Definition(string reportId)</code></p>
+<h3 id="onlinereportslistingdefinition-methods">OnlineReportsListingDefinition Methods</h3>
+<p><strong>IOnlineReportsListingDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IOnlineReportsListingDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>IOnlineReportsListingDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>Closure</code>, <code>ExtendedParams</code>).</p>
+<p><strong>IOnlineReportsListingResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IOnlineReportsListingResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IOnlineReportsListingResponse GetData(Action&lt;IOnlineReportsListingResponse, IOnlineReportsListingDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IOnlineReportsListingResponse GetData(ISession session, Action&lt;IOnlineReportsListingResponse, IOnlineReportsListingDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IOnlineReportsListingResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IOnlineReportsListingResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IOnlineReportsListingResponse&gt; GetDataAsync(Action&lt;IOnlineReportsListingResponse, IOnlineReportsListingDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IOnlineReportsListingResponse&gt; GetDataAsync(ISession session, Action&lt;IOnlineReportsListingResponse, IOnlineReportsListingDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve (synchronously/asynchronously) the report listing from the backend service.</p>
+<p><code>IOnlineReportsListingResponse</code> (implements <code>IResponse</code>) contains a <strong>Data</strong> property of <strong>IOnlineReportsListingData</strong> type:</p>
+<p>IList&lt;IOnlineReport&gt; OnlineReports { get; }<br>
+JToken Raw { get; }<br></p>
+<p>Each entry in <strong>OnlineReports</strong> is an <strong>IOnlineReport</strong>:</p>
+<p>string Name { get; }<br>
+JArray Reports { get; }<br></p>
+<h3 id="onlinereportsdefinition-methods">OnlineReportsDefinition Methods</h3>
+<p><strong>IOnlineReportsDefinition ReportId(string reportID)</strong><br>
+The ID of the specific report.  Required.</p>
+<p><strong>IOnlineReportsDefinition FullContent(bool fullContent)</strong><br>
+Indicates whether TOP 10 full documents must be retrieved.  Optional.  Default: false.</p>
+<p><strong>IOnlineReportsDefinition Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>IOnlineReportsDefinition ExtendedParams(JObject extendedParams)</strong><br>
+Apply any properties that are not available within this request interface.  Optional.</p>
+<p><strong>IOnlineReportsDefinitionParams Properties { get; }</strong><br>
+Gets the properties describing the values within the defined request (<code>ReportId</code>, <code>FullContent</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+<h3 id="retrieving-data">Retrieving data</h3>
+<p><strong>IOnlineReportsResponse GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>IOnlineReportsResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>IOnlineReportsResponse GetData(Action&lt;IOnlineReportsResponse, IOnlineReportsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IOnlineReportsResponse GetData(ISession session, Action&lt;IOnlineReportsResponse, IOnlineReportsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IOnlineReportsResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IOnlineReportsResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IOnlineReportsResponse&gt; GetDataAsync(Action&lt;IOnlineReportsResponse, IOnlineReportsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IOnlineReportsResponse&gt; GetDataAsync(ISession session, Action&lt;IOnlineReportsResponse, IOnlineReportsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the data from the backend service.</p>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IOnlineReportsDefinition</code> object.</p>
+<p>When requesting data using the <code>GetData</code>/<code>GetDataAsync</code> methods, we receive an <strong>IOnlineReportsResponse</strong> object (implements <code>IResponse</code>). The response object contains a &quot;<strong>Data</strong>&quot; property of <strong>IOnlineReportsData</strong> type.</p>
+<h3 id="ionlinereportsdata---properties">IOnlineReportsData - properties</h3>
+<p>IList&lt;IOnlineReportStory&gt; OnlineReportStories { get; }<br>
+JToken Raw { get; }<br></p>
+<p>Each entry in <strong>OnlineReportStories</strong> is an <strong>IOnlineReportStory</strong> (extends <code>INewsItem</code>):</p>
+<h3 id="ionlinereportstory---properties">IOnlineReportStory - properties</h3>
+<p>string NewsStory { get; }<br>
+string ContentType { get; }<br>
+IList&lt;string&gt; Creators { get; }<br>
+NewsUrgencyType Urgency { get; }<br>
+string HeadlineTitle { get; }<br>
+IList&lt;string&gt; Sources { get; }<br>
+IList&lt;string&gt; Languages { get; }<br>
+IList&lt;string&gt; Subjects { get; }<br>
+IList&lt;string&gt; RICCodes { get; }<br>
+DateTime CreationDate { get; }<br>
+DateTime UpdateDate { get; }<br>
+JObject Raw { get; }<br></p>

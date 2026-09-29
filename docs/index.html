@@ -1,10 +1,74 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <title>LSEG Documentation Test</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LSEG Data Libraries Documentation</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Segoe UI", sans-serif;
+      color: #202224;
+      background: #f4f6f8;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header {
+      padding: 48px max(24px, calc((100vw - 1120px) / 2));
+      color: white;
+      background: #001eff;
+    }
+    header p { margin: 8px 0 0; font-size: 18px; }
+    h1 { margin: 0; font-size: clamp(32px, 5vw, 52px); }
+    main {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+    a {
+      min-height: 190px;
+      padding: 28px;
+      border: 1px solid #c9cdd2;
+      border-radius: 8px;
+      color: inherit;
+      background: white;
+      text-decoration: none;
+    }
+    a:hover, a:focus-visible { border-color: #001eff; box-shadow: 0 6px 18px #0002; }
+    h2 { margin: 0 0 12px; font-size: 26px; }
+    .open { color: #001eff; font-weight: 600; }
+    .soon {
+      pointer-events: none;
+      opacity: 0.6;
+      background: #f0f1f3;
+    }
+    .soon .open { color: #6b7075; font-weight: 600; }
+  </style>
 </head>
 <body>
-    <h1>GitHub Pages Test</h1>
-    <p>This is a simple HTML page.</p>
+  <header>
+    <h1>LSEG Data Libraries</h1>
+    <p>Developer documentation by language</p>
+  </header>
+  <main>
+    <a href="./dotnet/">
+      <h2>.NET</h2>
+      <p>Documentation for the LSEG Data Library for .NET.</p>
+      <span class="open">Open documentation &rarr;</span>
+    </a>
+    <a class="soon" aria-disabled="true">
+      <h2>Python</h2>
+      <p>Documentation space reserved for the Python library.</p>
+      <span class="open">Coming soon</span>
+    </a>
+    <a class="soon" aria-disabled="true">
+      <h2>TypeScript</h2>
+      <p>Documentation space reserved for the TypeScript library.</p>
+      <span class="open">Coming soon</span>
+    </a>
+  </main>
 </body>
 </html>

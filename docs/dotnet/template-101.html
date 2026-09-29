@@ -1,0 +1,18 @@
+<h1 id="count">Count</h1>
+<p>Return the number of items in our collection/watchlist </p>
+<h3 id="syntax">Syntax</h3>
+<p><code>int Count()</code></p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to count the items of a pricing stream cache.</p>
+<pre><code class="language-csharp">var stream = Pricing.Definition(&quot;EUR=&quot;).GetStream();
+
+stream.Open();
+
+// Add one item or a list of items
+stream.AddItems(&quot;MSFT.O&quot;);
+stream.AddItems(new[] { &quot;EUR=&quot;, &quot;GBP=&quot;, &quot;CAD=&quot; }); 
+
+var count = stream.Count(); 
+
+stream.Close();
+</code></pre>

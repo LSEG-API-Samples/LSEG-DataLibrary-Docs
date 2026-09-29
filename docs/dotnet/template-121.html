@@ -1,0 +1,168 @@
+<h1 id="deliveryendpointrequest-object">Delivery.EndpointRequest object</h1>
+<p>This object defines the <strong>EndpointRequest</strong> with a url and other parameters.</p>
+<h3 id="syntax">Syntax</h3>
+<p><code>Delivery.EndpointRequest.Definition()</code><br>
+<code>Delivery.EndpointRequest.Definition(string endpointUrl)</code><br>
+<code>Delivery.EndpointRequest.Definition(Uri endpointUrl)</code><br></p>
+<h3 id="parameters">Parameters</h3>
+<table>
+<thead>
+<tr>
+<th><strong>Value</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>session</td>
+<td>The specific session. Eg: <strong>platform</strong>, <strong>desktop</strong></td>
+</tr>
+<tr>
+<td>api</td>
+<td>API stanza representing the data request. Eg: data.historical-pricing</td>
+</tr>
+<tr>
+<td>endpointUrl</td>
+<td>The specific endpoint within the API. Eg: interday-summaries</td>
+</tr>
+</tbody></table>
+<h3 id="methods">Methods</h3>
+<p><strong>Url(string url)</strong><br>
+The Url represents the address of the endpoint.</p>
+<p><strong>Uri(Uri uri)</strong><br>
+The Uri represents the address of the endpoint.</p>
+<p><strong>Method(EndpointRequest.Method method)</strong><br>
+Defines the method of the request.  Valid methods are: GET, POST, PUT and DELETE.  Default: GET</p>
+<p><strong>QueryParameter(string key, string value)</strong><br>
+Apply the specified key/value pair as a Query parameter to the URL.
+Multiple calls to the same &#39;key&#39; will be additive.<br>
+For example, multiple calls to add a &#39;Universe&#39; parameter will create this: &quot;Universe=AAPL.O,IBM.N&quot;.<br></p>
+<p><strong>BodyParameter(string key, string value)</strong><br>
+<strong>BodyParameter(string key, int value)</strong><br>
+<strong>BodyParameter(string key, double value)</strong><br>
+<strong>BodyParameter(string key, bool value)</strong><br>
+Apply the key/value pair to the Body of the URL request.<br>
+Only applies to simple &#39;key: value&#39; elements at the root level of the message body.<br>
+More complex objects should use the BodyParameters(json) interface. <br>
+Multiple calls to the same &#39;key&#39; will replace the value applied within the body.</p>
+<p><strong>HeaderParameter(string key, string value)</strong><br>
+Apply the key/value pair to the Header section of the URL request. <br>
+Multiple calls to the same &#39;key&#39; will be additive. <br>
+For example, multiple calls to add an &#39;Accept&#39; parameter can look like this: &quot;Accept: application/json, image/*&quot;.</p>
+<p><strong>PathParameter(string key, string value)</strong><br>
+<strong>PathParameter(string value)</strong><br>
+Apply the key/value pair to the path template within the URL request. <br>
+The URL will need to contain a path template containing the &#39;key&#39;. <br>
+For example, &quot;/dataContent/version1/analytics/{year}/{month}/{day}/prices&quot;.<br>
+The &#39;key&#39; values defined in this template are &#39;year&#39;, &#39;month&#39; and &#39;day. <br>
+Using PathParameter(&#39;year&#39;, 2019) will result in: &#39;/dataContent/version1/analytics/2019/{month}/{day}/prices&#39;.</p>
+<p><strong>BodyParameters(JObject parameters, bool merge = false)</strong><br>
+Apply the JSON object to the body of the request. <br>
+By default, the parameters will overwrite any previous settings. <br>
+Optionally, the supplied parameters can be merged with the current body parameters settings.</p>
+<p><strong>Closure(object closure)</strong><br>
+Optionally, include a user-defined Closure to match specific requests and responses.</p>
+<p><strong>GetData(CancellationToken cancellationToken = default)</strong><br>
+<strong>GetData(Action&lt;IEndpointResponse, IEndpointDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>GetData(ISession session, Action&lt;IEndpointResponse, IEndpointDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Send the request to the specific endpoint synchronously to retrieve the data. Returns an <code>IEndpointResponse</code>. When a session is not explicitly supplied, the default session is used.</p>
+<p><strong>GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
+<strong>GetDataAsync(Action&lt;IEndpointResponse, IEndpointDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
+<strong>GetDataAsync(ISession session, Action&lt;IEndpointResponse, IEndpointDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronous equivalents of <code>GetData(...)</code>.</p>
+<p><strong>Properties</strong> <em>(property, <code>IEndpointDefinitionParams</code>)</em><br>
+Retrieve the parameters defined for the endpoint request.</p>
+<p>The possible values for the <strong>EndpointRequest.Method</strong>:</p>
+<table>
+<thead>
+<tr>
+<th><strong>Name</strong></th>
+<th><strong>Value</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Method.GET</td>
+<td>&#39;GET&#39;</td>
+</tr>
+<tr>
+<td>Method.POST</td>
+<td>&#39;POST&#39;</td>
+</tr>
+<tr>
+<td>Method.PUT</td>
+<td>&#39;PUT&#39;</td>
+</tr>
+<tr>
+<td>Method.DELETE</td>
+<td>&#39;DELETE&#39;</td>
+</tr>
+</tbody></table>
+<h3 id="returned-value">Returned value</h3>
+<p><code>IEndpointDefinition</code> object.</p>
+<h3 id="iendpointresponse-members">IEndpointResponse members</h3>
+<p><code>GetData(...)</code>/<code>GetDataAsync(...)</code> return an <code>IEndpointResponse</code>, which extends the base <code>IResponse</code> interface.</p>
+<p><strong>Data</strong> <em>(property, <code>IEndpointData</code>)</em><br>
+The data defined within the response, if available.</p>
+<p><strong>HttpHeaders</strong> <em>(property, <code>IResponse</code>, <code>JToken</code>)</em><br>
+The HTTP Headers defined for the response from the platform.</p>
+<p><strong>HttpStatus</strong> <em>(property, <code>IResponse</code>, <code>JObject</code>)</em><br>
+The Status carries the details of the response, whether successful or not. Details include HTTP codes and reason codes, if available.</p>
+<p><strong>IsSuccess</strong> <em>(property, <code>IResponse</code>, <code>bool</code>)</em><br>
+Indicator of whether the request was successful.</p>
+<h3 id="iendpointdata-members">IEndpointData members</h3>
+<p><strong>ContentType</strong> <em>(property, <code>string</code>)</em><br>
+The Type of Content as returned in the HTTP response.</p>
+<p><strong>Raw</strong> <em>(property, <code>JToken</code>)</em><br>
+The native raw JSON data returned from the platform.</p>
+<h3 id="usage">Usage</h3>
+<p>The following example demonstrates how to create an endpoint request definition and request data:</p>
+<pre><code class="language-csharp">var symbolLookupEndpoint = &quot;https://api.refinitiv.com/discovery/symbology/v1/lookup&quot;;
+
+var symbolRequest = new JObject()
+{
+    [&quot;from&quot;] = new JArray()
+    {
+        new JObject()
+        {
+            [&quot;identifierTypes&quot;] = new JArray(&quot;ExchangeTicker&quot;),
+            [&quot;values&quot;] = new JArray(&quot;IBM&quot;)
+        }
+    },
+    [&quot;to&quot;] = new JArray()
+    {
+        new JObject() { [&quot;identifierTypes&quot;] = new JArray(&quot;RIC&quot;) }
+    },
+    [&quot;type&quot;] = &quot;auto&quot;
+ };
+
+  var response = EndpointRequest.Definition(symbolLookupEndpoint)
+                                .Method(EndpointRequest.Method.POST)
+                                .BodyParameters(symbolRequest)
+                                .GetData();
+</code></pre>
+<p>The following example demonstrates how to retrieve interday and intraday data using the request definition. <br>
+For this specific examples the URI and its parameters are provided as a string to the definition.</p>
+<pre><code class="language-csharp">var intradayEndpoint = &quot;https://api.refinitiv.com/data/historical-pricing/v1/views/intraday-summaries/EUR=?interval=PT1H&quot;;
+var interdayEndpoint = &quot;https://api.refinitiv.com/data/historical-pricing/v1/views/interday-summaries&quot;;
+
+using (ISession session = Sessions.GetSession())
+{
+    if (session.Open() == Session.State.Opened)
+    {
+        // Intraday Summaries - single instrument
+        var response = EndpointRequest.Definition(intradayEndpoint).GetData();
+
+        // Single Interday Summary - multiple instruments
+        response = EndpointRequest.Definition(interdayEndpoint)
+                                  .Method(EndpointRequest.Method.POST)
+                                  .BodyParameters(new JObject()
+                                  {
+                                      [&quot;fields&quot;] = new JArray(&quot;BID&quot;, &quot;ASK&quot;),
+                                      [&quot;universe&quot;] = new JArray(&quot;EUR=&quot;, &quot;CAD=&quot;, &quot;CHF=&quot;),
+                                      [&quot;end&quot;] = &quot;2022-01-01&quot;
+                                  })
+                                  .GetData();
+    }
+}
+</code></pre>
