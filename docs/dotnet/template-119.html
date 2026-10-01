@@ -73,10 +73,8 @@ Defines the type of symbols specified within the Symbol specification.<br>  Opti
 Defines the types to convert to.  Optional.  Default: All SymbolTypes.</p>
 <p><strong>Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface. The extended params act as a fallback in case properties are unavailable, or as an alternative for users that prefer to define the request using native JSON definitions.  Optional.</p>
 <p><strong>Properties { get; }</strong><br>
-Gets the <code>ISymbolConvertDefinitionParams</code> describing the values within the defined request (<code>Symbols</code>, <code>FromSymbolType</code>, <code>ToSymbolType</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the <code>ISymbolConvertDefinitionParams</code> describing the values within the defined request (<code>Symbols</code>, <code>FromSymbolType</code>, <code>ToSymbolType</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>ISymbolConversionResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>ISymbolConversionResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

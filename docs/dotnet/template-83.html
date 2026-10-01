@@ -11,10 +11,8 @@
 <h3 id="topnewsdefinition-methods">TopNewsDefinition Methods</h3>
 <p><strong>ITopNewsDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>ITopNewsDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface.  Optional.</p>
 <p><strong>ITopNewsDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>ITopNewsResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>ITopNewsResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

@@ -53,14 +53,14 @@ Define a DesktopDirect Session request. When <code>sessionName</code> is omitted
 <tr>
 <td><strong><code>IDesktopDirectSessionDefinition WithAuthenticationProvider(IAuthenticationProvider provider)</code></strong></td>
 <td>method</td>
-<td><strong>Sets the authentication provider. Required — a DesktopDirect session cannot open without one. Currently only DesktopDirect supports authentication using Entra as IDP and Heimdall as an internal auth service; use the <code>EntraProvider</code> implementation described below.</strong></td>
+<td><strong>Sets the authentication provider. Required — a DesktopDirect session cannot open without one. Currently only DesktopDirect supports authentication using Entra as IDP; use the <code>EntraProvider</code> implementation described below.</strong></td>
 </tr>
 </tbody></table>
 <blockquote>
 <p><code>WithAuthenticationProvider</code> and <code>TakeRealTimeControl</code> are the two settings that most directly affect how a DesktopDirect session behaves: the former is mandatory for the session to authenticate at all, and the latter decides whether opening this session takes real-time streaming access away from any other session already using the same identity.</p>
 </blockquote>
 <h3 id="authentication--entraprovider">Authentication — EntraProvider</h3>
-<p>The only concrete <code>IAuthenticationProvider</code> implementation shipped by the library is <code>EntraProvider</code> (<code>LSEG.Data.Authentication.IdentityProviders.EntraProvider</code>). It authenticates using Entra as the identity provider and Heimdall as the internal auth service.</p>
+<p>The only concrete <code>IAuthenticationProvider</code> implementation shipped by the library is <code>EntraProvider</code> (<code>LSEG.Data.Authentication.IdentityProviders.EntraProvider</code>). It authenticates using Entra as the identity provider.</p>
 <table>
 <thead>
 <tr>

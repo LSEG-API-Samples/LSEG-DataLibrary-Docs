@@ -10,10 +10,8 @@ Breaks down a user query string into News related entities, then aggregates them
 A news query expression.  Optional.  Default: no query conditions.</p>
 <p><strong>IAnalyzeDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>IAnalyzeDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface.  Optional.</p>
 <p><strong>IAnalyzeDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>Query</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>Query</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>IAnalyzeResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>IAnalyzeResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

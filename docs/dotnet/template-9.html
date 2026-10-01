@@ -5,10 +5,8 @@
 <h3 id="universedefinition-methods">UniverseDefinition Methods</h3>
 <p><strong>IUniverseDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>IUniverseDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface.  Optional.</p>
 <p><strong>IUniverseDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

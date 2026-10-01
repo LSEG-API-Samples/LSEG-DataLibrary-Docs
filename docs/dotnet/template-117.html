@@ -57,10 +57,8 @@ This can name one or more properties, separated by commas, each of which must be
 This can name one or more properties, separated by commas, each of which must be Navigable.</p>
 <p><strong>ISearchDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>ISearchDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface. The extended params act as a fallback in case properties are unavailable, or as an alternative for users that prefer to define the request using native JSON definitions.  Optional.</p>
 <p><strong>ISearchDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>View</code>, <code>LightView</code>, <code>Query</code>, <code>Filter</code>, <code>Select</code>, <code>Boost</code>, <code>OrderBy</code>, <code>GroupBy</code>, <code>GroupCount</code>, <code>Top</code>, <code>Skip</code>, <code>Navigators</code>, <code>Features</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>View</code>, <code>LightView</code>, <code>Query</code>, <code>Filter</code>, <code>Select</code>, <code>Boost</code>, <code>OrderBy</code>, <code>GroupBy</code>, <code>GroupCount</code>, <code>Top</code>, <code>Skip</code>, <code>Navigators</code>, <code>Features</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>ISearchResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>ISearchResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

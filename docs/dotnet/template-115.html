@@ -27,10 +27,8 @@ The view parameter is optional. Default: Search.LightView.SearchAllLight</p>
  Boost supports exactly the same predicate expression syntax as Filter, except Filter restricts which documents are matched.</p>
 <p> <strong>ILookupDefinition Closure(object closure)</strong><br>
  Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p> <strong>ILookupDefinition ExtendedParams(JObject extendedParams)</strong><br>
- Apply any properties that are not available within this request interface. The extended params act as a fallback in case properties are unavailable, or as an alternative for users that prefer to define the request using native JSON definitions.  Optional.</p>
 <p> <strong>ILookupDefinitionParams Properties { get; }</strong><br>
- Gets the properties describing the values within the defined request (<code>View</code>, <code>LightView</code>, <code>Terms</code>, <code>Scope</code>, <code>Select</code>, <code>Filter</code>, <code>Boost</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+ Gets the properties describing the values within the defined request (<code>View</code>, <code>LightView</code>, <code>Terms</code>, <code>Scope</code>, <code>Select</code>, <code>Filter</code>, <code>Boost</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>ILookupResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>ILookupResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

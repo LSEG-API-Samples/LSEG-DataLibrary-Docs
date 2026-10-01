@@ -54,6 +54,8 @@ Enforce a specific historical pricing <a href="#/sections/content-layer/historic
 The name of the service providing the desired streaming price data.  Optional.  Default: defined within the streaming platform.</p>
 <p><strong>IEventsDefinition PinStart(bool pinStart)</strong><br>
 Dictates the position of the returned data within the time series.  Optional.  Default: false.</p>
+<p><strong>IEventsDefinition UseChunking(bool useChunking)</strong><br>
+Enables the chunking feature, fetching events directly from the CDN. When chunking is enabled, only trade and quote event types are supported; correction events are not returned. Advised for use with large amounts of data.  Optional.  Default: false.</p>
 <p><strong>IEventsDefinition ExtendedParams(JObject extendedParams)</strong><br>
 Specifies the parameters that will be merged with the request. Optional.</p>
 <p><strong>IEventsDefinition Closure(object closure)</strong><br>
@@ -67,11 +69,17 @@ Gets the properties describing the values within the defined request (<code>Univ
 <strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
 <strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
 Retrieve the data from the backend service.</p>
+<p><strong>IDataSetResponse GetData(Action&lt;IDataSetResponse, IChunkDetails, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>IDataSetResponse GetData(ISession session, Action&lt;IDataSetResponse, IChunkDetails, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Retrieve the chunked data from the backend service. Streams multiple responses as chunks are received and processed, then aggregates them into a single response once all chunks have been processed. Use <code>IChunkDetails</code> to identify the chunk details like index, position, or the total number of records available for that specific chunk.</p>
 <p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(CancellationToken cancellationToken = default)</strong><br>
 <strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, CancellationToken cancellationToken = default)</strong><br>
 <strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
 <strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
 Asynchronously retrieve the data from the backend service.</p>
+<p><strong>Task&lt;IDataSetResponse&gt; GetDataAsync(Action&lt;IDataSetResponse, IChunkDetails, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+<strong>Task&lt;IDataSetResponse&gt; GetDataAsync(ISession session, Action&lt;IDataSetResponse, IChunkDetails, IEventsDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
+Asynchronously retrieve the chunked data from the backend service. To stream chunks as they are retrieved, implement the callback in this overload.</p>
 <p><strong>IEventsStream GetStream()</strong><br>
 <strong>IEventsStream GetStream(ISession session)</strong><br>
 Retrieve a streaming interface to manage real-time updates for the specified historical pricing request. See <a href="#/sections/content-layer/historical-pricing/events/streams/intro">Events.Stream</a>.</p>

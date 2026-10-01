@@ -12,10 +12,8 @@ var headlines = TopNewsHeadlines.Definition(page.TopNewsID).GetData();
 Specify the ID of the Top News page. The ID is available when you retrieve the Top News Categories (<code>ITopNewsPage.TopNewsID</code>).  Required.</p>
 <p><strong>ITopNewsHeadlinesDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>ITopNewsHeadlinesDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface.  Optional.</p>
 <p><strong>ITopNewsHeadlinesDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>NewsId</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>NewsId</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>ITopNewsHeadlinesResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>ITopNewsHeadlinesResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

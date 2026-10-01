@@ -31,10 +31,8 @@
 Specify the ID of the story to retrieve. The story identifier is available when you retrieve a story headline.  Required.</p>
 <p><strong>IStoryDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>IStoryDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface.  Optional.</p>
 <p><strong>IStoryDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>StoryId</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>StoryId</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>IStoryResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>IStoryResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

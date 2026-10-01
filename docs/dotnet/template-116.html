@@ -20,10 +20,8 @@ The supported View to search against the light service.<br>
 The view is optional. Default: Search.ExploreView.Entities.</p>
 <p><strong>IMetaDataDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>IMetaDataDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface. The extended params act as a fallback in case properties are unavailable, or as an alternative for users that prefer to define the request using native JSON definitions.  Optional.</p>
 <p><strong>IMetaDataDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>View</code>, <code>LightView</code>, <code>ExploreView</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>View</code>, <code>LightView</code>, <code>ExploreView</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>IMetaDataResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>IMetaDataResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

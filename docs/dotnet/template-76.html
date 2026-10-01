@@ -13,10 +13,8 @@ The number of headlines.  Optional.  Default: 100. A value of 0 (zero) retrieves
 The sort order of the headlines (<code>newToOld</code>, <code>oldToNew</code>).  Optional.  Default: newToOld.</p>
 <p><strong>IHeadlinesDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>IHeadlinesDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface.  Optional.</p>
 <p><strong>IHeadlinesDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>Query</code>, <code>Count</code>, <code>Sort</code>, <code>PageSize</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>Query</code>, <code>Count</code>, <code>Sort</code>, <code>PageSize</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>IHeadlinesResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>IHeadlinesResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

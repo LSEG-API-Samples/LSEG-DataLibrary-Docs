@@ -15,10 +15,8 @@ A comma-separated list of items.  Required.</p>
 Range representing the number of Financial Years of data to return. The options available start with <code>0</code> for the latest Financial and then negative numbers for further Financials - for example, <code>Start(0)</code> and <code>End(-2)</code> will return the last three Financial years.  Optional.  Default: -20.</p>
 <p><strong>IMeasuresDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>IMeasuresDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface.  Optional.</p>
 <p><strong>IMeasuresDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>ServiceType</code>, <code>Universe</code>, <code>Start</code>, <code>End</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>ServiceType</code>, <code>Universe</code>, <code>Start</code>, <code>End</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>IDataSetResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>IDataSetResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>

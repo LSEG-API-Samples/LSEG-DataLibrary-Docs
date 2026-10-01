@@ -41,10 +41,8 @@ foreach (IOnlineReportStory story in reportStory.Data.OnlineReportStories)
 <h3 id="onlinereportslistingdefinition-methods">OnlineReportsListingDefinition Methods</h3>
 <p><strong>IOnlineReportsListingDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>IOnlineReportsListingDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface.  Optional.</p>
 <p><strong>IOnlineReportsListingDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>Closure</code>).</p>
 <p><strong>IOnlineReportsListingResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>IOnlineReportsListingResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
 <strong>IOnlineReportsListingResponse GetData(Action&lt;IOnlineReportsListingResponse, IOnlineReportsListingDefinitionParams, ISession&gt; cb, CancellationToken cancellationToken = default)</strong><br>
@@ -67,10 +65,8 @@ The ID of the specific report.  Required.</p>
 Indicates whether TOP 10 full documents must be retrieved.  Optional.  Default: false.</p>
 <p><strong>IOnlineReportsDefinition Closure(object closure)</strong><br>
 Optionally, include a user-defined Closure to match specific requests and responses.</p>
-<p><strong>IOnlineReportsDefinition ExtendedParams(JObject extendedParams)</strong><br>
-Apply any properties that are not available within this request interface.  Optional.</p>
 <p><strong>IOnlineReportsDefinitionParams Properties { get; }</strong><br>
-Gets the properties describing the values within the defined request (<code>ReportId</code>, <code>FullContent</code>, <code>Closure</code>, <code>ExtendedParams</code>).</p>
+Gets the properties describing the values within the defined request (<code>ReportId</code>, <code>FullContent</code>, <code>Closure</code>).</p>
 <h3 id="retrieving-data">Retrieving data</h3>
 <p><strong>IOnlineReportsResponse GetData(CancellationToken cancellationToken = default)</strong><br>
 <strong>IOnlineReportsResponse GetData(ISession session, CancellationToken cancellationToken = default)</strong><br>
